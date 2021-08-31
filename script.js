@@ -10,7 +10,7 @@ let coin;
 
 const getData = ()=>{
 
-    coin = input.value
+    coin = input.value.toLowerCase();
 
     fetch(`${url}${coin}`)
     .then(res=>{return res.json()})
@@ -18,7 +18,10 @@ const getData = ()=>{
         console.log(data)
         takeParameters(data)
     }) 
-    .catch(err => console.log('error, coin is typed wrong'))
+    .catch(err => typo())
+}
+const typo = () => {
+    resultsContainer.textContent = `Name of the coin is wrong typed`
 }
 const takeParameters = data =>{
     const id = data[0].id;
