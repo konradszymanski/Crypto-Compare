@@ -8,29 +8,52 @@ const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=
 
 let coin;
 
-const getData = ()=>{
+const getData = () => {
 
     coin = input.value.toLowerCase();
 
     fetch(`${url}${coin}`)
-    .then(res=>{return res.json()})
-    .then(data => {
-        console.log(data)
-        takeParameters(data)
-    }) 
-    .catch(err => typo())
+        .then(res => { return res.json() })
+        .then(data => {
+            console.log(data)
+            takeParameters(data)
+        })
+        .catch(err => typo())
 }
 const typo = () => {
     resultsContainer.textContent = `Name of the coin is wrong typed`
 }
-const takeParameters = data =>{
+const takeParameters = data => {
     const id = data[0].id;
+    const symbol = data[0].symbol;
     const name = data[0].name;
-    const ath = data[0].ath;
+    const image = data[0].image;
     const current_price = data[0].current_price;
     const market_cap = data[0].market_cap;
+    const market_cap_rank = data[0].market_cap_rank;
+    const fully_diluted_valuation = data[0].fully_diluted_valuation;
+    const total_volume = data[0].total_volume;
+    const high_24h = data[0].high_24h;
+    const low_24h = data[0].low_24h;
+    const price_change_percentage_24h = data[0].price_change_percentage_24h;
+    const market_cap_change = data[0].market_cap_change_24h;
+    const market_cap_change_24h = data[0].market_cap_change_percentage_24h;
+    const circulating_supply = data[0].circulating_supply;
+    const total_supply = data[0].total_supply;
     const max_supply = data[0].max_supply;
-    resultsContainer.textContent = `${id} ${name} ${ath} ${current_price} ${market_cap} ${max_supply}`
+    const ath = data[0].ath;
+    const loath_change_percentagew_24h = data[0].ath_change_percentage;
+    const ath_date = data[0].ath_date;
+    const atl = data[0].atl;
+    const atl_change_percentage = data[0].atl_change_percentage;
+    const atl_date = data[0].atl_date;
+    const last_updated = data[0].last_updated;
+    const price_change_24h = data[0].price_change_24h;
+
+    resultsContainer.innerHTML =`${id} ${symbol} ${name}  <img src="${image}"/>
+    ${current_price} ${market_cap}
+    ${market_cap_rank} ${fully_diluted_valuation} ${total_volume} ${high_24h} ${low_24h} ${price_change_percentage_24h} ${market_cap_change} ${market_cap_change_24h}
+    ${circulating_supply} ${total_supply} ${max_supply} ${ath} ${loath_change_percentagew_24h} ${ath_date} ${atl} ${atl_change_percentage} ${atl_date} ${last_updated} ${price_change_24h}` 
 }
 
 submitButton.addEventListener('click', getData)
