@@ -20,38 +20,50 @@ const typo = () => {
     resultsContainer.textContent = `Name of the coin is wrong typed`
 }
 const takeParameters = data => {
+    let temp = "";
     data.forEach(params => {
-        resultsContainer.innerHTML += `
-            ${params.id}</br>
-            ${params.symbol}</br>
-            ${params.name}</br>  
-            <img src="${params.image}"/></br>
-            ${params.current_price}</br> 
-            ${params.market_cap}</br>
-            ${params.market_cap_rank}</br> 
-            ${params.fully_diluted_valuation}</br> 
-            ${params.total_volume}</br> 
-            ${params.high_24h}</br> 
-            ${params.low_24h}</br> 
-            ${params.price_change_percentage_24h}</br> 
-            ${params.market_cap_change_24h}</br> 
-            ${params.market_cap_change_percentage_24h}</br>
-            ${params.circulating_supply}</br> 
-            ${params.total_supply}</br> 
-            ${params.max_supply}</br> 
-            ${params.ath}</br> 
-            ${params.ath_change_percentage}</br> 
-            ${params.ath_date}</br> 
-            ${params.atl}</br> 
-            ${params.atl_change_percentage}</br> 
-            ${params.atl_date}</br> 
-            ${params.last_updated}</br> 
-            ${params.price_change_24h}</br>`
+        temp += "<tr>";
+        temp += `<tr>${params.id}</tr>`
+        temp += `<tr> ${params.symbol}</tr>`
+        temp += `<tr>${params.name}</tr>`
+        temp += `<tr><img src="${params.image}"/></tr>`
+        temp += `<tr>${params.current_price}</tr>`
     })
-    
+    document.getElementById('data').innerHTML += temp;
 }
 
+
 submitButton.addEventListener('click', getData)
+//data.forEach(params => {
+    //     resultsContainer.innerHTML += `
+    //         ${params.id}</br>
+    //         ${params.symbol}</br>
+    //         ${params.name}</br>  
+    //         <img src="${params.image}"/></br>
+    //         ${params.current_price}</br> 
+    //         ${params.market_cap}</br>
+    //         ${params.market_cap_rank}</br> 
+    //         ${params.fully_diluted_valuation}</br> 
+    //         ${params.total_volume}</br> 
+    //         ${params.high_24h}</br> 
+    //         ${params.low_24h}</br> 
+    //         ${params.price_change_percentage_24h}</br> 
+    //         ${params.market_cap_change_24h}</br> 
+    //         ${params.market_cap_change_percentage_24h}</br>
+    //         ${params.circulating_supply}</br> 
+    //         ${params.total_supply}</br> 
+    //         ${params.max_supply}</br> 
+    //         ${params.ath}</br> 
+    //         ${params.ath_change_percentage}</br> 
+    //         ${params.ath_date}</br> 
+    //         ${params.atl}</br> 
+    //         ${params.atl_change_percentage}</br> 
+    //         ${params.atl_date}</br> 
+    //         ${params.last_updated}</br> 
+    //         ${params.price_change_24h}</br>`
+    // })
+
+
 
 // {
 //  id = data[0].id,
