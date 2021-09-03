@@ -11,3 +11,19 @@ img{
    border: white;
    background-color: orange;
 }
+td, th{
+   border-bottom: 2px solid #4d4d4e; 
+   text-align: center;
+   padding: 5px;
+}
+table{
+   /* margin: 10px auto; */
+   background-color: lightblue;
+}
+tr,th,
+.tableCell{
+   width:40px;
+   height: 40px;
+   background-color: rgb(245, 58, 58);
+   border-bottom: 1px solid black;
+}

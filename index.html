@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-   
+
     <title>CryptoCompare</title>
 </head>
+
 <body>
     <h1>CryptoCompare</h1>
     <h2>Select two coins to compare</h2>
     <div>
-        <input   id="input"
-        aria-label="Bitcoin"
-        type="text"
-        class="search-bar__input"
-        placeholder="Bitcoin"
-        autofocus
-        required>
+        <input id="input" aria-label="Bitcoin" type="text" class="search-bar__input" placeholder="Bitcoin" autofocus
+            required>
         <button id='submit' type='button' aria-label="search">submit</button>
     </div>
     <div class="results">
         <div id="error"></div>
-        <div id="results">
-            <table class='cryptoTable'>
-                <tbody id='data'>
-
-                </tbody>
-
+        <div id="results"></div>
+            <table id="table">
+                <tr>
+                    <th>Symbol</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <th>Image</th>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                </tr>
             </table>
+            <button type="button" class='btn'>add column</button>
 
-        </div>
-  
+            <div id="data"></div>
     </div>
     <script src="/script.js"></script>
 </body>
+
 </html>

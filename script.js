@@ -22,18 +22,27 @@ const typo = () => {
 const takeParameters = data => {
     let temp = "";
     data.forEach(params => {
-        temp += "<tr>";
-        temp += `<tr>${params.id}</tr>`
-        temp += `<tr> ${params.symbol}</tr>`
-        temp += `<tr>${params.name}</tr>`
-        temp += `<tr><img src="${params.image}"/></tr>`
-        temp += `<tr>${params.current_price}</tr>`
+        temp += `<td>${params.symbol}</td>`
+        temp += `<td>${params.name}</td>`
+        temp += `<td><img src="${params.image}"/></td>`
+        temp += `<td>${params.current_price}</td>`
     })
-    document.getElementById('data').innerHTML += temp;
+  document.getElementById('data').innerHTML += temp;
 }
 
+function addColumn() {
+    [...document.querySelectorAll('#table tr')].forEach((row, i) => {
+        const input = document.createElement("div")
+        input.setAttribute('class', 'tableCell')
+        const cell = document.createElement("td")
+        cell.appendChild(input)
+        row.appendChild(cell)
+    });
+ }
+ document.querySelector('.btn').addEventListener('click', addColumn, getData)
 
-submitButton.addEventListener('click', getData)
+ 
+submitButton.addEventListener('click', getData,addColumn )
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
     //         ${params.id}</br>
