@@ -19,6 +19,7 @@ td, th{
 table{
    /* margin: 10px auto; */
    background-color: lightblue;
+   margin: 20px;
 }
 tr,th,
 .tableCell{
@@ -26,4 +27,7 @@ tr,th,
    height: 40px;
    background-color: rgb(245, 58, 58);
    border-bottom: 1px solid black;
+}
+thead{
+   border: yellow 2px solid;
 }

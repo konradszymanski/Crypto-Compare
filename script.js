@@ -21,13 +21,30 @@ const typo = () => {
 }
 const takeParameters = data => {
     let temp = "";
+    let symbol = document.querySelector('.symbol')
+    let symb = ''
+    let name = document.querySelector('.name')
+    let nam = ''
+    let image = document.querySelector('.image')
+    let img = ''
+    let price = document.querySelector('.price')
+    let pric = ''
+    
     data.forEach(params => {
-        temp += `<td>${params.symbol}</td>`
-        temp += `<td>${params.name}</td>`
-        temp += `<td><img src="${params.image}"/></td>`
-        temp += `<td>${params.current_price}</td>`
+      
+        symb += `<td>${params.symbol}</td>`
+        nam += `<td>${params.name}</td>`
+        img += `<td><img src="${params.image}"/></td>`
+        pric += `<td>${params.current_price}</td>`
     })
   document.getElementById('data').innerHTML += temp;
+  document.getElementById('cryptoTable').innerHTML += temp;
+
+
+  symbol.innerHTML +=symb;
+  name.innerHTML +=nam;
+  image.innerHTML +=img;
+  price.innerHTML +=pric;
 }
 
 function addColumn() {
