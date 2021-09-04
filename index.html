@@ -21,31 +21,89 @@
     <div class="results">
         <div id="error"></div>
         <div id="results"></div>
-            <table id="table">
-                <thead>
-                <tr>
-                    <th class=''>Symbol</th>
-                    <td class='symbol'></td>
-                    
-                </tr>
-                <tr>
-                    <th  class=''>Name</th>
-                    <td class='name'></td>
-                </tr>
-                <tr>
-                    <th  class=''>Image</th>
-                    <td class='image'></td>
-                </tr>
-                <tr>
-                    <th  class=''>Price</th>
-                    <td class='price'></td>
-                </tr>
-            </thead>
-            <tbody id='cryptoTable'>
 
+        
+        <table id="table" class="cryptoTable">
+            <tbody class="cryptoContainer">
+                <tr class="cryptoHeader cryptoColumn">
+                    <td class="cryptoRow crudHeader">Symbol</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">current_price</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">image</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">market_cap</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">market_cap_rank</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">market_cap</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">fully_diluted_valuation</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">total_volume</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">high_24h</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">Prlow_24hice</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">price_change_percentage_24h</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">market_cap_change_24h</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">market_cap_change_percentage_24h</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">circulating_supply</td>
+                </tr>
+                <!-- <br> -->
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">total_supply</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">max_supply</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">ath</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">ath_change_percentage</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">ath_date</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">atl</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">atl_change_percentage</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">atl_change_percentage</td>
+                </tr>
+                <tr class="cryptoColumn">
+                    <td class="cryptoRow">atl_change_percentage</td>
+                </tr>
             </tbody>
-            </table>
+        </table>
             <button type="button" class='btn'>add column</button>
+            <button id="change">Change</button>
 
             <div id="data"></div>
     </div>

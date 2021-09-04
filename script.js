@@ -14,52 +14,95 @@ const getData = async () => {
     const res = await json.json()
     console.log(res)
     takeParameters(res)
+    createDataColumns(res)
 }
-
-const typo = () => {
-    resultsContainer.textContent = `Name of the coin is wrong typed`
-}
+let coins = []
 const takeParameters = data => {
     let temp = "";
-    let symbol = document.querySelector('.symbol')
-    let symb = ''
-    let name = document.querySelector('.name')
-    let nam = ''
-    let image = document.querySelector('.image')
-    let img = ''
-    let price = document.querySelector('.price')
-    let pric = ''
-    
-    data.forEach(params => {
-      
-        symb += `<td>${params.symbol}</td>`
-        nam += `<td>${params.name}</td>`
-        img += `<td><img src="${params.image}"/></td>`
-        pric += `<td>${params.current_price}</td>`
+
+    // let symbol = document.querySelector('.symbol')
+    // let symb = ''
+    // let name = document.querySelector('.name')
+    // let nam = ''
+    // let image = document.querySelector('.image')
+    // let img = ''
+    // let price = document.querySelector('.price')
+    // let pric = ''
+
+    data.forEach(p => {
+        coins.push(
+            p.current_price,
+            p.market_cap,
+            p.market_cap_rank,
+            p.market_cap,
+            p.fully_diluted_valuation,
+            p.total_volume,
+            p.high_24h,
+            p.low_24h,
+            p.price_change_percentage_24h,
+            p.market_cap_change_24h,
+            p.market_cap_change_percentage_24h,
+            p.circulating_supply,
+            p.total_supply,
+            p.max_supply,
+            p.ath,
+            p.ath_change_percentage,
+            p.ath_date,
+            p.atl,
+            p.atl_change_percentage,
+            p.atl_date,
+            p.last_updated,
+            p.price_change_24h,
+        )
     })
-  document.getElementById('data').innerHTML += temp;
-  document.getElementById('cryptoTable').innerHTML += temp;
+    document.getElementById('data').innerHTML += temp;
+    //    document.getElementById('cryptoTable').innerHTML += temp;
 
 
-  symbol.innerHTML +=symb;
-  name.innerHTML +=nam;
-  image.innerHTML +=img;
-  price.innerHTML +=pric;
+}
+const button = document.getElementById('change');
+const table = document.querySelector('#table .cryptoContainer');
+const createDataColumns = data => {
+    const header = document.querySelector('#table .cryptoHeader');
+    const newDiv = document.createElement('td');
+    newDiv.innerHTML = data[0].name;
+    header.appendChild(newDiv);
+    console.log(coins)
+    let rows = document.querySelectorAll('#table .cryptoContainer .cryptoColumn');
+    for (let i = 1; i < rows.length; i++) {
+        let row = rows[i];
+      //  let newDiv = document.createElement('td');
+      let newDiv = document.createElement('td');
+        for (let c = 0; c < coins.length; c++){
+          
+            newDiv.innerHTML = coins[c]
+            row.appendChild(newDiv)
+        }
+
+
+        // coins.forEach(x => {
+        //     newDiv.innerHTML = x;
+        //     row.appendChild(newDiv);
+        // })
+
+       //  newDiv.innerHTML = data[0].current_price;
+     //   row.appendChild(newDiv);
+    }
 }
 
-function addColumn() {
-    [...document.querySelectorAll('#table tr')].forEach((row, i) => {
-        const input = document.createElement("div")
-        input.setAttribute('class', 'tableCell')
-        const cell = document.createElement("td")
-        cell.appendChild(input)
-        row.appendChild(cell)
-    });
- }
- document.querySelector('.btn').addEventListener('click', addColumn, getData)
+// function addColumn() {
+//     [...document.querySelectorAll('#table tr')].forEach((row, i) => {
+//         const input = document.createElement("div")
+//         input.setAttribute('class', 'tableCell')
+//         const cell = document.createElement("td")
+//         cell.appendChild(input)
+//         row.appendChild(cell)
+//     });
+//  }
+//  document.querySelector('.btn').addEventListener('click', addColumn, getData)
 
- 
-submitButton.addEventListener('click', getData,addColumn )
+
+submitButton.addEventListener('click', getData)
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
     //         ${params.id}</br>
