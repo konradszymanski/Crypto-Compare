@@ -18,21 +18,11 @@ const getData = async () => {
 }
 let coins = []
 const takeParameters = data => {
-    let temp = "";
-
-    // let symbol = document.querySelector('.symbol')
-    // let symb = ''
-    // let name = document.querySelector('.name')
-    // let nam = ''
-    // let image = document.querySelector('.image')
-    // let img = ''
-    // let price = document.querySelector('.price')
-    // let pric = ''
-
+ 
     data.forEach(p => {
         coins.push(
             p.current_price,
-            p.market_cap,
+            p.image = `<img src = ${p.image}>`,
             p.market_cap_rank,
             p.market_cap,
             p.fully_diluted_valuation,
@@ -55,13 +45,14 @@ const takeParameters = data => {
             p.price_change_24h,
         )
     })
-    document.getElementById('data').innerHTML += temp;
-    //    document.getElementById('cryptoTable').innerHTML += temp;
+    // document.getElementById('data').innerHTML += temp;
+    // //    document.getElementById('cryptoTable').innerHTML += temp;
 
 
 }
 const button = document.getElementById('change');
 const table = document.querySelector('#table .cryptoContainer');
+
 const createDataColumns = data => {
     const header = document.querySelector('#table .cryptoHeader');
     const newDiv = document.createElement('td');
@@ -69,39 +60,17 @@ const createDataColumns = data => {
     header.appendChild(newDiv);
     console.log(coins)
     let rows = document.querySelectorAll('#table .cryptoContainer .cryptoColumn');
-    for (let i = 1; i < rows.length; i++) {
-        let row = rows[i];
-      //  let newDiv = document.createElement('td');
-      let newDiv = document.createElement('td');
-        for (let c = 0; c < coins.length; c++){
-          
-            newDiv.innerHTML = coins[c]
-            row.appendChild(newDiv)
-        }
-
-
-        // coins.forEach(x => {
-        //     newDiv.innerHTML = x;
-        //     row.appendChild(newDiv);
-        // })
-
-       //  newDiv.innerHTML = data[0].current_price;
-     //   row.appendChild(newDiv);
+     for (let i = 1; i < (rows.length, coins.length +1); i++) {
+         let row = rows[i];
+         let newDiv = document.createElement('td');
+    newDiv.innerHTML = coins[i-1];
+       row.appendChild(newDiv);
     }
+    emptyArray(coins)
 }
-
-// function addColumn() {
-//     [...document.querySelectorAll('#table tr')].forEach((row, i) => {
-//         const input = document.createElement("div")
-//         input.setAttribute('class', 'tableCell')
-//         const cell = document.createElement("td")
-//         cell.appendChild(input)
-//         row.appendChild(cell)
-//     });
-//  }
-//  document.querySelector('.btn').addEventListener('click', addColumn, getData)
-
-
+const emptyArray = (array) =>{
+return array = []
+}
 submitButton.addEventListener('click', getData)
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
