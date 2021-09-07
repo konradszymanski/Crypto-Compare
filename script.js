@@ -65,7 +65,14 @@ const createDataColumns = data => {
     newDiv.innerHTML = coins[i-1];
        row.appendChild(newDiv);
     }
+<<<<<<< HEAD
     coins.length = 0;
+=======
+    emptyArray(coins)
+}
+const emptyArray = (array) =>{
+return array.length = 0;
+>>>>>>> 772f50790982edb7aca716687da2ffe5726e45a5
 }
 
 submitButton.addEventListener('click', getData)
