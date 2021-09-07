@@ -1,4 +1,3 @@
-
 const submitButton = document.querySelector('#submit');
 const input = document.querySelector('#input');
 const errorSpan = document.querySelector('#error');
@@ -66,11 +65,9 @@ const createDataColumns = data => {
     newDiv.innerHTML = coins[i-1];
        row.appendChild(newDiv);
     }
-    emptyArray(coins)
+    coins.length = 0;
 }
-const emptyArray = (array) =>{
-return array = []
-}
+
 submitButton.addEventListener('click', getData)
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
