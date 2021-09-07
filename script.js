@@ -69,7 +69,7 @@ const createDataColumns = data => {
     emptyArray(coins)
 }
 const emptyArray = (array) =>{
-return array = []
+return array.length = 0;
 }
 submitButton.addEventListener('click', getData)
 //data.forEach(params => {
