@@ -4,44 +4,50 @@ const errorSpan = document.querySelector('#error');
 const resultsContainer = document.querySelector('#results');
 const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
 
-let coin; //input
-let coins = [] //
+let coin; //input for single coins
+let coins = [] //array with data
 
-const unableUI = () =>{
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+const unableUI = () => {
     submitButton.disabled = false;
     input.disabled = false;
 
 }
-const enableUI = () =>{
+const enableUI = () => {
     submitButton.disabled = true;
     input.disabled = true;
 }
-const emptyInput = value => {
-  value = input.value;
- if (value.length != 0){
-    getData()
-    console.log('full')
- }else {
-    emptyArray(coins)
-    console.log('empty')
-    coin = ' '
- }
+const checkInput = value => {
+    value = input.value;
+    if (value.length != 0) {
+        getData()
+        console.log('full')
+    } else {
+        emptyArray(coins)
+        console.log('empty')
+        coin = ' '
+    }
 }
 
 const getData = async () => {
-   
-    coin = input.value.toLowerCase();
 
-    const json = await fetch(`${url}${coin}`)
-    const res = await json.json()
-    console.log(res)
-    takeParameters(res)
-    createDataColumns(res)
-    input.value = ' ';
+    coin = input.value.toLowerCase();
+    if (coin != ' ') {
+        const json = await fetch(`${url}${coin}`)
+        const res = await json.json()
+        console.log(res)
+        takeParameters(res)
+        createDataColumns(res)
+        input.value = ' ';
+    }
+
 }
 
 const takeParameters = data => {
- 
+
     data.forEach(p => {
         coins.push(
             p.current_price,
@@ -83,19 +89,19 @@ const createDataColumns = data => {
     header.appendChild(newDiv);
     console.log(coins)
     let rows = document.querySelectorAll('#table .cryptoContainer .cryptoColumn');
-     for (let i = 1; i < (rows.length, coins.length +1); i++) {
-         let row = rows[i];
-         let newDiv = document.createElement('td');
-    newDiv.innerHTML = coins[i-1];
-       row.appendChild(newDiv);
+    for (let i = 1; i < (rows.length, coins.length + 1); i++) {
+        let row = rows[i];
+        let newDiv = document.createElement('td');
+        newDiv.innerHTML = coins[i - 1];
+        row.appendChild(newDiv);
     }
     emptyArray(coins)
 }
-const emptyArray = (array) =>{
-return array.length = 0;
+const emptyArray = (array) => {
+    return array.length = 0;
 }
 
-submitButton.addEventListener('click', emptyInput)
+submitButton.addEventListener('click', checkInput)
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
     //         ${params.id}</br>
