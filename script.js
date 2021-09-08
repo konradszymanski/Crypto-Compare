@@ -1,21 +1,45 @@
 const submitButton = document.querySelector('#submit');
-const input = document.querySelector('#input');
+const input = document.getElementById('input');
 const errorSpan = document.querySelector('#error');
 const resultsContainer = document.querySelector('#results');
 const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
 
-let coin;
+let coin; //input
+let coins = [] //
+
+const unableUI = () =>{
+    submitButton.disabled = false;
+    input.disabled = false;
+
+}
+const enableUI = () =>{
+    submitButton.disabled = true;
+    input.disabled = true;
+}
+const emptyInput = value => {
+  value = input.value;
+ if (value.length != 0){
+    getData()
+    console.log('full')
+ }else {
+    emptyArray(coins)
+    console.log('empty')
+    coin = ' '
+ }
+}
 
 const getData = async () => {
-
+   
     coin = input.value.toLowerCase();
+
     const json = await fetch(`${url}${coin}`)
     const res = await json.json()
     console.log(res)
     takeParameters(res)
     createDataColumns(res)
+    input.value = ' ';
 }
-let coins = []
+
 const takeParameters = data => {
  
     data.forEach(p => {
@@ -71,7 +95,7 @@ const emptyArray = (array) =>{
 return array.length = 0;
 }
 
-submitButton.addEventListener('click', getData)
+submitButton.addEventListener('click', emptyInput)
 //data.forEach(params => {
     //     resultsContainer.innerHTML += `
     //         ${params.id}</br>
