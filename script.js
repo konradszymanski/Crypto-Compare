@@ -6,7 +6,7 @@ const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=
 
 let coin; //input for single coins
 let coins = [] //array with data
-
+let allCoins = [] //for filter
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -38,12 +38,17 @@ const getData = async () => {
     if (coin != ' ') {
         const json = await fetch(`${url}${coin}`)
         const res = await json.json()
-        console.log(res)
+       // console.log(res)
         takeParameters(res)
         createDataColumns(res)
         input.value = ' ';
     }
+}
 
+const takeCoins = data =>{
+    data.forEach(d => {
+        allCoins.push(d.name)
+    })
 }
 
 const takeParameters = data => {
@@ -74,11 +79,8 @@ const takeParameters = data => {
             p.price_change_24h,
         )
     })
-    // document.getElementById('data').innerHTML += temp;
-    // //    document.getElementById('cryptoTable').innerHTML += temp;
-
-
 }
+
 const button = document.getElementById('change');
 const table = document.querySelector('#table .cryptoContainer');
 
@@ -87,7 +89,7 @@ const createDataColumns = data => {
     const newDiv = document.createElement('td');
     newDiv.innerHTML = data[0].name;
     header.appendChild(newDiv);
-    console.log(coins)
+    //console.log(coins)
     let rows = document.querySelectorAll('#table .cryptoContainer .cryptoColumn');
     for (let i = 1; i < (rows.length, coins.length + 1); i++) {
         let row = rows[i];
