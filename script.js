@@ -60,7 +60,7 @@ const takeParameters = data => {
         coins.push(
             p.symbol.toUpperCase(),
             p.current_price,
-            p.image = `<img src = ${p.image}>`,
+            p.image = `<img class='holdOnScroll' src = ${p.image}>`,
             p.market_cap_rank,
             p.market_cap,
             p.fully_diluted_valuation,
@@ -98,8 +98,12 @@ const createDataColumns = data => {
     for (let i = 1; i < (rows.length, coins.length + 1); i++) {
         let row = rows[i];
         let newDiv = document.createElement('td');
+        newDiv.setAttribute('class', 'dataCell')
         newDiv.innerHTML = coins[i - 1];
-        row.appendChild(newDiv);
+        setTimeout(function (){
+            row.appendChild(newDiv);
+        },150*i)
+        //row.appendChild(newDiv);
     }
     emptyArray(coins)
 }

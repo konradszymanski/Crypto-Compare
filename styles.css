@@ -24,7 +24,11 @@ img{
    background-color: white;
 }
 .cryptoTable{
-  display: none;
+display: none;
+
+}
+.dataCell{
+   min-width: 100px;
 }
 td, th{
    text-align: center;
