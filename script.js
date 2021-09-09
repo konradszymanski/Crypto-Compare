@@ -73,11 +73,11 @@ const takeParameters = data => {
             p.max_supply,
             p.ath,
             p.ath_change_percentage,
-            p.ath_date,
+            p.ath_date.toString().slice(0,10),
             p.atl,
             p.atl_change_percentage,
-            p.atl_date,
-            p.last_updated
+            p.atl_date.toString().slice(0,10),
+            p.last_updated.toString().slice(11,19)
         )
     })
 }
