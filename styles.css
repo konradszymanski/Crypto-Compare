@@ -1,6 +1,22 @@
+* {
+   font-family: 'Urbanist', sans-serif;
+}
+/* 22383A */
 body{
-   background-color: #4d4d4e; 
-   color: white;
+   background-color: #22383A; 
+   color: #EBEBEB;;
+}
+.center{
+
+   display: flex;
+   justify-content: center;
+}
+.inputs{
+   max-width: 200px;
+   margin: 0 auto;
+}
+.search-bar__input{
+   height: 25px;
 }
 img{
    width: 30px;
@@ -8,24 +24,24 @@ img{
    background-color: white;
 }
 .cryptoTable{
-   border: white;
-   background-color: orange;
+  display: none;
 }
 td, th{
-   border-bottom: 2px solid #4d4d4e; 
    text-align: center;
    padding: 5px;
+   border-bottom: 1px solid #59C3C3;
 }
 table{
    /* margin: 10px auto; */
-   background-color: lightblue;
    margin: 20px;
+}
+.cryptoRow{
+   max-width: 100px;
 }
 tr,th,
 .tableCell{
    width:40px;
    height: 40px;
-   background-color: rgb(245, 58, 58);
    border-bottom: 1px solid black;
 }
 thead{

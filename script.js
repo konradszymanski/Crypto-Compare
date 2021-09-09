@@ -42,9 +42,12 @@ const getData = async () => {
         takeParameters(res)
         createDataColumns(res)
         input.value = ' ';
+        displayTable();
     }
 }
-
+const displayTable = () => {
+    document.querySelector('#table').style.display = 'block'
+}
 const takeCoins = data =>{
     data.forEach(d => {
         allCoins.push(d.name)
