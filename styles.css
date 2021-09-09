@@ -5,7 +5,8 @@
 body{
    background-color: #22383A; 
    color: #EBEBEB;
-   width: 100vw;
+   width: 100%;
+   margin: 0;
 }
 .center{
 
@@ -29,7 +30,7 @@ display: none;
 }
 #table{
    overflow-x: auto;
-white-space: nowrap;
+/* white-space: nowrap; */
 }
 .dataCell{
    min-width: 100px;
