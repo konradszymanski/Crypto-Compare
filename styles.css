@@ -4,7 +4,8 @@
 /* 22383A */
 body{
    background-color: #22383A; 
-   color: #EBEBEB;;
+   color: #EBEBEB;
+   width: 100vw;
 }
 .center{
 
@@ -25,7 +26,10 @@ img{
 }
 .cryptoTable{
 display: none;
-
+}
+#table{
+   overflow-x: auto;
+white-space: nowrap;
 }
 .dataCell{
    min-width: 100px;

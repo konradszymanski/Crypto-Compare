@@ -100,10 +100,10 @@ const createDataColumns = data => {
         let newDiv = document.createElement('td');
         newDiv.setAttribute('class', 'dataCell')
         newDiv.innerHTML = coins[i - 1];
-        setTimeout(function (){
-            row.appendChild(newDiv);
-        },150*i)
-        //row.appendChild(newDiv);
+        // setTimeout(function (){
+        //     row.appendChild(newDiv);
+        // },150*i)
+        row.appendChild(newDiv);
     }
     emptyArray(coins)
 }
