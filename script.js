@@ -10,7 +10,7 @@ const allCoins = [] //for filter
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-const toggleUI = () =>{
+const toggleUI = () => {
     submitButton.disabled = !submitButton.disabled
     input.disabled = !input.disabled
 }
@@ -33,7 +33,7 @@ const getData = async () => {
     if (coin != ' ') {
         const json = await fetch(`${url}${coin}`)
         const res = await json.json()
-       // console.log(res)
+        // console.log(res)
         takeParameters(res)
         createDataColumns(res)
         input.value = ' ';
@@ -43,7 +43,7 @@ const getData = async () => {
 const displayTable = () => {
     document.querySelector('#table').style.display = 'block'
 }
-const takeCoins = data =>{
+const takeCoins = data => {
     data.forEach(d => {
         allCoins.push(d.name)
     })
@@ -53,29 +53,29 @@ const takeParameters = data => {
 
     data.forEach(p => {
         coins.push(
+            new Intl.NumberFormat().format(p.current_price),
             p.symbol.toUpperCase(),
-            p.current_price,
             p.image = `<img class='holdOnScroll' src = ${p.image}>`,
             p.market_cap_rank,
-            p.market_cap,
-            p.fully_diluted_valuation,
-            p.total_volume,
-            p.high_24h,
-            p.low_24h,
-            p.price_change_24h,
+            new Intl.NumberFormat().format(p.market_cap),
+            new Intl.NumberFormat().format(p.fully_diluted_valuation),
+            new Intl.NumberFormat().format(p.total_volume),
+            new Intl.NumberFormat().format(p.high_24h),
+            new Intl.NumberFormat().format(p.low_24h),
+            new Intl.NumberFormat().format(p.price_change_24h),
             p.price_change_percentage_24h,
-            p.market_cap_change_24h,
+            new Intl.NumberFormat().format(p.market_cap_change_24h),
             p.market_cap_change_percentage_24h,
-            p.circulating_supply,
-            p.total_supply,
-            p.max_supply,
-            p.ath,
+            new Intl.NumberFormat().format(p.circulating_supply),
+            new Intl.NumberFormat().format(p.total_supply),
+            new Intl.NumberFormat().format(p.max_supply),
+            new Intl.NumberFormat().format(p.ath),
             p.ath_change_percentage,
             new Date(p.ath_date).toLocaleDateString(),
-            p.atl,
+            new Intl.NumberFormat().format(p.atl),
             p.atl_change_percentage,
             new Date(p.atl_date).toLocaleDateString(),
-      new Date(p.last_updated).toLocaleTimeString()
+            new Date(p.last_updated).toLocaleTimeString()
         )
     })
 }
