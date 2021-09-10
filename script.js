@@ -5,23 +5,18 @@ const resultsContainer = document.querySelector('#results');
 const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
 
 let coin; //input for single coins
-let coins = [] //array with data
-let allCoins = [] //for filter
+const coins = [] //array with data
+const allCoins = [] //for filter
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-
-const unableUI = () => {
-    submitButton.disabled = false;
-    input.disabled = false;
-
+const toggleUI = () =>{
+    submitButton.disabled = !submitButton.disabled
+    input.disabled = !input.disabled
 }
-const enableUI = () => {
-    submitButton.disabled = true;
-    input.disabled = true;
-}
-const checkInput = value => {
-    value = input.value;
+
+const checkInput = () => {
+    const value = input.value;
     if (value.length != 0) {
         getData()
         console.log('full')
@@ -76,11 +71,11 @@ const takeParameters = data => {
             p.max_supply,
             p.ath,
             p.ath_change_percentage,
-            p.ath_date.toString().slice(0,10),
+            new Date(p.ath_date).toLocaleDateString(),
             p.atl,
             p.atl_change_percentage,
-            p.atl_date.toString().slice(0,10),
-            p.last_updated.toString().slice(11,19)
+            new Date(p.atl_date).toLocaleDateString(),
+      new Date(p.last_updated).toLocaleTimeString()
         )
     })
 }
