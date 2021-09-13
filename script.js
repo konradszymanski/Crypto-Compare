@@ -2,8 +2,11 @@ const submitButton = document.querySelector('#submit');
 const input = document.getElementById('input');
 const errorSpan = document.querySelector('#error');
 const resultsContainer = document.querySelector('#results');
-const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
 
+const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'
+const ids = 'ids='
+
+const symbols = 'symbols='
 let coin; //input for single coins
 const coins = [] //array with data
 const allCoins = [] //for filter
@@ -16,26 +19,28 @@ const toggleUI = () => {
 }
 
 const checkInput = () => {
-    const value = input.value;
-    if (value.length != 0) {
+    if (input.value.length != 0) {
         getData()
-        console.log('full')
+        console.log('input full')
     } else {
         emptyArray(coins)
-        console.log('empty')
+        console.log('input is empty')
         coin = ' '
     }
 }
+///////////////////////////////////////////////////////////////////////////////////
 
 const getData = async () => {
 
     coin = input.value.toLowerCase();
     if (coin != ' ') {
-        const json = await fetch(`${url}${coin}`)
-        const res = await json.json()
-        // console.log(res)
-        takeParameters(res)
-        createDataColumns(res)
+
+
+       const json = await (await fetch(`${url}${ids}${coin}`)).json()
+     //  const res = await json.json()
+        console.log(json)
+        takeParameters(json)
+        createDataColumns(json)
         input.value = ' ';
         displayTable();
     }
@@ -43,11 +48,7 @@ const getData = async () => {
 const displayTable = () => {
     document.querySelector('#table').style.display = 'block'
 }
-const takeCoins = data => {
-    data.forEach(d => {
-        allCoins.push(d.name)
-    })
-}
+const takeCoins = data => data.forEach(d => {allCoins.push(d.name)})
 
 const takeParameters = data => {
 
@@ -102,9 +103,8 @@ const createDataColumns = data => {
     }
     emptyArray(coins)
 }
-const emptyArray = (array) => {
-    return array.length = 0;
-}
+const emptyArray = array => array.length = 0;
+
 
 submitButton.addEventListener('click', checkInput)
 

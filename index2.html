@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600&display=swap" rel="stylesheet">
+    <!-- <script src="script.js" type="text/javascript" defer></script> -->
+    <title>CryptoCompare</title>
+</head>
+
+<body>
+    <h1 class='center'>Crypto-Compare</h1>
+    <h2 class='center'>Type coins you want to compare.</h2>
+    <div class='center inputs'>
+        <input id="input" type="text" class="search-bar__input">
+        <button id='submit' type='button' aria-label="search">submit</button>
+    </div>
+    <div class="results center">
+        <div id="error"></div>
+        <div id="results"></div>
+        <table id="table" class="cryptoTable">
+            <tbody class="cryptoContainer">
+                <tr class="cryptoHeader cryptoColumn" id="name">
+                    <td class="cryptoRow crudHeader">Name</td>
+                </tr>
+                <tr class="cryptoColumn" id="symbol">
+                    <td class="cryptoRow">Symbol</td>
+                </tr>
+                <tr class="cryptoColumn" id="current_price">
+                    <td class="cryptoRow">Current Price</td>
+                </tr>
+                <tr class="cryptoColumn" id="image">
+                    <td class="cryptoRow">Image</td>
+                </tr>
+                <tr class="cryptoColumn" id="market_cap_rank">
+                    <td class="cryptoRow">Market Cap Rank</td>
+                </tr>
+                <tr class="cryptoColumn" id="market_cap">
+                    <td class="cryptoRow">Market Cap</td>
+                </tr>
+                <tr class="cryptoColumn" id="fully_diluted_valuation">
+                    <td class="cryptoRow">Fully Diluted Valuation</td>
+                </tr>
+                <tr class="cryptoColumn" id="total_volume">
+                    <td class="cryptoRow">Total Volume</td>
+                </tr>
+                <tr class="cryptoColumn" id="high_24h">
+                    <td class="cryptoRow">High 24h</td>
+                </tr>
+                <tr class="cryptoColumn" id="low_24h">
+                    <td class="cryptoRow">Low 24</td>
+                </tr>
+                <tr class="cryptoColumn" id="price_change_24h">
+                    <td class="cryptoRow">Price Change 24h</td>
+                </tr>
+                <tr class="cryptoColumn" id="price_change_percentage_24h">
+                    <td class="cryptoRow">Price Change Percentage 24h</td>
+                </tr>
+                <tr class="cryptoColumn" id="market_cap_change_24h">
+                    <td class="cryptoRow">Market Cap Change 24h</td>
+                </tr>
+                <tr class="cryptoColumn" id="market_cap_change_percentage_24h">
+                    <td class="cryptoRow">Market Cap Change Percentage 24h</td>
+                </tr>
+                <tr class="cryptoColumn" id="circulating_supply">
+                    <td class="cryptoRow">Circulating Supply</td>
+                </tr>
+                <tr class="cryptoColumn" id="total_supply">
+                    <td class="cryptoRow">Total Supply</td>
+                </tr>
+                <tr class="cryptoColumn" id="max_supply">
+                    <td class="cryptoRow">Max Supply</td>
+                </tr>
+                <tr class="cryptoColumn" id="ath">
+                    <td class="cryptoRow">Ath</td>
+                </tr>
+                <tr class="cryptoColumn" id="ath_change_percentage">
+                    <td class="cryptoRow">Ath Change Percentage</td>
+                </tr>
+                <tr class="cryptoColumn" id="ath_date">
+                    <td class="cryptoRow">Ath Date</td>
+                </tr>
+                <tr class="cryptoColumn" id="atl">
+                    <td class="cryptoRow">Atl</td>
+                </tr>
+                <tr class="cryptoColumn" id="atl_change_percentage">
+                    <td class="cryptoRow">Atl Change Percentage</td>
+                </tr>
+                <tr class="cryptoColumn" id="atl_date">
+                    <td class="cryptoRow">Atl Date</td>
+                </tr>
+                <tr class="cryptoColumn" id="last_updated">
+                    <td class="cryptoRow">Last Updated</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+<script>
+    const submitButton = document.querySelector("#submit");
+const input = document.getElementById("input");
+const url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=";
+
+let coin; //input for single coins
+const coins = []; //array with data
+const allCoins = []; //for filter
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+const checkInput = () => {
+  if (input.value.length != 0) {
+    getData();
+  } else {
+    emptyArray(coins);
+    coin = " ";
+  }
+};
+
+const getData = async () => {
+  coin = input.value.toLowerCase();
+  const coinsData = await (await fetch(`${url}${coin}`)).json();
+  for (const coin of coinsData) {
+    createDataColumns(coin);
+  }
+  input.value = "";
+  displayTable();
+};
+
+const displayTable = () => {
+  document.querySelector("#table").style.display = "block";
+};
+
+const createDataColumns = (coinData) => {
+  for (const key in coinData) {
+    const prop = coinData[key];
+    const row = document.getElementById(key);
+    if (row) {
+      const newDiv = document.createElement("td");
+      newDiv.setAttribute("class", "dataCell");
+      if (["alt_data", "ath_date"].includes(key)) newDiv.innerHTML = new Date(prop).toLocaleDateString();
+      else if (key === "last_updated") newDiv.innerHTML = new Date(prop).toLocaleTimeString();
+      else if (key === "atl_date") newDiv.innerHTML = new Date(prop).toLocaleTimeString();
+      else if (key === "image") newDiv.innerHTML = `<img class='holdOnScroll' src = ${prop}>`;
+      else newDiv.innerHTML = prop;
+      row.appendChild(newDiv);
+    }
+  }
+  emptyArray(coins);
+};
+
+const emptyArray = (array) => (array.length = 0);
+
+submitButton.addEventListener("click", checkInput);
+</script>
+</html>
