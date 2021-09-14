@@ -27,17 +27,17 @@ const checkInput = () => {
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////
-
+const params = {
+    symbols: 'symbols=',
+    ids: 'ids='
+}
 const getData = async () => {
 
     coin = input.value.toLowerCase();
     if (coin != ' ') {
-// 
-// symbols=
-
-       const json = await (await fetch(`${url}ids=${coin}`)).json()
-     //  const res = await json.json()
-        console.log(json)
+        // ids
+        // symbols=
+        const json = await (await fetch(`${url}ids=${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
@@ -47,7 +47,7 @@ const getData = async () => {
 const displayTable = () => {
     document.querySelector('#table').style.display = 'block'
 }
-const takeCoins = data => data.forEach(d => {allCoins.push(d.name)})
+const takeCoins = data => data.forEach(d => { allCoins.push(d.name) })
 
 const takeParameters = data => {
 
@@ -104,7 +104,7 @@ const createDataColumns = data => {
 }
 const emptyArray = array => array.length = 0;
 
-const handleKeyEvent = e => {e.key === 'Enter'? getData(): null }
+const handleKeyEvent = e => { e.key === 'Enter' || e.key === 13 ? getData() : null }
 const submitByEnterKey = () => {
     input.addEventListener('keydown', handleKeyEvent);
     //handleKeyEvent for keydown to stop to fire function every key is down
