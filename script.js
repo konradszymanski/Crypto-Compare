@@ -4,9 +4,7 @@ const errorSpan = document.querySelector('#error');
 const resultsContainer = document.querySelector('#results');
 
 const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'
-const ids = 'ids='
 
-const symbols = 'symbols='
 let coin; //input for single coins
 const coins = [] //array with data
 const allCoins = [] //for filter
@@ -34,9 +32,10 @@ const getData = async () => {
 
     coin = input.value.toLowerCase();
     if (coin != ' ') {
+// 
+// symbols=
 
-
-       const json = await (await fetch(`${url}${ids}${coin}`)).json()
+       const json = await (await fetch(`${url}ids=${coin}`)).json()
      //  const res = await json.json()
         console.log(json)
         takeParameters(json)
@@ -105,6 +104,11 @@ const createDataColumns = data => {
 }
 const emptyArray = array => array.length = 0;
 
+const handleKeyEvent = e => {e.key === 'Enter'? getData(): null }
+const submitByEnterKey = () => {
+    input.addEventListener('keydown', handleKeyEvent);
+    //handleKeyEvent for keydown to stop to fire function every key is down
+    submitButton.addEventListener('click', getData);
+}
 
-submitButton.addEventListener('click', checkInput)
-
+submitByEnterKey();
