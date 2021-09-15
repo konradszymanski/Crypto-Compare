@@ -34,14 +34,28 @@ const params = {
 const getData = async () => {
 
     coin = input.value.toLowerCase();
+    let urls = [
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coin}`,
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&symbols=${coin}`
+    ]
     if (coin != ' ') {
-        // ids
-        // symbols=
+
+
+        // let requests = urls.map(url => fetch(url));
+        // Promise.all(requests)
+        //     .then(responses => responses.map(r => r.json()
+        //         .then(data =>
+        //             console.log(data),takeParameters(data)
+        //             )
+        //     ))
+        
+        ///////////////////////////////////////////////////////////
         const json = await (await fetch(`${url}ids=${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
         displayTable();
+        ///////////////////////////////////////////////////////////
     }
 }
 const displayTable = () => {
