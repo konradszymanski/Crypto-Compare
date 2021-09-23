@@ -40,45 +40,12 @@ const getData = async () => {
     ]
     if (coin != ' ') {
 
-        // let requests = urls.map(url => fetch(url));
-        // Promise.all(requests)
-        //     .then(responses => responses.map(r => r.json()
-        //         .then(data => data.forEach(p => {
-        //             coins.push(
-        //                 new Intl.NumberFormat().format(p.current_price),
-        //                 p.symbol.toUpperCase(),
-        //                 p.image = `<img class='holdOnScroll' src = ${p.image}>`,
-        //                 p.market_cap_rank,
-        //                 new Intl.NumberFormat().format(p.market_cap),
-        //                 new Intl.NumberFormat().format(p.fully_diluted_valuation),
-        //                 new Intl.NumberFormat().format(p.total_volume),
-        //                 new Intl.NumberFormat().format(p.high_24h),
-        //                 new Intl.NumberFormat().format(p.low_24h),
-        //                 new Intl.NumberFormat().format(p.price_change_24h),
-        //                 p.price_change_percentage_24h,
-        //                 new Intl.NumberFormat().format(p.market_cap_change_24h),
-        //                 p.market_cap_change_percentage_24h,
-        //                 new Intl.NumberFormat().format(p.circulating_supply),
-        //                 new Intl.NumberFormat().format(p.total_supply),
-        //                 new Intl.NumberFormat().format(p.max_supply),
-        //                 new Intl.NumberFormat().format(p.ath),
-        //                 p.ath_change_percentage,
-        //                 new Date(p.ath_date).toLocaleDateString(),
-        //                 new Intl.NumberFormat().format(p.atl),
-        //                 p.atl_change_percentage,
-        //                 new Date(p.atl_date).toLocaleDateString(),
-        //                 new Date(p.last_updated).toLocaleTimeString()
-        //             ) 
-        //            // 
-        //         })
-        //         )))
-        ///////////////////////////////////////////////////////////
         const json = await (await fetch(`${url}ids=${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
         displayTable();
-        ///////////////////////////////////////////////////////////
+        console.log(json)
     }  
 }
 
