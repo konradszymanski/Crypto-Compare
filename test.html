@@ -11,7 +11,10 @@
 <body>
 	<script>
 		function fetchData() {
-			
+			let urls = [
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coin}`,
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&symbols=${coin}`
+    ]
 			let requests = urls.map(url => fetch(url));
 			Promise.all(requests)
 				.then(responses => responses.map( r => r.json().then(data => console.log(data)) ))

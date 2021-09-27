@@ -34,13 +34,10 @@ const params = {
 const getData = async () => {
 
     coin = input.value.toLowerCase();
-    let urls = [
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coin}`,
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&symbols=${coin}`
-    ]
+  
     if (coin != ' ') {
 
-        const json = await (await fetch(`${url}ids=${coin}`)).json()
+        const json = await (await fetch(`${url}symbols=${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
