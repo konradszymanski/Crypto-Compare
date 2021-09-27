@@ -27,17 +27,14 @@ const checkInput = () => {
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////
-const params = {
-    symbols: 'symbols=',
-    ids: 'ids='
-}
+
 const getData = async () => {
 
     coin = input.value.toLowerCase();
   
     if (coin != ' ') {
 
-        const json = await (await fetch(`${url}symbols=${coin}`)).json()
+        const json = await (await fetch(`${url}ids=${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
@@ -49,12 +46,13 @@ const getData = async () => {
 const displayTable = () => {
     document.querySelector('#table').style.display = 'block'
 }
-const takeCoins = data => data.forEach(d => { allCoins.push(d.name) })
+const takeCoins = data => data.forEach(d => { allCoins.push(d.name) ,console.log(allCoins) })
 
 const takeParameters = data => {
 
     data.forEach(p => {
         coins.push(
+          
             new Intl.NumberFormat().format(p.current_price),
             p.symbol.toUpperCase(),
             p.image = `<img class='holdOnScroll' src = ${p.image}>`,
@@ -105,7 +103,7 @@ const createDataColumns = data => {
   
     emptyArray(coins)
 }
-const emptyArray = array => array.length = 0;
+const emptyArray = (array) => (array.length = 0);
 
 const handleKeyEvent = e => { e.key === 'Enter' || e.key === 13 ? getData() : null }
 const submitByEnterKey = () => {
