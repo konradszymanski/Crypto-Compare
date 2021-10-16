@@ -80,7 +80,7 @@ const getData = async (coin) => {
         const json = await (await fetch(`${url}${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
-        input.value = ' ';
+        input.value = '';
         displayTable();
         //console.log(json)
     }  
