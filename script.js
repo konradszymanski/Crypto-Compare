@@ -149,11 +149,11 @@ const createDataColumns = data => {
 }
 const emptyArray = (array) => (array.length = 0);
 
-const handleKeyEvent = e => { e.key === 'Enter' || e.key === 13 ? getData() : null }
+// const handleKeyEvent = e => { e.key === 'Enter' || e.key === 13 ? getData() : null }
 // const submitByEnterKey = () => {
 //     input.addEventListener('keydown', handleKeyEvent);
 //     //handleKeyEvent for keydown to stop to fire function every key is down
 //     submitButton.addEventListener('click', getData);
 // }
 
-//submitByEnterKey();
+// submitByEnterKey();

@@ -18,7 +18,8 @@ body{
    margin: 0 auto;
 }
 .search-bar__input{
-   height: 25px;
+   height: 35px;
+   min-width: 200px;
 }
 img{
    width: 30px;
