@@ -3,13 +3,56 @@ const input = document.getElementById('input');
 const errorSpan = document.querySelector('#error');
 const resultsContainer = document.querySelector('#results');
 
-const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'
+const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='
 
-let coin; //input for single coins
+//let coin; //input for single coins
 const coins = [] //array with data
 const allCoins = [] //for filter
 
 ///////////////////////////////////////////////////////////////////////////////////
+// search = input
+const matchList = document.getElementById('match-list');
+const dropDownAllList = document.querySelector('.droppedCoins')
+const searchCoins = async searchText => {
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=');
+    const dropDownCoins = await res.json();
+    //console.log(states)
+
+    let matches = dropDownCoins.filter(state => {
+
+        const regex = new RegExp(`^${searchText}`, 'gi');
+        return state.name.match(regex) || state.id.match(regex)
+    });
+    if (searchText.length === 0){
+        matches = [];
+        matchList.innerHTML = '';
+    } 
+    
+    //console.log(matches)
+    
+    outputHtml(matches);
+}
+
+const outputHtml = matches => {
+    if(matches.length > 0){
+        const html = matches.map(match =>`
+        <div class='dropDown' onClick="getData('${match.id}')" >
+        <img class='dropImg' src= ${match.image}>
+        <span class='droppedCoins' value='${match.id} '>
+        ${match.id} (${match.name})
+        </span>
+        </div>
+        `).join('')
+       // console.log(html)
+        matchList.innerHTML = html;
+        
+    }
+}
+
+
+input.addEventListener('input', () => searchCoins(input.value))
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 const toggleUI = () => {
     submitButton.disabled = !submitButton.disabled
@@ -23,28 +66,30 @@ const checkInput = () => {
     } else {
         emptyArray(coins)
         console.log('input is empty')
-        coin = ' '
+        coin = ''
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const getData = async () => {
+const getData = async (coin) => {
 
-    coin = input.value.toLowerCase();
+  //  coin = input.value.toLowerCase();
   
     if (coin != ' ') {
 
-        const json = await (await fetch(`${url}ids=${coin}`)).json()
+        const json = await (await fetch(`${url}${coin}`)).json()
         takeParameters(json)
         createDataColumns(json)
         input.value = ' ';
         displayTable();
-        console.log(json)
+        //console.log(json)
     }  
 }
 
 const displayTable = () => {
-    document.querySelector('#table').style.display = 'block'
+    document.querySelector('#table').style.display = 'block';
+    matchList.innerHTML = '';
+
 }
 const takeCoins = data => data.forEach(d => { allCoins.push(d.name) ,console.log(allCoins) })
 
@@ -86,7 +131,7 @@ const table = document.querySelector('#table .cryptoContainer');
 const createDataColumns = data => {
     const header = document.querySelector('#table .cryptoHeader');
     const newDiv = document.createElement('td');
-    newDiv.innerHTML = data[0].name
+    newDiv.innerHTML = data[0].name;
     header.appendChild(newDiv);
     //console.log(coins)
     let rows = document.querySelectorAll('#table .cryptoContainer .cryptoColumn');

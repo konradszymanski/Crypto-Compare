@@ -56,3 +56,25 @@ tr,th,
 thead{
    border: yellow 2px solid;
 }
+.dropDown {
+   min-height: 25px;
+   display: flex;
+   background: white;
+   color: black;
+   padding: 9px;
+   align-items: center;
+   max-width: 200px;
+   border-bottom: 1px solid lightgray;
+   cursor: pointer;
+
+}
+#match-list{
+   max-width: 200px;
+   margin: 1px auto;
+   position: absolute;
+   left: 50%;
+   transform: translateX(-50%);
+}
+.dropImg{
+   margin-right: 10px;
+}
