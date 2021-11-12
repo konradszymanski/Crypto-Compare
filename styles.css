@@ -9,7 +9,6 @@ body{
    margin: 0;
 }
 .center{
-
    display: flex;
    justify-content: center;
 }
@@ -67,7 +66,6 @@ thead{
    max-width: 200px;
    border-bottom: 1px solid lightgray;
    cursor: pointer;
-
 }
 #match-list{
    max-width: 200px;
