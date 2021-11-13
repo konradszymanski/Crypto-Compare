@@ -97,7 +97,7 @@ const takeParameters = data => {
     data.forEach(p => {
         coins.push(
           
-            new Intl.NumberFormat().format(p.current_price),
+            new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 15 }).format(p.current_price),
             p.symbol.toUpperCase(),
             p.image = `<img class='holdOnScroll' src = ${p.image}>`,
             p.market_cap_rank,
