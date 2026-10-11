@@ -50,6 +50,19 @@
                 <span id="coin-count" class="coin-count">0 coins</span>
             </div>
 
+            <div class="currency-control">
+                <label for="display-currency">Display currency</label>
+                <select id="display-currency" aria-describedby="currency-help">
+                    <option value="USD">USD — US Dollar</option>
+                    <option value="EUR">EUR — Euro</option>
+                    <option value="GBP">GBP — British Pound</option>
+                    <option value="JPY">JPY — Japanese Yen</option>
+                    <option value="CAD">CAD — Canadian Dollar</option>
+                    <option value="AUD">AUD — Australian Dollar</option>
+                </select>
+                <span id="currency-help" class="currency-help">Changing currency refreshes selected coin prices from CoinGecko.</span>
+            </div>
+
             <div id="empty-state" class="empty-state">
                 <span class="empty-icon" aria-hidden="true">＋</span>
                 <h3>Your comparison starts here</h3>
@@ -58,7 +71,7 @@
 
             <div id="table-wrap" class="table-wrap" hidden>
                 <table id="comparison-table" class="comparison-table">
-                    <caption class="visually-hidden">Cryptocurrency market data comparison</caption>
+                    <caption id="table-caption" class="visually-hidden">Cryptocurrency market data comparison in USD</caption>
                     <thead id="table-head"></thead>
                     <tbody id="table-body"></tbody>
                 </table>
@@ -68,7 +81,7 @@
         </section>
 
         <footer class="page-footer">
-            <p>Market data provided by <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. Values are shown in USD.</p>
+            <p>Market data provided by <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. Comparison values use your selected display currency.</p>
         </footer>
     </main>
 </body>

@@ -13,9 +13,9 @@
         { key: 'total_volume', label: '24h volume', type: 'currency' },
         { key: 'high_24h', label: '24h high', type: 'currency' },
         { key: 'low_24h', label: '24h low', type: 'currency' },
-        { key: 'price_change_24h', label: '24h price change (USD)', type: 'currency' },
+        { key: 'price_change_24h', label: '24h price change', type: 'currency' },
         { key: 'price_change_percentage_24h', label: '24h price change (%)', type: 'percent' },
-        { key: 'market_cap_change_24h', label: '24h market cap change (USD)', type: 'currency' },
+        { key: 'market_cap_change_24h', label: '24h market cap change', type: 'currency' },
         { key: 'market_cap_change_percentage_24h', label: '24h market cap change (%)', type: 'percent' },
         { key: 'circulating_supply', label: 'Circulating supply', type: 'number' },
         { key: 'total_supply', label: 'Total supply', type: 'number' },
@@ -28,6 +28,15 @@
         { key: 'atl_date', label: 'All-time low date', type: 'date' },
         { key: 'last_updated', label: 'Last updated', type: 'datetime' }
     ]);
+
+    function marketDataUrl(currencyCode, ids) {
+        const params = new URLSearchParams({
+            vs_currency: String(currencyCode).toLowerCase(),
+            ids: ids.join(','),
+            sparkline: 'false'
+        });
+        return `https://api.coingecko.com/api/v3/coins/markets?${params}`;
+    }
 
     function createStore() {
         let coins = [];
@@ -45,6 +54,18 @@
                 coins = [...coins, coin];
                 return true;
             },
+            updateMany(updates) {
+                if (!Array.isArray(updates)) throw new TypeError('Coin updates must be an array.');
+                const byId = new Map(updates.filter(coin => coin && coin.id).map(coin => [coin.id, coin]));
+                const updatedIds = [];
+                coins = coins.map(coin => {
+                    const update = byId.get(coin.id);
+                    if (!update) return coin;
+                    updatedIds.push(coin.id);
+                    return update;
+                });
+                return updatedIds;
+            },
             remove(id) {
                 const nextCoins = coins.filter(coin => coin.id !== id);
                 if (nextCoins.length === coins.length) return false;
@@ -54,14 +75,14 @@
         };
     }
 
-    function formatValue(field, coin) {
+    function formatValue(field, coin, currencyCode = 'USD') {
         const value = coin[field.key];
         if (value === null || value === undefined || value === '') return '—';
         if (field.type === 'image') return value;
         if (field.type === 'symbol') return String(value).toUpperCase();
         if (field.type === 'currency') {
             return new Intl.NumberFormat('en-US', {
-                style: 'currency', currency: 'USD', maximumSignificantDigits: 9
+                style: 'currency', currency: currencyCode, maximumSignificantDigits: 9
             }).format(value);
         }
         if (field.type === 'number') {
@@ -78,6 +99,6 @@
         return String(value);
     }
 
-    return Object.freeze({ fields, createStore, formatValue });
+    return Object.freeze({ fields, createStore, formatValue, marketDataUrl });
 });
 
