@@ -2,6 +2,13 @@
 
 This roadmap records useful directions for future work. It is not a promise or a fixed release plan; feature proposals should be scoped around user needs.
 
+## Product direction
+
+- Focus on research tools that put crypto prices in historical-cycle and sourced macro-event context.
+- Keep the app free and static, with no backend or client-side secrets; prefer public data and browser-side caching.
+- Present curated, source-linked events as context for price movements, not as proof of causation.
+- A personal portfolio tracker is outside the current product scope.
+
 ## Foundations
 
 - [x] Document the project, data flow, contribution workflow, and security notes.
@@ -20,14 +27,12 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
 - [ ] Persist a user's selected coins locally, with a clear way to reset them.
 - [ ] Add data freshness indicators and a deliberate refresh action.
-- [ ] Add a broader, reviewed historical events catalogue and configurable macro series when a secure API-key strategy is available.
+- [ ] Expand the reviewed, source-linked historical events catalogue and add macro context that can be served without introducing paid data or client-side secrets.
 - [ ] Add asset research pages with category context, supply history, and cycle-aware performance comparisons.
-- [ ] Consider a locally saved portfolio tracker after research workflows have been validated.
 
 ## Product questions for later
 
 - Which comparison fields matter most, and should users be able to choose them?
 - Should selections persist across visits or be shareable as a link?
-- Which currencies and locales should be supported first?
 - What browser support and accessibility target should guide UI work?
 

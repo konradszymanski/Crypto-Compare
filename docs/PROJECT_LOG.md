@@ -2,6 +2,13 @@
 
 This log gives a concise record of shipped work, current in-flight changes, and the release process. Git history is the source of truth for code changes; GitHub Issues track actionable work; this file summarizes the project state at each release.
 
+## Product decisions — 2026-10-11
+
+- Prioritize historical halving-cycle and macro-event research.
+- Keep the event experience curated and source-linked; price comparisons provide historical context and do not claim causation.
+- Keep the app free and static, relying on public data and browser-side caching without client-side API secrets.
+- Keep the product research-focused; a personal portfolio tracker is out of scope.
+
 ## Current state — 2026-10-11
 
 - **Production:** GitHub Pages deploys from `master` after the verification job succeeds.
