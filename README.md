@@ -67,7 +67,7 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 
 ## Current limitations
 
-- The comparison page supports USD, EUR, GBP, JPY, CAD, and AUD. Currency changes request fresh market data and are saved locally when browser storage is available. The market overview remains denominated in USD.
+- The comparison page supports USD, EUR, GBP, JPY, CAD, and AUD. Currency changes request fresh market data and are saved locally when browser storage is available. Market Pulse remains denominated in USD.
 - Data freshness and availability depend on third-party providers.
 - The app is static and has no backend; browser caches are optional and local to the device.
 - The macro timeline is curated and intentionally small, not a comprehensive news feed.
