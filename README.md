@@ -9,6 +9,8 @@ Crypto-Compare is a small, static cryptocurrency dashboard. It lets you compare 
 
 The comparison page and cycle chart use CoinGecko's public API. The cycle chart falls back to Binance's public BTC/USDT and ETH/USDT daily candles when CoinGecko is unavailable or rate limited. Provider availability and request limits can affect data loading; prices are daily values and may lag.
 
+Coin search uses the top 500 assets by market capitalization, puts exact ticker matches first, and falls back to a cached list or a short list of popular coins when CoinGecko is unavailable.
+
 Search for coins and add them as columns to compare price, market data, supply, and all-time high and low values.
 
 **Live demo:** [konradszymanski.github.io/Crypto-Compare](https://konradszymanski.github.io/Crypto-Compare/)
