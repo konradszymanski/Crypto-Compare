@@ -17,6 +17,13 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - **Current user-facing pages:** compare coins, Bitcoin cycles, market overview, and Events & Bitcoin.
 - **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2), [#4 browser accessibility and responsive checks](https://github.com/konradszymanski/Crypto-Compare/issues/4). Issues #1 and #3 were closed after their implementations and production deployments were verified.
 
+## In progress — browser regression checks
+
+- Add Playwright coverage for accessible search controls, keyboard selection, duplicate prevention, remove behavior, CoinGecko rate-limit fallback, retry messaging, and desktop/mobile comparison layouts.
+- Mock provider responses in browser tests so checks are deterministic and consume no live API quota.
+- Extend the Pages verification workflow to install Chromium and run the browser suite alongside existing unit tests.
+- Issue #4 can be closed after the pull request passes CI and the checks are merged.
+
 ## Verified milestones
 
 | Commit | Delivered |
@@ -32,18 +39,19 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 Workflow: [`.github/workflows/pages.yml`](../.github/workflows/pages.yml), **Verify and deploy GitHub Pages**.
 
 1. A pull request targeting `master`, a push to `master`, or a manual workflow dispatch starts verification.
-2. Verification runs on Ubuntu with Node.js 18, checks JavaScript syntax for the application modules, and runs `node --test tests/comparison-core.test.js`.
+2. Verification runs on Ubuntu with Node.js 20, installs locked development dependencies, checks JavaScript syntax for the application modules, runs the unit tests, installs Chromium, and runs deterministic Playwright browser tests.
 3. The deploy job runs only after verification on a push to `master`. It configures GitHub Pages, uploads the static site, and deploys it with the `github-pages` environment.
 4. Workflow permissions are read-only for verification; deployment receives only `pages: write` and `id-token: write` in addition to content read access.
 5. After merging, confirm both the verification and Pages deployment runs succeed before treating the change as live.
 
-The workflow does not yet run real-browser accessibility or responsive tests. That work is tracked in issue #4. CoinGecko and Binance are external services, so CI uses deterministic local unit tests and does not make live market-data requests.
+Browser checks validate key accessibility semantics and the desktop/mobile comparison experience. CoinGecko and Binance are external services, so CI uses deterministic fixtures and does not make live market-data requests.
 
 ## Working agreement
 
 - Keep each pull request focused and link the related GitHub Issue when there is one.
 - Update `ROADMAP.md` when a planned capability ships; update this log with the release commit and CI/deployment result.
 - Keep secrets out of the static client application. Treat provider limits and outages as normal failure cases.
-- Use the built-in test runner unless a documented need justifies adding dependencies.
+- Keep unit tests on Node's built-in runner; use Playwright for behavior that requires a real browser and viewport layout.
+
 
 
