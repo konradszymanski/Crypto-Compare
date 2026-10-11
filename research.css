@@ -1,0 +1,115 @@
+.research-toolbar,
+.research-panel,
+.data-info {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1120px;
+}
+
+.research-toolbar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    margin-bottom: 10px;
+}
+
+.research-toolbar .status { color: var(--muted); flex: 1 1 260px; margin: 0; }
+.research-toolbar label { color: var(--muted); font-weight: 600; }
+.research-toolbar select,
+.research-toolbar button,
+.event-card button {
+    background: var(--accent);
+    border: 0;
+    border-radius: 9px;
+    color: #183033;
+    cursor: pointer;
+    font-weight: 700;
+    min-height: 40px;
+    padding: 8px 13px;
+}
+.research-toolbar select { background: var(--surface-raised); border: 1px solid var(--line); color: var(--text); }
+.research-toolbar button:disabled,
+.event-card button:disabled { cursor: wait; opacity: .65; }
+.research-toolbar button:hover,
+.event-card button:hover { filter: brightness(1.06); }
+
+.data-info {
+    background: rgb(43 69 71 / 72%);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: .9rem;
+    line-height: 1.55;
+    margin-bottom: 22px;
+    padding: 13px 16px;
+}
+
+.metric-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0 auto 22px;
+    max-width: 1120px;
+}
+
+.metric-card,
+.research-panel,
+.event-card {
+    background: rgb(34 56 58 / 66%);
+    border: 1px solid rgb(175 194 191 / 12%);
+    border-radius: 16px;
+}
+
+.metric-card { min-width: 0; padding: 20px; }
+.metric-card p { color: var(--muted); font-size: .9rem; margin-bottom: 12px; }
+.metric-card strong { display: block; font-size: clamp(1.45rem, 3vw, 2rem); margin-bottom: 8px; overflow-wrap: anywhere; }
+.metric-card span { color: var(--muted); font-size: .82rem; }
+.research-panel { margin-bottom: 22px; padding: 22px; }
+.research-panel .section-heading { margin-bottom: 12px; }
+.research-panel h2 { font-size: 1.5rem; margin-bottom: 8px; }
+.research-panel p:last-child { color: var(--muted); line-height: 1.6; margin-bottom: 0; }
+.research-panel a { color: var(--accent); }
+.research-panel .coin-cards { display: none; }
+.context-panel { color: var(--muted); }
+
+.event-method { color: var(--muted); line-height: 1.65; }
+.event-method strong { color: var(--text); }
+.event-layout {
+    align-items: start;
+    display: grid;
+    gap: 22px;
+    grid-template-columns: minmax(280px, .9fr) minmax(0, 1.35fr);
+    margin: 0 auto;
+    max-width: 1120px;
+}
+.event-list { display: grid; gap: 12px; }
+.event-card { padding: 18px; }
+.event-card time { color: var(--accent); display: inline-block; font-size: .9rem; font-weight: 700; margin-right: 9px; }
+.event-tag { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); display: inline-block; font-size: .75rem; padding: 3px 8px; }
+.event-card h3 { font-size: 1.15rem; line-height: 1.3; margin: 11px 0 7px; }
+.event-card p { color: var(--muted); font-size: .9rem; line-height: 1.5; margin-bottom: 12px; }
+.event-card a { color: var(--accent); display: inline-block; font-size: .87rem; margin: 0 12px 10px 0; }
+.event-card button { display: block; font-size: .86rem; margin-top: 3px; min-height: 36px; }
+.event-chart-panel { margin: 0; position: sticky; top: 16px; }
+.event-chart-panel h2 { line-height: 1.25; }
+.chart-help { color: var(--muted); }
+#event-chart { display: block; min-width: 320px; width: 100%; }
+.event-caveat { color: var(--muted); font-size: .84rem; line-height: 1.5; margin: 8px 0 0; }
+
+@media (max-width: 850px) {
+    .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .event-layout { grid-template-columns: 1fr; }
+    .event-chart-panel { order: -1; position: static; }
+}
+
+@media (max-width: 720px) {
+    .metric-grid { gap: 10px; }
+    .metric-card { padding: 14px; }
+    .metric-card p { min-height: 2.3em; }
+    .research-panel { border-radius: 14px; padding: 16px 14px; }
+    .research-panel .table-wrap { display: none; }
+    .research-panel .coin-cards { display: grid; }
+    .event-layout { gap: 14px; }
+    .event-card { padding: 15px; }
+}

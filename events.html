@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="research.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Events &amp; Bitcoin · Crypto-Compare</title>
+    <script src="event-core.js" defer></script>
+    <script src="events.js" defer></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
+        <a href="market.html">Market overview</a><a href="events.html" aria-current="page">Events &amp; BTC</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">History in context</p>
+        <h1>Events &amp; Bitcoin</h1>
+        <p class="intro">Explore selected macro and crypto milestones beside Bitcoin’s daily price history.</p>
+    </header>
+    <section class="research-panel event-method"><p><strong>How to read this:</strong> select an event to compare BTC’s price from roughly 30 days before to 30 days after. The window helps inspect timing; it does not show that the event caused a price move. Daily history begins at the provider’s earliest available point, not Bitcoin’s 2009 creation.</p></section>
+    <div class="research-toolbar"><label for="event-filter">Filter events</label><select id="event-filter"><option value="all">All events</option><option value="macro">Macro &amp; world events</option><option value="crypto">Crypto milestones</option></select><p id="event-status" class="status" role="status" aria-live="polite">Select an event to load its BTC price window.</p></div>
+    <p id="event-data-info" class="data-info" role="note">Price comparison: CoinGecko daily BTC/USD, with Binance BTC/USDT fallback. Source and coverage are reported after loading.</p>
+    <section class="event-layout">
+        <div id="event-list" class="event-list" aria-label="Selected historical events"></div>
+        <section class="research-panel event-chart-panel" aria-labelledby="event-chart-heading">
+            <p class="eyebrow">Price window</p><h2 id="event-chart-heading">Choose an event</h2>
+            <p id="event-chart-summary" class="chart-help">Bitcoin’s return in the window will appear here.</p>
+            <div class="chart-wrap"><canvas id="event-chart" role="img" aria-label="Bitcoin price change around the selected event"></canvas></div>
+            <p class="event-caveat">BTC daily closes are indexed to the first available close near 30 days before the event. Data may be incomplete at the edges of the provider’s history.</p>
+        </section>
+    </section>
+    <footer class="page-footer"><p>Event sources are linked on each item. Price data: <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a> or <a href="https://www.binance.com/" target="_blank" rel="noreferrer">Binance Spot</a>. Binance USDT is a stablecoin proxy for USD. For research and comparison only.</p></footer>
+</main>
+</body>
+</html>

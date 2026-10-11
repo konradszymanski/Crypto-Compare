@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createStore, fields, formatValue } = require('../comparison-core.js');
+const { eventWindow } = require('../event-core.js');
 
 test('store adds unique coin ids and returns current selections', () => {
     const store = createStore();
@@ -45,5 +46,22 @@ test('formatValue shows missing or invalid values as an em dash', () => {
 test('formatValue uppercases symbols', () => {
     const symbol = fields.find(field => field.key === 'symbol');
     assert.equal(formatValue(symbol, { symbol: 'btc' }), 'BTC');
+});
+
+test('event window indexes BTC returns to the first price in the 60-day window', () => {
+    const day = 24 * 60 * 60 * 1000;
+    const start = Date.parse('2020-02-10T00:00:00Z');
+    const prices = Array.from({ length: 61 }, (_, index) => [start + index * day, 100 + index]);
+    const result = eventWindow(prices, '2020-03-11');
+
+    assert.equal(result.startDate, '2020-02-10');
+    assert.equal(result.endDate, '2020-04-10');
+    assert.equal(result.values[30].day, 0);
+    assert.ok(Math.abs(result.returnPct - 60) < 1e-9);
+    assert.ok(Math.abs(result.eventReturnPct - 30) < 1e-9);
+});
+
+test('event window returns null when no prices cover the requested dates', () => {
+    assert.equal(eventWindow([], '2020-03-11'), null);
 });
 

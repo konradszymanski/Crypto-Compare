@@ -31,6 +31,9 @@ jobs:
           node --check comparison-core.js
           node --check cycle-core.js
           node --check cycles.js
+          node --check event-core.js
+          node --check events.js
+          node --check market.js
       - name: Run unit tests
         run: node --test tests/comparison-core.test.js
 

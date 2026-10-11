@@ -13,11 +13,16 @@ This roadmap records useful directions for future work. It is not a promise or a
 
 ## Candidate features
 
+- [x] Add a market overview with global capitalization, volume, BTC/ETH dominance, top assets, and ATH drawdown context.
+- [x] Add a sourced historical event timeline with BTC price-window comparisons and clear non-causal framing.
 - [ ] Select a display currency and make the selected currency visible in the table.
 - [ ] Add sortable fields and clearer formatting for percentages and missing supply values.
 - [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
 - [ ] Persist a user's selected coins locally, with a clear way to reset them.
 - [ ] Add data freshness indicators and a deliberate refresh action.
+- [ ] Add a broader, reviewed historical events catalogue and configurable macro series when a secure API-key strategy is available.
+- [ ] Add asset research pages with category context, supply history, and cycle-aware performance comparisons.
+- [ ] Consider a locally saved portfolio tracker after research workflows have been validated.
 
 ## Product questions for later
 
