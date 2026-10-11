@@ -12,11 +12,11 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 ## Current state — 2026-10-11
 
 - **Production:** GitHub Pages deploys from `master` after verification succeeds.
-- **Latest product release:** [`13226f7`](https://github.com/konradszymanski/Crypto-Compare/commit/13226f72b24f4321cdc56d3926fabeb6cdbbc2bb) — on-demand asset profiles and one-year daily history, merged via [PR #18](https://github.com/konradszymanski/Crypto-Compare/pull/18).
-- **Latest CI and deployment:** [verification run #31](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169727649) and [Pages deployment #16](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169727938) both succeeded.
-- **Latest documentation update:** [PR #14](https://github.com/konradszymanski/Crypto-Compare/pull/14) merged as [`87884d0`](https://github.com/konradszymanski/Crypto-Compare/commit/87884d0c1eb6b444592bf2852ac42b4778daa798); [workflow run #22](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38167271113) passed and deployed successfully.
+- **Latest product release:** [`000b9db`](https://github.com/konradszymanski/Crypto-Compare/commit/000b9db85d2634d4c3bfb447dc973302b05647e5) — three source-linked Federal Reserve milestones in the BTC event timeline, merged via [PR #20](https://github.com/konradszymanski/Crypto-Compare/pull/20).
+- **Latest CI and deployment:** [verification run #33](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38170000429) and [Pages deployment #17](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169998940) both succeeded.
+- **Project docs:** README, architecture, roadmap, data plan, and this progress log document the current product and static-site constraints.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, and Events & Bitcoin.
-- **Open GitHub work:** [#19 expand the macro event timeline](https://github.com/konradszymanski/Crypto-Compare/issues/19), in progress. Issues #2, #17, #1, #3, and #4 are closed after their implementations and deployments were verified.
+- **Open GitHub work:** none. Issues #2, #17, #19, #1, #3, and #4 are closed after their implementations and deployments were verified.
 
 ### Shipped — Market Pulse
 
@@ -35,17 +35,17 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Keep long Bitcoin cycle history on its separately disclosed source, with no silent provider joins.
 - [PR #18](https://github.com/konradszymanski/Crypto-Compare/pull/18) merged as [`13226f7`](https://github.com/konradszymanski/Crypto-Compare/commit/13226f72b24f4321cdc56d3926fabeb6cdbbc2bb); verification #31 and Pages deployment #16 succeeded, and issue #17 is closed.
 
-### In progress — macro event timeline
+### Shipped — macro event timeline
 
-- Add three official Federal Reserve policy events to the curated BTC window comparison, retaining source links and non-causal context.
-- Track implementation in [issue #19](https://github.com/konradszymanski/Crypto-Compare/issues/19).
+- Add March 2020, June 2022, and March 2023 Federal Reserve milestones with primary-source links and non-causal context.
+- [PR #20](https://github.com/konradszymanski/Crypto-Compare/pull/20) merged as [`000b9db`](https://github.com/konradszymanski/Crypto-Compare/commit/000b9db85d2634d4c3bfb447dc973302b05647e5); verification #33 and Pages deployment #17 succeeded, and issue #19 is closed.
 
 ## Data roadmap — 2026-10-11
 
 - Added a staged API/product plan in [`DATA_PLAN.md`](DATA_PLAN.md), covering Market Pulse, asset research, public treasuries and macro context, and optional market-structure views.
 - Added implementation constraints to [`ROADMAP.md`](../ROADMAP.md): no client-side secrets, disclose data source and coverage, cache and load on demand, and mock providers in CI.
 - CoinGecko Demo historical chart coverage is documented as limited to the past 365 days in the current endpoint reference. Full BTC cycle research therefore continues to require an explicitly labeled long-history source such as the existing Binance daily-candle fallback.
-- Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. Macro event timeline expansion in issue #19 is the active slice.
+- Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. The curated Fed event timeline shipped in PR #20; next roadmap work is a reviewed static macro dataset or treasury research.
 
 ## Verified milestone — browser regression checks
 
