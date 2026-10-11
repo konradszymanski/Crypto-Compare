@@ -15,6 +15,7 @@ Thanks for helping improve Crypto-Compare. The project is intentionally small an
 - For API changes, check loading, empty-result, malformed-response, and network-error behavior.
 - Avoid committing API credentials, personal data, generated files, or unrelated formatting changes.
 - Update the README or relevant docs when setup, behavior, or project structure changes.
+- Update `docs/PROJECT_LOG.md` when a release is merged and the deploy result is known.
 
 Run the focused state and formatting checks with `node --test tests/comparison-core.test.js`. There is no automated browser test or lint command yet. If you add tooling, document how to install and run it and keep the setup proportionate to this static project.
 

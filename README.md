@@ -41,6 +41,7 @@ node --test tests/comparison-core.test.js
 - `event-core.js` — event-window date and return calculations
 - `styles.css` — page and table presentation
 - `docs/ARCHITECTURE.md` — current design and boundaries
+- `docs/PROJECT_LOG.md` — shipped milestones, active work, and CI/CD release flow
 - `CONTRIBUTING.md` — workflow for changes
 - `ROADMAP.md` — staged improvement ideas
 - `SECURITY.md` — security reporting and data handling notes
@@ -48,7 +49,7 @@ node --test tests/comparison-core.test.js
 
 ## Current limitations
 
-- Market values are denominated in USD.
+- The comparison page supports USD, EUR, GBP, JPY, CAD, and AUD. Currency changes request fresh market data and are saved locally when browser storage is available. The market overview remains denominated in USD.
 - Data freshness and availability depend on third-party providers.
 - The app is static and has no backend; browser caches are optional and local to the device.
 - The macro timeline is curated and intentionally small, not a comprehensive news feed.

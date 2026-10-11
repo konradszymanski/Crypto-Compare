@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createStore, fields, formatValue } = require('../comparison-core.js');
+const { createStore, fields, formatValue, marketDataUrl } = require('../comparison-core.js');
 const { eventWindow } = require('../event-core.js');
 
 test('store adds unique coin ids and returns current selections', () => {
@@ -22,6 +22,22 @@ test('store removes a selected coin and reports missing ids', () => {
     assert.deepEqual(store.getCoins(), []);
 });
 
+test('store refreshes all selected market data without changing selection order', () => {
+    const store = createStore();
+    store.add({ id: 'bitcoin', current_price: 1 });
+    store.add({ id: 'ethereum', current_price: 2 });
+
+    assert.deepEqual(store.updateMany([
+        { id: 'ethereum', current_price: 20 },
+        { id: 'bitcoin', current_price: 10 },
+        { id: 'unselected', current_price: 30 }
+    ]), ['bitcoin', 'ethereum']);
+    assert.deepEqual(store.getCoins(), [
+        { id: 'bitcoin', current_price: 10 },
+        { id: 'ethereum', current_price: 20 }
+    ]);
+});
+
 test('store rejects coins without an id', () => {
     const store = createStore();
     assert.throws(() => store.add({ name: 'Coin without id' }), /id is required/);
@@ -33,6 +49,20 @@ test('formatValue makes USD currency and percentages explicit', () => {
 
     assert.equal(formatValue(price, { current_price: 1250 }), '$1,250');
     assert.equal(formatValue(change, { price_change_percentage_24h: -2.5 }), '-2.5%');
+});
+
+test('formatValue supports alternate display currencies', () => {
+    const price = fields.find(field => field.key === 'current_price');
+
+    assert.match(formatValue(price, { current_price: 1250 }, 'EUR'), /€\s?1,250/);
+    assert.match(formatValue(price, { current_price: 1250 }, 'GBP'), /£\s?1,250/);
+});
+
+test('marketDataUrl requests all selected ids in the chosen currency', () => {
+    assert.equal(
+        marketDataUrl('EUR', ['bitcoin', 'ethereum']),
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&ids=bitcoin%2Cethereum&sparkline=false'
+    );
 });
 
 test('formatValue shows missing or invalid values as an em dash', () => {
