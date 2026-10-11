@@ -17,6 +17,10 @@
 
 <body>
     <main class="app-shell">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="index.html" aria-current="page">Compare coins</a>
+            <a href="cycles.html">Bitcoin cycles</a>
+        </nav>
         <header class="page-header">
             <p class="eyebrow">Market overview</p>
             <h1>Crypto-Compare</h1>
@@ -25,11 +29,13 @@
 
         <section class="search-section" aria-labelledby="search-title">
             <label id="search-title" for="input">Add a cryptocurrency</label>
+            <div class="search-results">
             <div class="search-field">
                 <span aria-hidden="true" class="search-icon">⌕</span>
-                <input id="input" type="search" placeholder="Search by coin name" autocomplete="off" aria-label="Search for a cryptocurrency" aria-controls="match-list">
+                <input id="input" type="search" placeholder="Search by coin name" autocomplete="off" aria-label="Search for a cryptocurrency" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="match-list" aria-haspopup="listbox">
             </div>
-            <div id="match-list" class="suggestions" aria-live="polite"></div>
+            <div id="match-list" class="suggestions" role="listbox" aria-label="Cryptocurrency search results" aria-live="polite"></div>
+            </div>
             <p id="status" class="status" role="status" aria-live="polite"></p>
         </section>
 

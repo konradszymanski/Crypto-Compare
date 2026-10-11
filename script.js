@@ -12,9 +12,86 @@ const coinCards = document.getElementById('coin-cards');
 
 const coinListUrl = 'https://api.coingecko.com/api/v3/coins/list?include_platform=false';
 const marketUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=';
+const iconBaseUrl = 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/';
+const coinListCacheKey = 'crypto-compare-coin-list-v1';
+const coinListCacheTtl = 6 * 60 * 60 * 1000;
+const fallbackCoins = [
+    ['bitcoin', 'Bitcoin', 'btc'], ['ethereum', 'Ethereum', 'eth'], ['tether', 'Tether', 'usdt'],
+    ['binancecoin', 'BNB', 'bnb'], ['solana', 'Solana', 'sol'], ['ripple', 'XRP', 'xrp'],
+    ['usd-coin', 'USDC', 'usdc'], ['dogecoin', 'Dogecoin', 'doge'], ['cardano', 'Cardano', 'ada'],
+    ['tron', 'TRON', 'trx'], ['chainlink', 'Chainlink', 'link'], ['avalanche-2', 'Avalanche', 'avax'],
+    ['shiba-inu', 'Shiba Inu', 'shib'], ['polkadot', 'Polkadot', 'dot'], ['bitcoin-cash', 'Bitcoin Cash', 'bch'],
+    ['litecoin', 'Litecoin', 'ltc'], ['sui', 'Sui', 'sui'], ['stellar', 'Stellar', 'xlm'],
+    ['near', 'NEAR Protocol', 'near'], ['the-open-network', 'Toncoin', 'ton']
+].map(([id, name, symbol]) => ({ id, name, symbol }));
 let coinListPromise;
+let cachedCoinList;
+let cachedCoinListAt = 0;
+let coinListCooldownUntil = 0;
+let cooldownTimer;
 let searchRevision = 0;
 const pendingIds = new Set();
+let activeSuggestion = -1;
+
+function readCoinListCache() {
+    try {
+        const cached = JSON.parse(sessionStorage.getItem(coinListCacheKey) || 'null');
+        if (Array.isArray(cached?.coins)) {
+            cachedCoinList = cached.coins;
+            cachedCoinListAt = Number(cached.savedAt) || 0;
+        }
+    } catch {
+        // Storage can be unavailable in private browsing; the in-memory fallback still works.
+    }
+}
+
+function saveCoinListCache(coins) {
+    cachedCoinList = coins;
+    cachedCoinListAt = Date.now();
+    try {
+        sessionStorage.setItem(coinListCacheKey, JSON.stringify({ savedAt: cachedCoinListAt, coins }));
+    } catch {
+        // Keep the response in memory when storage is full or disabled.
+    }
+}
+
+function apiError(response, requestName) {
+    const error = new Error(`${requestName} request failed (${response.status}).`);
+    error.status = response.status;
+    const retryAfter = Number(response.headers.get('Retry-After'));
+    error.retryAfterMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 60_000;
+    return error;
+}
+
+function showRateLimitStatus(prefix, retryAfterMs) {
+    const until = Date.now() + Math.max(1000, retryAfterMs || 60_000);
+    if (prefix.startsWith('Coin search')) coinListCooldownUntil = until;
+    clearInterval(cooldownTimer);
+    const update = () => {
+        const seconds = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+        status.textContent = seconds
+            ? `${prefix} Try again in about ${seconds} seconds.`
+            : `${prefix} You can try again now.`;
+        if (!seconds) clearInterval(cooldownTimer);
+    };
+    update();
+    cooldownTimer = setInterval(update, 1000);
+}
+
+function resetActiveSuggestion() {
+    activeSuggestion = -1;
+    input.removeAttribute('aria-activedescendant');
+    matchList.querySelectorAll('.suggestion').forEach(button => button.setAttribute('aria-selected', 'false'));
+}
+
+function setActiveSuggestion(index) {
+    const options = [...matchList.querySelectorAll('.suggestion:not(:disabled)')];
+    if (!options.length) return;
+    activeSuggestion = (index + options.length) % options.length;
+    options.forEach((option, optionIndex) => option.setAttribute('aria-selected', String(optionIndex === activeSuggestion)));
+    input.setAttribute('aria-activedescendant', options[activeSuggestion].id);
+    options[activeSuggestion].scrollIntoView({ block: 'nearest' });
+}
 
 function createRemoveButton(coin) {
     const button = document.createElement('button');
@@ -29,6 +106,31 @@ function createRemoveButton(coin) {
         input.focus();
     });
     return button;
+}
+
+function createSuggestionIcon(coin) {
+    const wrapper = document.createElement('span');
+    wrapper.className = 'suggestion-icon';
+    wrapper.setAttribute('aria-hidden', 'true');
+
+    const image = document.createElement('img');
+    const symbol = String(coin.symbol || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    image.src = `${iconBaseUrl}${symbol || 'generic'}.svg`;
+    image.alt = '';
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.addEventListener('error', () => {
+        if (image.dataset.genericFallback) {
+            image.remove();
+            wrapper.classList.add('suggestion-icon-fallback');
+            wrapper.textContent = symbol.slice(0, 1).toUpperCase() || '•';
+            return;
+        }
+        image.dataset.genericFallback = 'true';
+        image.src = `${iconBaseUrl}generic.svg`;
+    });
+    wrapper.appendChild(image);
+    return wrapper;
 }
 
 function appendValue(parent, field, coin) {
@@ -139,6 +241,7 @@ function renderComparison() {
 
 function renderSuggestions(coins) {
     matchList.replaceChildren();
+    resetActiveSuggestion();
     if (coins.length === 0) {
         matchList.textContent = 'No coins found.';
         return;
@@ -148,12 +251,19 @@ function renderSuggestions(coins) {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'suggestion';
+        button.id = `coin-option-${String(coin.id).replace(/[^a-z0-9_-]/gi, '-')}`;
+        button.setAttribute('role', 'option');
+        button.setAttribute('aria-selected', 'false');
         const name = document.createElement('span');
+        name.className = 'suggestion-name';
         name.textContent = coin.name;
+        const main = document.createElement('span');
+        main.className = 'suggestion-main';
+        main.append(createSuggestionIcon(coin), name);
         const id = document.createElement('span');
         id.className = 'suggestion-id';
         id.textContent = store.has(coin.id) ? `${coin.id} · Added` : pendingIds.has(coin.id) ? `${coin.id} · Adding…` : coin.id;
-        button.append(name, id);
+        button.append(main, id);
 
         const alreadyAdded = store.has(coin.id);
         button.disabled = alreadyAdded || pendingIds.has(coin.id);
@@ -164,13 +274,22 @@ function renderSuggestions(coins) {
 }
 
 async function loadCoinList() {
+    if (cachedCoinList && Date.now() - cachedCoinListAt < coinListCacheTtl) return cachedCoinList;
+    if (Date.now() < coinListCooldownUntil) {
+        const error = new Error('Coin search is cooling down after a rate limit.');
+        error.status = 429;
+        error.retryAfterMs = coinListCooldownUntil - Date.now();
+        throw error;
+    }
     if (!coinListPromise) {
         coinListPromise = fetch(coinListUrl).then(async response => {
-            if (!response.ok) throw new Error(`Coin list request failed (${response.status}).`);
+            if (!response.ok) throw apiError(response, 'Coin list');
             const coins = await response.json();
             if (!Array.isArray(coins)) throw new Error('Coin list response was not an array.');
+            saveCoinListCache(coins);
             return coins;
         }).catch(error => {
+            if (error.status === 429) coinListCooldownUntil = Date.now() + error.retryAfterMs;
             coinListPromise = undefined;
             throw error;
         });
@@ -181,38 +300,69 @@ async function loadCoinList() {
 async function searchCoins(searchText) {
     const revision = ++searchRevision;
     const query = searchText.trim().toLocaleLowerCase();
+    clearInterval(cooldownTimer);
     status.textContent = '';
     matchList.replaceChildren();
+    resetActiveSuggestion();
+    input.setAttribute('aria-expanded', String(Boolean(query)));
     if (!query) return;
 
     matchList.textContent = 'Searching…';
     try {
-        const availableCoins = await loadCoinList();
+        let availableCoins;
+        let showingFallback = false;
+        try {
+            availableCoins = await loadCoinList();
+        } catch (error) {
+            if (error.status === 429) {
+                availableCoins = cachedCoinList || fallbackCoins;
+                showingFallback = !cachedCoinList;
+                const description = showingFallback
+                    ? 'CoinGecko search is rate limited. Showing common coins only.'
+                    : 'CoinGecko search is rate limited. Showing your cached coin list.';
+                showRateLimitStatus(description, error.retryAfterMs);
+            } else {
+                throw error;
+            }
+        }
         if (revision !== searchRevision) return;
         const matches = availableCoins.filter(coin => {
             const name = String(coin.name || '').toLocaleLowerCase();
             const id = String(coin.id || '').toLocaleLowerCase();
-            return name.startsWith(query) || id.startsWith(query);
+            const symbol = String(coin.symbol || '').toLocaleLowerCase();
+            return name.startsWith(query) || id.startsWith(query) || symbol.startsWith(query);
         }).slice(0, 10);
         renderSuggestions(matches);
+        if (showingFallback && matches.length === 0) {
+            status.textContent = 'CoinGecko search is rate limited. This coin is not in the limited offline list.';
+        }
     } catch (error) {
         if (revision !== searchRevision) return;
         matchList.replaceChildren();
-        status.textContent = 'Coin search is unavailable. Check your connection and try again.';
+        if (error.status === 429) {
+            showRateLimitStatus('Coin search was rate limited (HTTP 429).', error.retryAfterMs);
+        } else if (error.status) {
+            status.textContent = `Coin search failed (HTTP ${error.status}). Try again shortly.`;
+        } else {
+            status.textContent = 'Coin search could not reach CoinGecko. Check your connection and try again.';
+        }
         console.error(error);
     }
 }
 
 async function loadCoin(id) {
     if (store.has(id) || pendingIds.has(id)) return;
+    clearInterval(cooldownTimer);
     pendingIds.add(id);
     searchRevision += 1;
     matchList.replaceChildren();
+    input.setAttribute('aria-expanded', 'false');
+    resetActiveSuggestion();
     status.textContent = 'Loading market data…';
 
     try {
         const response = await fetch(`${marketUrl}${encodeURIComponent(id)}`);
-        if (!response.ok) throw new Error(`Market data request failed (${response.status}).`);
+        if (!response.ok) throw apiError(response, 'Market data');
         const data = await response.json();
         const coin = Array.isArray(data) ? data.find(item => item.id === id) : null;
         if (!coin) throw new Error('No market data was returned for this coin.');
@@ -222,13 +372,43 @@ async function loadCoin(id) {
         status.textContent = `${coin.name} added to comparison.`;
         renderComparison();
     } catch (error) {
-        status.textContent = 'Market data could not be loaded. Please try again.';
+        if (error.status === 429) {
+            showRateLimitStatus('Market data was rate limited (HTTP 429).', error.retryAfterMs);
+        } else {
+            status.textContent = error.status
+                ? `Market data request failed (HTTP ${error.status}). Try selecting the coin again.`
+                : 'Market data could not be reached. Check your connection and try selecting the coin again.';
+        }
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.className = 'suggestion retry-suggestion';
+        retry.textContent = 'Retry loading coin';
+        retry.addEventListener('click', () => loadCoin(id));
+        matchList.appendChild(retry);
+        input.setAttribute('aria-expanded', 'true');
         console.error(error);
     } finally {
         pendingIds.delete(id);
     }
 }
 
+readCoinListCache();
 input.addEventListener('input', () => searchCoins(input.value));
+input.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown' && matchList.querySelector('.suggestion:not(:disabled)')) {
+        event.preventDefault();
+        setActiveSuggestion(activeSuggestion + 1);
+    } else if (event.key === 'ArrowUp' && matchList.querySelector('.suggestion:not(:disabled)')) {
+        event.preventDefault();
+        setActiveSuggestion(activeSuggestion < 0 ? 0 : activeSuggestion - 1);
+    } else if (event.key === 'Enter' && activeSuggestion >= 0) {
+        event.preventDefault();
+        matchList.querySelectorAll('.suggestion:not(:disabled)')[activeSuggestion]?.click();
+    } else if (event.key === 'Escape') {
+        matchList.replaceChildren();
+        input.setAttribute('aria-expanded', 'false');
+        resetActiveSuggestion();
+    }
+});
 renderComparison();
 
