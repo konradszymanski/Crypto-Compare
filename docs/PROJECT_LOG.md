@@ -12,11 +12,11 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 ## Current state — 2026-10-11
 
 - **Production:** GitHub Pages deploys from `master` after verification succeeds.
-- **Latest product release:** [`b7b041f`](https://github.com/konradszymanski/Crypto-Compare/commit/b7b041f5a7e6981b03398cb97dc8dc36cdae056b) — Market Pulse breadth, leaders, laggards, and multi-period returns, merged via [PR #15](https://github.com/konradszymanski/Crypto-Compare/pull/15).
-- **Latest CI and deployment:** [workflow run #26](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38168541151) passed verification and deployed GitHub Pages.
+- **Latest product release:** [`f6e2c8d`](https://github.com/konradszymanski/Crypto-Compare/commit/f6e2c8d07f9820235d639a4f0dbbecc87de1ffa2) — persistent selected coins with fresh prices on return, merged via [PR #16](https://github.com/konradszymanski/Crypto-Compare/pull/16).
+- **Latest CI and deployment:** [verification run #28](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169152292) and [Pages deployment #15](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169152611) both succeeded.
 - **Latest documentation update:** [PR #14](https://github.com/konradszymanski/Crypto-Compare/pull/14) merged as [`87884d0`](https://github.com/konradszymanski/Crypto-Compare/commit/87884d0c1eb6b444592bf2852ac42b4778daa798); [workflow run #22](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38167271113) passed and deployed successfully.
-- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, and Events & Bitcoin.
-- **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2), in progress. Issues #1, #3, and #4 are closed after their implementations and deployments were verified.
+- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, and Events & Bitcoin. Asset research is in active development under issue #17.
+- **Open GitHub work:** [#17 asset research pages](https://github.com/konradszymanski/Crypto-Compare/issues/17), in progress. Issue #2 and issues #1, #3, and #4 are closed after their implementations and deployments were verified.
 
 ### Shipped — Market Pulse
 
@@ -24,17 +24,23 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Use the existing global and market-list requests, browser cache, and stale-data handling. Keep authenticated category/trending endpoints deferred until the static site has a safe server-side or scheduled-snapshot data path.
 - [PR #15](https://github.com/konradszymanski/Crypto-Compare/pull/15) merged as [`b7b041f`](https://github.com/konradszymanski/Crypto-Compare/commit/b7b041f5a7e6981b03398cb97dc8dc36cdae056b); workflow #26 passed and deployed.
 
-### In progress — saved comparison
+### Shipped — saved comparison
 
 - Persist selected coin IDs and non-price display metadata in local browser storage; refresh prices from CoinGecko on return.
 - Provide a clear-comparison action and retain saved selections when storage or provider requests fail.
-- Track implementation in [issue #2](https://github.com/konradszymanski/Crypto-Compare/issues/2).
+- [PR #16](https://github.com/konradszymanski/Crypto-Compare/pull/16) merged as [`f6e2c8d`](https://github.com/konradszymanski/Crypto-Compare/commit/f6e2c8d07f9820235d639a4f0dbbecc87de1ffa2); issue #2 is closed. Verification #28 and Pages deployment #15 succeeded.
+### In progress — asset research
+
+- Add CoinGecko fundamentals and a daily USD price chart for linked Market Pulse assets; show source, actual date coverage, and cache freshness.
+- Keep long Bitcoin cycle history on its separately disclosed source, with no silent provider joins.
+- Track implementation in [issue #17](https://github.com/konradszymanski/Crypto-Compare/issues/17).
+
 ## Data roadmap — 2026-10-11
 
 - Added a staged API/product plan in [`DATA_PLAN.md`](DATA_PLAN.md), covering Market Pulse, asset research, public treasuries and macro context, and optional market-structure views.
 - Added implementation constraints to [`ROADMAP.md`](../ROADMAP.md): no client-side secrets, disclose data source and coverage, cache and load on demand, and mock providers in CI.
 - CoinGecko Demo historical chart coverage is documented as limited to the past 365 days in the current endpoint reference. Full BTC cycle research therefore continues to require an explicitly labeled long-history source such as the existing Binance daily-candle fallback.
-- Market Pulse shipped in PR #15. Saved comparison persistence in issue #2 is the active next slice.
+- Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research issue #17 is the active slice.
 
 ## Verified milestone — browser regression checks
 

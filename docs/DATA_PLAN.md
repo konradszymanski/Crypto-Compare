@@ -41,6 +41,8 @@ Potential CoinGecko inputs:
 
 Show source, currency, observation time, and earliest/latest date with every chart. Treat missing history as a data-coverage boundary rather than filling it with invented values. Keep BTC full-cycle analysis on a source with the required historical range; explain provider/exchange differences when comparing series.
 
+**First shipped slice:** link the leading Market Pulse assets to a reusable profile showing rank, price, market cap, volume, circulating/max supply, ATH/ATL, and daily USD history over up to one year. History loads only after opening an asset, is cached for the browser session, and displays the returned date range. CoinGecko is the sole source for this page; BTC cycle research remains on its separately labeled long-history source.
+
 ### 3. Public treasuries and macro context
 
 **Purpose:** give long-term context about public-entity holdings and sourced macro events.

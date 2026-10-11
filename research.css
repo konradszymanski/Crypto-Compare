@@ -83,6 +83,10 @@
 .mover-list li { align-items: center; border-top: 1px solid var(--line); display: flex; gap: 12px; justify-content: space-between; padding: 12px 0; }
 .mover-list li:first-child { border-top: 0; }
 .mover-list strong { color: var(--accent); white-space: nowrap; }
+.asset-link { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.asset-link:hover, .asset-link:focus-visible { color: var(--text); }
+.asset-chart { min-height: 360px; width: 100%; }
+.asset-chart-panel { overflow: hidden; }
 .context-panel { color: var(--muted); }
 
 .event-method { color: var(--muted); line-height: 1.65; }

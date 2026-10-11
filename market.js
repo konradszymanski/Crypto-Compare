@@ -85,10 +85,26 @@ import './comparison-core.js';
         snapshot.coins.slice(0, 20).forEach(coin => {
             const row = document.createElement('tr');
             const values = [String(coin.market_cap_rank ?? '—'), `${coin.name} (${String(coin.symbol || '').toUpperCase()})`, currency(coin.current_price), currency(coin.market_cap, true), percentage(change(coin, '24h')), percentage(change(coin, '7d')), percentage(change(coin, '30d')), percentage(coin.ath_change_percentage)];
-            values.forEach((value, index) => { const cell = document.createElement(index === 0 ? 'th' : 'td'); if (index === 0) cell.scope = 'row'; cell.textContent = value; row.appendChild(cell); });
+            values.forEach((value, index) => {
+                const cell = document.createElement(index === 0 ? 'th' : 'td');
+                if (index === 0) cell.scope = 'row';
+                if (index === 1) {
+                    const link = document.createElement('a');
+                    link.className = 'asset-link';
+                    link.href = `asset.html?id=${encodeURIComponent(coin.id)}`;
+                    link.textContent = value;
+                    cell.appendChild(link);
+                } else cell.textContent = value;
+                row.appendChild(cell);
+            });
             rows.appendChild(row);
             const card = document.createElement('article'); card.className = 'coin-card';
-            const heading = document.createElement('h3'); heading.textContent = `${coin.market_cap_rank ?? '—'}. ${coin.name} (${String(coin.symbol || '').toUpperCase()})`;
+            const heading = document.createElement('h3');
+            const link = document.createElement('a');
+            link.className = 'asset-link';
+            link.href = `asset.html?id=${encodeURIComponent(coin.id)}`;
+            link.textContent = `${coin.market_cap_rank ?? '—'}. ${coin.name} (${String(coin.symbol || '').toUpperCase()})`;
+            heading.appendChild(link);
             const details = document.createElement('p'); details.textContent = `${currency(coin.current_price)} · 24h ${percentage(change(coin, '24h'))} · 7d ${percentage(change(coin, '7d'))} · 30d ${percentage(change(coin, '30d'))} · ATH drawdown ${percentage(coin.ath_change_percentage)}`;
             card.append(heading, details); cards.appendChild(card);
         });
