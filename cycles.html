@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cycles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Bitcoin Cycle Comparison · Crypto-Compare</title>
+    <script src="cycle-core.js" defer></script>
+    <script src="cycles.js" defer></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a>
+        <a href="cycles.html" aria-current="page">Bitcoin cycles</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">Halving cycle explorer</p>
+        <h1>Bitcoin cycles</h1>
+        <p class="intro">Compare Bitcoin and Ethereum performance at the same point in each Bitcoin halving cycle.</p>
+    </header>
+    <section class="cycle-controls" aria-label="Cycle chart settings">
+        <label for="compare-date">Compare through date</label>
+        <input id="compare-date" type="date">
+        <fieldset>
+            <legend>Show assets</legend>
+            <label><input type="checkbox" name="asset" value="bitcoin" checked> Bitcoin</label>
+            <label><input type="checkbox" name="asset" value="ethereum" checked> Ethereum</label>
+        </fieldset>
+        <button id="load-cycles" type="button">Update chart</button>
+    </section>
+    <p id="cycle-status" class="status" role="status" aria-live="polite"></p>
+    <p id="cycle-data-info" class="data-info" role="note">The chart will show its data provider, latest daily point, sample count, and cycle coverage here.</p>
+    <section class="cycle-panel" aria-labelledby="cycle-chart-heading">
+        <div class="section-heading"><div><p class="eyebrow">Indexed return</p><h2 id="cycle-chart-heading">Performance since halving</h2></div></div>
+        <p class="chart-help">Each line starts at 0% on that cycle’s halving. Solid lines show BTC; dashed lines show ETH. Returns are compared at the same number of days after halving.</p>
+        <div class="chart-wrap"><canvas id="cycle-chart" role="img" aria-label="Historical Bitcoin and Ethereum returns aligned by days since Bitcoin halving"></canvas></div>
+        <div id="cycle-legend" class="cycle-legend" aria-label="Cycle legend"></div>
+    </section>
+    <section class="cycle-panel" aria-labelledby="cycle-table-heading">
+        <div class="section-heading"><div><p class="eyebrow">Matched time point</p><h2 id="cycle-table-heading">Returns at the selected cycle day</h2></div></div>
+        <div class="table-wrap"><table class="comparison-table cycle-table"><caption class="visually-hidden">Asset returns at the selected number of days since each Bitcoin halving</caption><thead><tr><th scope="col">Cycle</th><th scope="col">Halving</th><th scope="col">Day in cycle</th><th scope="col">BTC return</th><th scope="col">ETH return</th></tr></thead><tbody id="cycle-rows"></tbody></table></div>
+        <div id="cycle-cards" class="coin-cards"></div>
+    </section>
+    <section class="method-note"><h2>How this comparison works</h2><p>Cycles begin on Bitcoin halving dates: Nov 28, 2012; Jul 9, 2016; May 11, 2020; and Apr 20, 2024. The selected date determines the elapsed days in the current cycle; earlier cycles are compared at that same day, capped at their next halving. A cycle is included for an asset only when daily prices exist within seven days after its halving. CoinGecko USD history is tried first. If it is unavailable or rate limited, the chart falls back to Binance BTC/USDT and ETH/USDT daily spot candles; that fallback covers the 2020 and 2024 cycles, not the older halvings. The latest in-progress UTC daily candle is excluded.</p></section>
+    <footer class="page-footer"><p>Historical data: <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a> or <a href="https://www.binance.com/" target="_blank" rel="noreferrer">Binance Spot</a>. Binance USDT prices are a stablecoin proxy for USD. For research and comparison only.</p></footer>
+</main>
+</body>
+</html>
