@@ -30,6 +30,41 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [ ] Expand the reviewed, source-linked historical events catalogue and add macro context that can be served without introducing paid data or client-side secrets.
 - [ ] Add asset research pages with category context, supply history, and cycle-aware performance comparisons.
 
+## Data and API roadmap
+
+The detailed endpoint inventory, data constraints, and implementation rules are in [`docs/DATA_PLAN.md`](docs/DATA_PLAN.md). The sequence below prioritizes decision context and keeps provider limits visible.
+
+### Phase 1 — Market Pulse (next product feature)
+
+- [ ] Expand the existing Market Overview page into Market Pulse, combining CoinGecko global metrics, category performance, trending searches, and leading assets without creating a duplicate overview page.
+- [ ] Show BTC market dominance, category leadership, market breadth, and 24-hour/7-day/30-day changes with freshness timestamps.
+- [ ] Keep trending content clearly labeled as attention/interest, not investment quality or a recommendation.
+
+### Phase 2 — Asset research pages
+
+- [ ] Add a reusable asset-detail view for market rank, supply, volume, ATH/ATL, and available historical performance.
+- [ ] Show the source and available date range for every historical series; avoid silently joining prices from different exchanges or providers.
+- [ ] Preserve exchange-level long-history fallbacks for BTC where CoinGecko Demo history does not cover full cycles.
+
+### Phase 3 — Holdings and macro context
+
+- [ ] Evaluate public company/government treasury endpoints and add a sourced holdings view if Demo access and data coverage are adequate.
+- [ ] Expand sourced macro context with reviewed public datasets and explicit release dates; prefer static, versioned data files for the GitHub Pages app.
+- [ ] Keep events and macro observations descriptive and avoid causal or predictive claims.
+
+### Phase 4 — Market structure (optional, after validation)
+
+- [ ] Evaluate derivatives exchange/open-interest data and GeckoTerminal pool activity for a separate market-structure view.
+- [ ] Confirm endpoint availability, plan requirements, freshness, and request costs before implementation.
+- [ ] Label on-chain and derivatives indicators as partial, venue-specific observations; do not present them as buy/sell signals.
+
+### Shared data foundations
+
+- [ ] Extract a small provider client for request deduplication, timeout/error mapping, cache policy, and rate-limit backoff as these pages are added.
+- [ ] Load data only when a page or user action needs it; use stale cached data with a visible timestamp when refresh fails.
+- [ ] Never ship provider secrets in browser JavaScript. For authenticated data, choose a server-side proxy or a scheduled GitHub Actions data snapshot before adding the endpoint.
+- [ ] Add deterministic fixtures for every new provider-backed feature; CI must not make live market-data calls.
+
 ## Product questions for later
 
 - Which comparison fields matter most, and should users be able to choose them?

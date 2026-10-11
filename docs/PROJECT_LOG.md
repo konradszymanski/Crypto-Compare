@@ -11,18 +11,18 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 
 ## Current state — 2026-10-11
 
-### In progress — build and chart modernization
-
-- Vite is being introduced as a build tool while preserving the existing four-page site and GitHub Pages hosting.
-- Research charts are moving from hand-drawn Canvas to ECharts for hover details, legend controls, and zooming. Chart code is split into deferred chunks; the Events page loads the library only after an event is selected.
-- GitHub Actions will build and test the generated `dist/` site, then publish that directory after verification.
-- This work is local and has not yet been committed, reviewed, merged, or deployed. The release state below remains the last verified production state.
-
-- **Production:** GitHub Pages deploys from `master` after the verification job succeeds.
-- **Latest product release:** [`455118f`](https://github.com/konradszymanski/Crypto-Compare/commit/455118f23b0a9bc50ddb388ef9211399d8cd9a0c) — deterministic Playwright browser checks and CI integration, merged via [PR #12](https://github.com/konradszymanski/Crypto-Compare/pull/12).
-- **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136023098) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104989) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104796) succeeded.
+- **Production:** GitHub Pages deploys from `master` after verification succeeds.
+- **Latest product release:** [`7a2d536`](https://github.com/konradszymanski/Crypto-Compare/commit/7a2d5364187d1602df6156afe22be11029fdc376) — Vite production build, deferred ECharts charts, on-demand cycle history, and updated project documentation, merged via [PR #13](https://github.com/konradszymanski/Crypto-Compare/pull/13).
+- **Latest CI and deployment:** [workflow run #21](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38160702955) passed production build, syntax checks, unit tests, Chromium browser tests, and GitHub Pages deployment.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, market overview, and Events & Bitcoin.
 - **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2). Issues #1, #3, and #4 are closed after their implementations and deployments were verified.
+
+## Data roadmap — 2026-10-11
+
+- Added a staged API/product plan in [`DATA_PLAN.md`](DATA_PLAN.md), covering Market Pulse, asset research, public treasuries and macro context, and optional market-structure views.
+- Added implementation constraints to [`ROADMAP.md`](../ROADMAP.md): no client-side secrets, disclose data source and coverage, cache and load on demand, and mock providers in CI.
+- CoinGecko Demo historical chart coverage is documented as limited to the past 365 days in the current endpoint reference. Full BTC cycle research therefore continues to require an explicitly labeled long-history source such as the existing Binance daily-candle fallback.
+- Market Pulse is the next proposed product feature; endpoint access and quotas must be confirmed against the current CoinGecko plan before implementation.
 
 ## Verified milestone — browser regression checks
 
