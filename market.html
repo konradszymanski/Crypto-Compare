@@ -10,19 +10,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Market Overview · Crypto-Compare</title>
+    <title>Market Pulse · Crypto-Compare</title>
     <script type="module" src="./market.js"></script>
 </head>
 <body>
 <main class="app-shell">
     <nav class="site-nav" aria-label="Main navigation">
         <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
-        <a href="market.html" aria-current="page">Market overview</a><a href="events.html">Events &amp; BTC</a>
+        <a href="market.html" aria-current="page">Market Pulse</a><a href="events.html">Events &amp; BTC</a>
     </nav>
     <header class="page-header">
         <p class="eyebrow">Market context</p>
-        <h1>Market overview</h1>
-        <p class="intro">A quick read on total crypto market size, Bitcoin’s share, activity, and leading assets.</p>
+        <h1>Market Pulse</h1>
+        <p class="intro">Read the wider market alongside Bitcoin’s share, asset participation, and leaders across different time windows.</p>
     </header>
     <div class="research-toolbar"><button id="refresh-market" type="button">Refresh data</button><p id="market-status" class="status" role="status" aria-live="polite">Loading market snapshot…</p></div>
     <p id="market-freshness" class="data-info" role="note">Market figures are supplied by CoinGecko and can be delayed.</p>
@@ -32,12 +32,26 @@
         <article class="metric-card"><p>Bitcoin market share</p><strong id="metric-btc-share">Loading…</strong><span>Bitcoin share of global crypto market cap</span></article>
         <article class="metric-card"><p>Ethereum market share</p><strong id="metric-eth-share">Loading…</strong><span>Ethereum share of global crypto market cap</span></article>
     </section>
+    <section class="research-panel" aria-labelledby="breadth-heading">
+        <div class="section-heading"><div><p class="eyebrow">Market participation</p><h2 id="breadth-heading">Are large assets moving together?</h2></div></div>
+        <p class="chart-help">Daily direction across the top 100 assets by market capitalization. Stablecoins and assets with missing change data are included because this is a market-cap-ranked sample, not a tradable index.</p>
+        <div class="breadth-grid" aria-live="polite">
+            <article class="breadth-card"><span>Up over 24 hours</span><strong id="breadth-up">Loading…</strong></article>
+            <article class="breadth-card"><span>Down over 24 hours</span><strong id="breadth-down">Loading…</strong></article>
+            <article class="breadth-card"><span>Unchanged / unavailable</span><strong id="breadth-flat">Loading…</strong></article>
+        </div>
+        <p id="breadth-summary" class="data-info-inline">Breadth is calculated from the reported 24-hour price change for assets ranked in the top 100.</p>
+    </section>
     <section class="research-panel" aria-labelledby="leaders-heading">
-        <div class="section-heading"><div><p class="eyebrow">Market capitalization</p><h2 id="leaders-heading">Top assets</h2></div></div>
-        <div class="table-wrap"><table class="comparison-table"><caption class="visually-hidden">Leading crypto assets by market capitalization</caption><thead><tr><th scope="col">Rank</th><th scope="col">Asset</th><th scope="col">Price (USD)</th><th scope="col">Market cap (USD)</th><th scope="col">24h change</th><th scope="col">Distance from ATH</th></tr></thead><tbody id="leaders-rows"><tr><td colspan="6">Loading top assets…</td></tr></tbody></table></div>
+        <div class="section-heading"><div><p class="eyebrow">Market capitalization</p><h2 id="leaders-heading">Top 20 assets</h2></div></div>
+        <div class="table-wrap"><table class="comparison-table"><caption class="visually-hidden">Leading crypto assets by market capitalization</caption><thead><tr><th scope="col">Rank</th><th scope="col">Asset</th><th scope="col">Price (USD)</th><th scope="col">Market cap (USD)</th><th scope="col">24h</th><th scope="col">7d</th><th scope="col">30d</th><th scope="col">Distance from ATH</th></tr></thead><tbody id="leaders-rows"><tr><td colspan="8">Loading top assets…</td></tr></tbody></table></div>
         <div id="leaders-cards" class="coin-cards"></div>
     </section>
-    <section class="research-panel context-panel"><p class="eyebrow">How to read this</p><h2>Market context, not a signal</h2><p>Total market capitalization and BTC dominance help describe the market’s current structure. They do not predict what happens next. Compare this snapshot with <a href="cycles.html">historical halving cycles</a> and the <a href="events.html">event timeline</a> to inspect context from multiple angles.</p></section>
+    <section class="movers-grid" aria-label="Top 100 asset performance over seven days">
+        <section class="research-panel mover-panel" aria-labelledby="gainers-heading"><p class="eyebrow">7-day performance</p><h2 id="gainers-heading">Strongest in the top 100</h2><ol id="gainers-list" class="mover-list"><li>Loading…</li></ol></section>
+        <section class="research-panel mover-panel" aria-labelledby="decliners-heading"><p class="eyebrow">7-day performance</p><h2 id="decliners-heading">Weakest in the top 100</h2><ol id="decliners-list" class="mover-list"><li>Loading…</li></ol></section>
+    </section>
+    <section class="research-panel context-panel"><p class="eyebrow">How to read this</p><h2>Market context, not a signal</h2><p>Global market figures and the top 100 by market capitalization describe only the assets CoinGecko tracks and the periods shown. They do not predict what happens next. Trending search and category endpoints require an authenticated CoinGecko Demo key according to its current documentation; this static site will not expose a key in browser code. Compare this snapshot with <a href="cycles.html">historical halving cycles</a> and the <a href="events.html">event timeline</a> to inspect context from multiple angles.</p></section>
     <footer class="page-footer"><p>Market data: <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. USD values are snapshots and may be delayed. Research and comparison only.</p></footer>
 </main>
 </body>

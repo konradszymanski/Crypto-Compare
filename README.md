@@ -6,7 +6,7 @@ Crypto-Compare is a static cryptocurrency research dashboard. Compare live marke
 
 - **Compare coins** (`index.html`): search for assets and compare live CoinGecko market data.
 - **Bitcoin cycles** (`cycles.html`): compare BTC and ETH returns at the same number of days since each Bitcoin halving. Historical lines begin at the first available daily price on or after a halving. ETH history is naturally absent from the 2012 cycle.
-- **Market overview** (`market.html`): view global market capitalization, trading volume, BTC/ETH market share, top assets, and distance from all-time highs.
+- **Market Pulse** (`market.html`): view global capitalization, trading volume, BTC/ETH market share, top-100 participation, 7-day leaders/laggards, and leading assets across 24-hour, 7-day, and 30-day periods.
 - **Events & Bitcoin** (`events.html`): review a sourced timeline and compare BTC returns in a 30-day-before/30-day-after window.
 
 The comparison page and research charts use CoinGecko's public API. Historical charts fall back to Binance public daily spot candles when CoinGecko is unavailable or rate limited. Provider availability and request limits can affect data loading; prices are daily values and may lag. The market and event pages cache responses in the browser when storage is available.
@@ -49,7 +49,7 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - `index.html` — page structure and comparison table
 - `script.js` — CoinGecko requests, search, and responsive rendering
 - `comparison-core.js` — selected coin state and market value formatting
-- `market.html` / `market.js` — cached global snapshot and top asset view
+- `market.html` / `market.js` — cached global snapshot, market breadth, top asset and mover views
 - `events.html` / `events.js` — sourced event timeline and BTC window comparison
 - `event-core.js` — event-window date and return calculations
 - `styles.css` — page and table presentation
@@ -60,13 +60,14 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - `docs/PROJECT_LOG.md` — shipped milestones, active work, and CI/CD release flow
 - `CONTRIBUTING.md` — workflow for changes
 - `ROADMAP.md` — staged improvement ideas
+- `docs/DATA_PLAN.md` — API endpoint candidates, coverage constraints, and staged data strategy
 - `SECURITY.md` — security reporting and data handling notes
 - `tests/` — state/formatting unit tests and deterministic Playwright browser checks
 - `playwright.config.js` — browser test configuration and local static server
 
 ## Current limitations
 
-- The comparison page supports USD, EUR, GBP, JPY, CAD, and AUD. Currency changes request fresh market data and are saved locally when browser storage is available. The market overview remains denominated in USD.
+- The comparison page supports USD, EUR, GBP, JPY, CAD, and AUD. Currency changes request fresh market data and are saved locally when browser storage is available. Market Pulse remains denominated in USD.
 - Data freshness and availability depend on third-party providers.
 - The app is static and has no backend; browser caches are optional and local to the device.
 - The macro timeline is curated and intentionally small, not a comprehensive news feed.
