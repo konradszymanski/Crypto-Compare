@@ -12,17 +12,16 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 ## Current state — 2026-10-11
 
 - **Production:** GitHub Pages deploys from `master` after the verification job succeeds.
-- **Latest product release:** [`e1d7ec8`](https://github.com/konradszymanski/Crypto-Compare/commit/e1d7ec86ff43b511f4978d4ec583ff9330401c0a) — per-coin data freshness and safe refresh, merged via [PR #11](https://github.com/konradszymanski/Crypto-Compare/pull/11).
-- **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132186081) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132228218) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132227677) succeeded.
+- **Latest product release:** [`455118f`](https://github.com/konradszymanski/Crypto-Compare/commit/455118f23b0a9bc50ddb388ef9211399d8cd9a0c) — deterministic Playwright browser checks and CI integration, merged via [PR #12](https://github.com/konradszymanski/Crypto-Compare/pull/12).
+- **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136023098) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104989) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104796) succeeded.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, market overview, and Events & Bitcoin.
-- **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2), [#4 browser accessibility and responsive checks](https://github.com/konradszymanski/Crypto-Compare/issues/4). Issues #1 and #3 were closed after their implementations and production deployments were verified.
+- **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2). Issues #1, #3, and #4 are closed after their implementations and deployments were verified.
 
-## In progress — browser regression checks
+## Verified milestone — browser regression checks
 
-- Add Playwright coverage for accessible search controls, keyboard selection, duplicate prevention, remove behavior, CoinGecko rate-limit fallback, retry messaging, and desktop/mobile comparison layouts.
-- Mock provider responses in browser tests so checks are deterministic and consume no live API quota.
-- Extend the Pages verification workflow to install Chromium and run the browser suite alongside existing unit tests.
-- Issue #4 can be closed after the pull request passes CI and the checks are merged.
+- Added four Chromium scenarios for accessible, keyboard-operated search; duplicate prevention and removal; popular-coin fallback after a mocked 429; retry messaging after market-data rate limiting; and responsive desktop/mobile comparison rendering.
+- All CoinGecko requests and external icons/fonts are mocked or blocked in tests, so CI is deterministic and uses no provider quota.
+- PR #12 passed CI, merged to `master`, and its Pages deployment succeeded. Issue #4 is closed.
 
 ## Verified milestones
 
@@ -33,6 +32,7 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 | `5fe0736` | Market overview and sourced event research pages |
 | `c7b865b` | Selectable comparison currency, currency tests, and project progress log |
 | `e1d7ec8` | Per-coin data freshness, safe refresh action, and refresh tests |
+| `455118f` | Deterministic Chromium browser checks and CI integration |
 
 ## CI and release flow
 
