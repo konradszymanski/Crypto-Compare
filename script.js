@@ -1,3 +1,5 @@
+import './comparison-core.js';
+
 const { fields, createStore, createMarketRefresher, formatValue, marketDataUrl } = window.CryptoCompareCore;
 const store = createStore();
 const input = document.getElementById('input');

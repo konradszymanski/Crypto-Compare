@@ -1,12 +1,12 @@
 # Contributing
 
-Thanks for helping improve Crypto-Compare. The project is intentionally small and runs directly in a browser.
+Thanks for helping improve Crypto-Compare. It is a static, multi-page site built with Vite and deployed to GitHub Pages.
 
 ## Getting started
 
 1. Fork the repository and create a branch for one focused change.
-2. Open `index.html` in a browser or run a local static file server from the repository root.
-3. Keep the app usable without a build step unless a future proposal explains why one is needed.
+2. Use Node.js 20.19+ or 22.12+, run `npm ci`, and start the Vite development server with `npm run dev`.
+3. Keep the app static and compatible with GitHub Pages. Production output is generated in `dist/`; do not commit that generated folder.
 
 ## Before opening a pull request
 
@@ -17,7 +17,7 @@ Thanks for helping improve Crypto-Compare. The project is intentionally small an
 - Update the README or relevant docs when setup, behavior, or project structure changes.
 - Update `docs/PROJECT_LOG.md` when a release is merged and the deploy result is known.
 
-Run the focused state and formatting checks with `node --test tests/comparison-core.test.js`. There is no automated browser test or lint command yet. If you add tooling, document how to install and run it and keep the setup proportionate to this static project.
+Run `npm test` for state and formatting checks, then run `npm run build` and `npm run test:e2e` to check the generated production output with Playwright. If you add tooling, document how to install and run it and keep the setup proportionate to this static project.
 
 ## Pull request checklist
 

@@ -11,8 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Bitcoin Cycle Comparison · Crypto-Compare</title>
-    <script src="cycle-core.js" defer></script>
-    <script src="cycles.js" defer></script>
+    <script type="module" src="./cycles.js"></script>
 </head>
 <body>
 <main class="app-shell">
@@ -37,13 +36,12 @@
         </fieldset>
         <button id="load-cycles" type="button">Update chart</button>
     </section>
-    <p id="cycle-status" class="status" role="status" aria-live="polite"></p>
-    <p id="cycle-data-info" class="data-info" role="note">The chart will show its data provider, latest daily point, sample count, and cycle coverage here.</p>
+    <p id="cycle-status" class="status" role="status" aria-live="polite">Choose a date and assets, then update the chart to load historical prices.</p>
+    <p id="cycle-data-info" class="data-info" role="note">Historical price data loads on demand. Successful CoinGecko history is saved in this tab for up to six hours.</p>
     <section class="cycle-panel" aria-labelledby="cycle-chart-heading">
         <div class="section-heading"><div><p class="eyebrow">Indexed return</p><h2 id="cycle-chart-heading">Performance since halving</h2></div></div>
         <p class="chart-help">Each line starts at 0% on that cycle’s halving. Solid lines show BTC; dashed lines show ETH. Returns are compared at the same number of days after halving.</p>
-        <div class="chart-wrap"><canvas id="cycle-chart" role="img" aria-label="Historical Bitcoin and Ethereum returns aligned by days since Bitcoin halving"></canvas></div>
-        <div id="cycle-legend" class="cycle-legend" aria-label="Cycle legend"></div>
+        <div class="chart-wrap"><div id="cycle-chart" class="chart-surface" role="img" aria-label="Historical Bitcoin and Ethereum returns aligned by days since Bitcoin halving"><p class="chart-placeholder">Select Update chart to load the historical comparison.</p></div></div>
     </section>
     <section class="cycle-panel" aria-labelledby="cycle-table-heading">
         <div class="section-heading"><div><p class="eyebrow">Matched time point</p><h2 id="cycle-table-heading">Returns at the selected cycle day</h2></div></div>

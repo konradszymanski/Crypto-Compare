@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "description": "Static cryptocurrency research dashboard with deterministic browser checks.",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "node --test tests/comparison-core.test.js",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.1"
+    "@playwright/test": "^1.56.1",
+    "vite": "^7.3.7"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0"
   }
 }
-

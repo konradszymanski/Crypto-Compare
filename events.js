@@ -1,3 +1,5 @@
+import './event-core.js';
+
 (() => {
     const core = window.CryptoEventCore;
     const events = [
@@ -11,12 +13,19 @@
     const filter = document.getElementById('event-filter');
     const status = document.getElementById('event-status');
     const info = document.getElementById('event-data-info');
-    const canvas = document.getElementById('event-chart');
+    const chartElement = document.getElementById('event-chart');
+    let chart;
+    let echartsPromise;
     const summary = document.getElementById('event-chart-summary');
     const heading = document.getElementById('event-chart-heading');
     const formatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
     const seriesCache = new Map();
     let activeEvent = null;
+
+    function loadEcharts() {
+        if (!echartsPromise) echartsPromise = import('./chart-kit.js').then(module => module.echarts);
+        return echartsPromise;
+    }
 
     function showEvents() {
         list.replaceChildren();
@@ -76,33 +85,45 @@
         try { return await work; } catch (error) { seriesCache.delete('bitcoin'); throw error; }
     }
 
-    function drawWindow(windowData) {
-        const rect = canvas.getBoundingClientRect();
-        const scale = window.devicePixelRatio || 1;
-        const width = Math.max(320, rect.width);
-        const height = 300;
-        canvas.width = width * scale; canvas.height = height * scale; canvas.style.height = `${height}px`;
-        const context = canvas.getContext('2d'); context.setTransform(scale, 0, 0, scale, 0, 0); context.clearRect(0, 0, width, height);
-        const points = windowData.values;
-        if (!points.length) return;
-        let low = Math.min(0, ...points.map(point => point.returnPct));
-        let high = Math.max(0, ...points.map(point => point.returnPct));
-        if (low === high) { low -= 5; high += 5; }
-        const pad = { left: 54, right: 15, top: 18, bottom: 40 };
-        const x = day => pad.left + ((day + 30) / 60) * (width - pad.left - pad.right);
-        const y = value => pad.top + ((high - value) / (high - low)) * (height - pad.top - pad.bottom);
-        context.font = '12px Urbanist, sans-serif'; context.lineWidth = 1;
-        for (let i = 0; i <= 4; i += 1) {
-            const value = low + (high - low) * i / 4; const yy = y(value);
-            context.strokeStyle = 'rgba(175,194,191,.18)'; context.beginPath(); context.moveTo(pad.left, yy); context.lineTo(width - pad.right, yy); context.stroke();
-            context.fillStyle = '#afc2bf'; context.textAlign = 'right'; context.fillText(`${formatter.format(value)}%`, pad.left - 8, yy + 4);
+    async function drawWindow(windowData) {
+        const echarts = await loadEcharts();
+        if (!chart) {
+            chartElement.replaceChildren();
+            chart = echarts.init(chartElement);
         }
-        context.strokeStyle = '#ffbd69'; context.setLineDash([4, 5]); context.beginPath(); context.moveTo(x(0), pad.top); context.lineTo(x(0), height - pad.bottom); context.stroke(); context.setLineDash([]);
-        context.beginPath(); context.strokeStyle = '#70d6c5'; context.lineWidth = 2.5;
-        points.forEach((point, index) => index ? context.lineTo(x(point.day), y(point.returnPct)) : context.moveTo(x(point.day), y(point.returnPct)));
-        context.stroke();
-        context.fillStyle = '#afc2bf'; context.textAlign = 'center';
-        [-30, -15, 0, 15, 30].forEach(day => context.fillText(day === 0 ? 'Event' : `${day}d`, x(day), height - 12));
+        const points = windowData.values.map(point => [point.day, point.returnPct]);
+        chart.setOption({
+            animation: false,
+            textStyle: { color: '#afc2bf', fontFamily: 'Urbanist, sans-serif' },
+            grid: { left: 58, right: 22, top: 24, bottom: 88, containLabel: true },
+            tooltip: {
+                trigger: 'axis', confine: true, backgroundColor: '#183033', borderColor: 'rgba(175,194,191,.35)',
+                textStyle: { color: '#f2f7f5', fontFamily: 'Urbanist, sans-serif' },
+                formatter: params => {
+                    const day = Number(params[0]?.value?.[0] || 0);
+                    const date = new Date(Date.parse(`${activeEvent.date}T00:00:00Z`) + day * core.DAY_MS).toISOString().slice(0, 10);
+                    return `${date}<br/>${formatter.format(params[0].value[1])}%`;
+                }
+            },
+            xAxis: {
+                type: 'value', min: -30, max: 30, interval: 15,
+                axisLabel: { color: '#afc2bf', formatter: value => value === 0 ? 'Event' : `${value}d` },
+                axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } },
+                splitLine: { lineStyle: { color: 'rgba(175,194,191,.1)' } }
+            },
+            yAxis: {
+                type: 'value', name: 'Return',
+                axisLabel: { color: '#afc2bf', formatter: value => `${formatter.format(value)}%` },
+                axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } },
+                splitLine: { lineStyle: { color: 'rgba(175,194,191,.18)' } }
+            },
+            dataZoom: [{ type: 'inside', xAxisIndex: 0 }, { type: 'slider', xAxisIndex: 0, bottom: 10, height: 18, borderColor: 'rgba(175,194,191,.2)', fillerColor: 'rgba(112,214,197,.18)', textStyle: { color: '#afc2bf' } }],
+            series: [{
+                type: 'line', name: 'BTC return', data: points, showSymbol: true, symbolSize: 5, animation: false,
+                lineStyle: { color: '#70d6c5', width: 2.5 }, itemStyle: { color: '#70d6c5' },
+                markLine: { symbol: 'none', label: { formatter: 'Event', color: '#ffbd69' }, lineStyle: { color: '#ffbd69', type: 'dashed' }, data: [{ xAxis: 0 }] }
+            }]
+        }, true);
     }
 
     async function loadWindow(item) {
@@ -112,7 +133,7 @@
         status.textContent = 'Loading BTC price history. The first request may take a little while…';
         document.querySelectorAll('.event-card button').forEach(button => { button.disabled = true; });
         try {
-            const data = await getSeries();
+            const [data] = await Promise.all([getSeries(), loadEcharts()]);
             if (activeEvent !== item) return;
             const result = core.eventWindow(data.points, item.date);
             if (!result) throw new Error('There is no BTC data near this event date.');
@@ -120,7 +141,7 @@
             summary.textContent = `${result.startDate} to ${result.endDate}: ${change} over the available window. ${result.eventReturnPct == null ? 'Event-date price unavailable.' : `At/after event date: ${result.eventReturnPct >= 0 ? '+' : ''}${formatter.format(result.eventReturnPct)}% versus the baseline.`}`;
             info.textContent = `${data.provider}. Window begins ${result.startDate} and ends ${result.endDate}; baseline is the first available daily close in the window. Binance fallback begins in August 2017 and uses USDT as a USD proxy. ${data.fallback ? `CoinGecko unavailable (${data.fallback.message}); used Binance.` : ''}`;
             status.textContent = `BTC price window loaded for ${item.date}.`;
-            drawWindow(result);
+            await drawWindow(result);
         } catch (error) {
             if (activeEvent === item) { status.textContent = `Could not load the BTC price window. ${error.message}`; summary.textContent = 'Wait briefly if the provider is rate limiting requests, then select the event again.'; info.textContent = 'The page tried CoinGecko daily BTC/USD, then Binance BTC/USDT candles.'; }
         } finally {
@@ -129,6 +150,6 @@
     }
 
     filter.addEventListener('change', showEvents);
-    window.addEventListener('resize', () => { if (activeEvent) loadWindow(activeEvent); });
+    window.addEventListener('resize', () => chart?.resize());
     showEvents();
 })();

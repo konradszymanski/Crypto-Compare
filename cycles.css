@@ -65,11 +65,8 @@
 .cycle-panel .section-heading { margin-bottom: 8px; }
 .chart-help { color: var(--muted); margin-bottom: 8px; }
 .chart-wrap { min-width: 0; overflow-x: auto; }
-#cycle-chart { display: block; min-width: 320px; width: 100%; }
-.cycle-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; padding-top: 12px; }
-.legend-item { align-items: center; color: var(--muted); display: inline-flex; font-size: .86rem; gap: 7px; }
-.legend-item i { border-top: 3px solid var(--series-color); display: inline-block; width: 22px; }
-.legend-item i.dashed { border-top-style: dashed; }
+.chart-surface { height: 390px; min-width: 320px; width: 100%; }
+.chart-placeholder { color: var(--muted); padding: 28px 18px; text-align: center; }
 .cycle-table { white-space: nowrap; }
 .cycle-table tbody th { color: var(--text); font-weight: 600; text-align: left; }
 .cycle-card { padding: 15px; }
@@ -97,5 +94,5 @@
     .cycle-controls fieldset { flex-direction: column; }
     .cycle-panel .table-wrap { display: block !important; }
     .cycle-table { min-width: 650px; }
-    #cycle-chart { height: 330px !important; }
+    .chart-surface { height: 330px; }
 }
