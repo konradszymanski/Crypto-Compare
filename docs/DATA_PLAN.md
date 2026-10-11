@@ -49,7 +49,7 @@ Show source, currency, observation time, and earliest/latest date with every cha
 
 Potential CoinGecko inputs include the entities list, public treasury by entity or coin, holding charts, and transaction history. Verify which endpoints the Demo plan actually permits and how complete the historical coverage is before building the page.
 
-For macro indicators, prefer reviewed and source-linked data that can be stored as static, version-controlled files. If data collection requires a credential, use a scheduled server-side workflow to fetch and publish a public snapshot; do not place the credential in browser code. Record observation dates, release dates, units, and source URLs. Keep event and macro/price comparisons descriptive and explicitly non-causal.
+The Events & Bitcoin page uses a small, manually curated, source-linked timeline, now including Federal Reserve decisions from March 2020, June 2022, and March 2023. For macro indicators, prefer reviewed and source-linked data that can be stored as static, version-controlled files. If data collection requires a credential, use a scheduled server-side workflow to fetch and publish a public snapshot; do not place the credential in browser code. Record observation dates, release dates, units, and source URLs. Keep event and macro/price comparisons descriptive and explicitly non-causal.
 
 ### 4. Market structure exploration (optional)
 

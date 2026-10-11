@@ -28,7 +28,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
 - [x] Persist a user's selected coins locally, with a clear way to reset them.
 - [x] Add data freshness indicators and a deliberate refresh action.
-- [ ] Expand the reviewed, source-linked historical events catalogue and add macro context that can be served without introducing paid data or client-side secrets.
+- [x] Expand the source-linked event timeline with reviewed Federal Reserve policy milestones; keep it static, sourced, and non-causal.
 - [ ] Add asset research pages with category context, supply history, and cycle-aware performance comparisons.
 
 ## Data and API roadmap
