@@ -68,9 +68,21 @@
 .research-panel { margin-bottom: 22px; padding: 22px; }
 .research-panel .section-heading { margin-bottom: 12px; }
 .research-panel h2 { font-size: 1.5rem; margin-bottom: 8px; }
+.research-panel .chart-help { color: var(--muted); line-height: 1.55; }
 .research-panel p:last-child { color: var(--muted); line-height: 1.6; margin-bottom: 0; }
 .research-panel a { color: var(--accent); }
 .research-panel .coin-cards { display: none; }
+.breadth-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 18px; }
+.breadth-card { background: rgb(43 69 71 / 72%); border: 1px solid var(--line); border-radius: 12px; min-width: 0; padding: 16px; }
+.breadth-card span { color: var(--muted); display: block; font-size: .88rem; margin-bottom: 7px; }
+.breadth-card strong { display: block; font-size: 1.5rem; }
+.data-info-inline { color: var(--muted); font-size: .88rem; margin-top: 14px; }
+.movers-grid { display: grid; gap: 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 auto; max-width: 1120px; }
+.mover-panel h2 { margin-bottom: 12px; }
+.mover-list { display: grid; gap: 0; list-style: none; margin: 0; padding: 0; }
+.mover-list li { align-items: center; border-top: 1px solid var(--line); display: flex; gap: 12px; justify-content: space-between; padding: 12px 0; }
+.mover-list li:first-child { border-top: 0; }
+.mover-list strong { color: var(--accent); white-space: nowrap; }
 .context-panel { color: var(--muted); }
 
 .event-method { color: var(--muted); line-height: 1.65; }
@@ -101,6 +113,7 @@
     .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .event-layout { grid-template-columns: 1fr; }
     .event-chart-panel { order: -1; position: static; }
+    .movers-grid { gap: 0; grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
@@ -110,6 +123,10 @@
     .research-panel { border-radius: 14px; padding: 16px 14px; }
     .research-panel .table-wrap { display: none; }
     .research-panel .coin-cards { display: grid; }
+    .breadth-grid { gap: 8px; }
+    .breadth-card { padding: 12px 9px; }
+    .breadth-card span { font-size: .76rem; }
+    .breadth-card strong { font-size: 1.2rem; }
     .event-layout { gap: 14px; }
     .event-card { padding: 15px; }
 }

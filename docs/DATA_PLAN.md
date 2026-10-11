@@ -26,6 +26,8 @@ Potential CoinGecko inputs:
 
 Potential presentation: a global market snapshot, sector/category leaders and laggards, a market breadth summary, and a clearly separated trending panel. Each module should show its last-updated time and a plain-language explanation of what the data does and does not measure.
 
+**First implementation slice:** extend the existing overview using its current global and market-list requests, increase the market-cap-ranked sample to 100, and derive top-100 advance/decline counts plus 7-day leaders and laggards. Do not add separate categories or trending requests to the unauthenticated static client: the current CoinGecko Demo references show API-key authentication for these endpoints. Revisit those panels only after choosing a proxy or scheduled snapshot approach that keeps credentials out of the browser and limits extra API calls.
+
 ### 2. Asset research pages
 
 **Purpose:** bring basic fundamentals, market context, and the existing cycle/event research together for one asset.
