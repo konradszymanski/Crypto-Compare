@@ -21,15 +21,20 @@ Search for coins and add them as columns to compare price, market data, supply, 
 
 ## Run locally
 
-This is a static HTML, CSS, and JavaScript project with no build step or package installation. Open `index.html` in a browser, or serve the repository with any static file server. Searching and loading market data require an internet connection and availability of the data providers.
+This is a static HTML, CSS, and JavaScript project with no application build step. Open `index.html` in a browser, or serve the repository with any static file server. Searching and loading market data require an internet connection and availability of the data providers.
 
 ## Run checks
 
-Use Node.js 18 or newer to run the built-in unit tests. No packages need to be installed:
+Use Node.js 20 or newer. Install the development dependencies once, then run the unit and browser checks:
 
 ```sh
-node --test tests/comparison-core.test.js
+npm ci
+npm test
+npx playwright install chromium
+npm run test:e2e
 ```
+
+Browser tests mock CoinGecko responses, so they do not depend on live API availability or consume provider quota. The Playwright suite runs Chromium at desktop width and checks a narrow mobile viewport.
 
 ## Project map
 
@@ -45,7 +50,8 @@ node --test tests/comparison-core.test.js
 - `CONTRIBUTING.md` — workflow for changes
 - `ROADMAP.md` — staged improvement ideas
 - `SECURITY.md` — security reporting and data handling notes
-- `tests/` — focused state and formatting tests using Node's built-in test runner
+- `tests/` — state/formatting unit tests and deterministic Playwright browser checks
+- `playwright.config.js` — browser test configuration and local static server
 
 ## Current limitations
 
@@ -55,4 +61,5 @@ node --test tests/comparison-core.test.js
 - The macro timeline is curated and intentionally small, not a comprehensive news feed.
 
 See [ROADMAP.md](ROADMAP.md) for possible next steps.
+
 

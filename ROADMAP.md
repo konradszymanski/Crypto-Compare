@@ -15,7 +15,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [x] Make coin search independent of the current top-market results and handle common search failures.
 - [x] Prevent duplicate comparison entries and let users remove selected coins.
 - [x] Keep comparison readable on small screens and clarify displayed units.
-- [ ] Add automated browser checks for search behavior and responsive rendering.
+- [x] Add automated browser checks for search behavior and responsive rendering.
 - [ ] Separate API access, formatting, and UI state when a feature makes the current single script difficult to maintain.
 
 ## Candidate features
@@ -35,4 +35,5 @@ This roadmap records useful directions for future work. It is not a promise or a
 - Which comparison fields matter most, and should users be able to choose them?
 - Should selections persist across visits or be shareable as a link?
 - What browser support and accessibility target should guide UI work?
+
 

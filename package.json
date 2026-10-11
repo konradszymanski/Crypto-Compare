@@ -1,0 +1,14 @@
+{
+  "name": "crypto-compare",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static cryptocurrency research dashboard with deterministic browser checks.",
+  "scripts": {
+    "test": "node --test tests/comparison-core.test.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}
+
