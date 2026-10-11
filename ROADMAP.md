@@ -16,6 +16,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [x] Prevent duplicate comparison entries and let users remove selected coins.
 - [x] Keep comparison readable on small screens and clarify displayed units.
 - [x] Add automated browser checks for search behavior and responsive rendering.
+- [x] Persist selected coin IDs locally, refresh current prices on return, and provide a clear-comparison action.
 - [ ] Separate API access, formatting, and UI state when a feature makes the current single script difficult to maintain.
 
 ## Candidate features
@@ -25,7 +26,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [x] Select a display currency and make the selected currency visible in the table.
 - [ ] Add sortable fields and clearer formatting for percentages and missing supply values.
 - [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
-- [ ] Persist a user's selected coins locally, with a clear way to reset them.
+- [x] Persist a user's selected coins locally, with a clear way to reset them.
 - [x] Add data freshness indicators and a deliberate refresh action.
 - [ ] Expand the reviewed, source-linked historical events catalogue and add macro context that can be served without introducing paid data or client-side secrets.
 - [ ] Add asset research pages with category context, supply history, and cycle-aware performance comparisons.
@@ -34,10 +35,11 @@ This roadmap records useful directions for future work. It is not a promise or a
 
 The detailed endpoint inventory, data constraints, and implementation rules are in [`docs/DATA_PLAN.md`](docs/DATA_PLAN.md). The sequence below prioritizes decision context and keeps provider limits visible.
 
-### Phase 1 — Market Pulse (next product feature)
+### Phase 1 — Market Pulse
 
-- [ ] Expand the existing Market Overview page into Market Pulse, combining CoinGecko global metrics, category performance, trending searches, and leading assets without creating a duplicate overview page.
-- [ ] Show BTC market dominance, category leadership, market breadth, and 24-hour/7-day/30-day changes with freshness timestamps.
+- [x] Expand the existing Market Overview page into Market Pulse using global metrics, market breadth, and leading assets without creating a duplicate overview page.
+- [x] Show BTC market dominance, top-100 market breadth, and 24-hour/7-day/30-day changes with freshness timestamps.
+- [ ] Add categories and trending searches only after selecting an authenticated-data approach that keeps credentials out of the static client.
 - [ ] Keep trending content clearly labeled as attention/interest, not investment quality or a recommendation.
 
 ### Phase 2 — Asset research pages
@@ -68,7 +70,7 @@ The detailed endpoint inventory, data constraints, and implementation rules are 
 ## Product questions for later
 
 - Which comparison fields matter most, and should users be able to choose them?
-- Should selections persist across visits or be shareable as a link?
+- Should users be able to share their comparison selections as a link?
 - What browser support and accessibility target should guide UI work?
 
 

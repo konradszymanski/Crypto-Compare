@@ -8,6 +8,7 @@ const status = document.getElementById('status');
 const emptyState = document.getElementById('empty-state');
 const coinCount = document.getElementById('coin-count');
 const refreshButton = document.getElementById('refresh-data');
+const clearSelectionButton = document.getElementById('clear-selection');
 const tableWrap = document.getElementById('table-wrap');
 const tableHead = document.getElementById('table-head');
 const tableBody = document.getElementById('table-body');
@@ -16,6 +17,7 @@ const currencySelect = document.getElementById('display-currency');
 const tableCaption = document.getElementById('table-caption');
 const supportedCurrencies = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD']);
 const currencyStorageKey = 'crypto-compare-display-currency-v1';
+const selectionStorageKey = 'crypto-compare-selected-coins-v1';
 let displayCurrency = 'USD';
 let marketRequestInProgress = false;
 
@@ -96,6 +98,8 @@ function setMarketRequestInProgress(inProgress) {
     marketRequestInProgress = inProgress;
     currencySelect.disabled = inProgress;
     refreshButton.disabled = inProgress || store.getCoins().length === 0;
+    clearSelectionButton.disabled = inProgress || store.getCoins().length === 0;
+    document.querySelectorAll('.remove-coin').forEach(button => { button.disabled = inProgress; });
     refreshButton.textContent = inProgress ? 'Refreshing…' : 'Refresh data';
 }
 
@@ -132,11 +136,49 @@ function createRemoveButton(coin) {
     button.setAttribute('aria-label', `Remove ${coin.name} from comparison`);
     button.addEventListener('click', () => {
         store.remove(coin.id);
+        saveSelectedCoins();
         status.textContent = `${coin.name} removed from comparison.`;
         renderComparison();
         input.focus();
     });
     return button;
+}
+
+function saveSelectedCoins() {
+    try {
+        const selection = store.getCoins().map(coin => ({
+            id: coin.id,
+            name: coin.name || coin.id,
+            symbol: coin.symbol || '',
+            image: typeof coin.image === 'string' ? coin.image : '',
+            market_cap_rank: Number.isFinite(coin.market_cap_rank) ? coin.market_cap_rank : null
+        }));
+        localStorage.setItem(selectionStorageKey, JSON.stringify(selection));
+    } catch {
+        // The comparison remains usable when browser storage is disabled or full.
+    }
+}
+
+function readSavedCoins() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(selectionStorageKey) || '[]');
+        if (!Array.isArray(saved)) return [];
+        const unique = new Map();
+        saved.forEach(coin => {
+            if (coin && typeof coin.id === 'string' && /^[a-z0-9-]+$/i.test(coin.id) && !unique.has(coin.id)) {
+                unique.set(coin.id, {
+                    id: coin.id,
+                    name: typeof coin.name === 'string' ? coin.name : coin.id,
+                    symbol: typeof coin.symbol === 'string' ? coin.symbol : '',
+                    image: typeof coin.image === 'string' && coin.image.startsWith('https://') ? coin.image : '',
+                    market_cap_rank: Number.isFinite(coin.market_cap_rank) ? coin.market_cap_rank : null
+                });
+            }
+        });
+        return [...unique.values()];
+    } catch {
+        return [];
+    }
 }
 
 function createSuggestionIcon(coin) {
@@ -201,6 +243,7 @@ function renderComparison() {
     coinCards.hidden = !hasCoins;
     coinCount.textContent = `${coins.length} ${coins.length === 1 ? 'coin' : 'coins'}`;
     refreshButton.disabled = marketRequestInProgress || !hasCoins;
+    clearSelectionButton.disabled = marketRequestInProgress || !hasCoins;
 
     tableHead.replaceChildren();
     tableBody.replaceChildren();
@@ -334,6 +377,40 @@ async function refreshComparison() {
     } catch (error) {
         reportMarketDataError(error, 'Market data refresh');
         console.error(error);
+    } finally {
+        setMarketRequestInProgress(false);
+    }
+}
+
+async function refreshSavedCoins() {
+    const savedCoins = store.getCoins();
+    if (!savedCoins.length) return;
+    status.textContent = `Restoring ${savedCoins.length} saved ${savedCoins.length === 1 ? 'coin' : 'coins'}…`;
+    setMarketRequestInProgress(true);
+    try {
+        const response = await fetch(marketDataUrl(displayCurrency, savedCoins.map(coin => coin.id)));
+        if (!response.ok) throw apiError(response, 'Saved comparison refresh');
+        const data = await response.json();
+        if (!Array.isArray(data)) throw new Error('Saved comparison response was invalid.');
+        if (data.length) {
+            const requestedIds = new Set(savedCoins.map(coin => coin.id));
+            const returned = new Map(data.filter(coin => coin && requestedIds.has(coin.id)).map(coin => [coin.id, coin]));
+            if (!returned.size) throw new Error('CoinGecko did not return market data for the saved selection.');
+            store.updateMany([...returned.values()]);
+            const removedCoins = savedCoins.filter(coin => !returned.has(coin.id));
+            removedCoins.forEach(coin => store.remove(coin.id));
+            saveSelectedCoins();
+            renderComparison();
+            status.textContent = removedCoins.length
+                ? `Comparison restored. ${removedCoins.map(coin => coin.name).join(', ')} ${removedCoins.length === 1 ? 'is' : 'are'} no longer available and was removed.`
+                : 'Saved comparison restored with current market data.';
+        } else {
+            renderComparison();
+            status.textContent = 'Saved coins are still listed, but current market data was unavailable. Use Refresh data to try again.';
+        }
+    } catch (error) {
+        renderComparison();
+        reportMarketDataError(error, 'Saved comparison refresh', 'Your saved coins are still available; current prices could not be refreshed.');
     } finally {
         setMarketRequestInProgress(false);
     }
@@ -502,6 +579,7 @@ async function loadCoin(id) {
         if (!coin) throw new Error('No market data was returned for this coin.');
 
         store.add(coin);
+        saveSelectedCoins();
         input.value = '';
         status.textContent = `${coin.name} added to comparison.`;
         renderComparison();
@@ -534,8 +612,17 @@ try {
     // Use USD when browser storage is unavailable.
 }
 currencySelect.value = displayCurrency;
+const savedCoins = readSavedCoins();
+savedCoins.forEach(coin => store.add(coin));
 currencySelect.addEventListener('change', () => changeDisplayCurrency(currencySelect.value));
 refreshButton.addEventListener('click', refreshComparison);
+clearSelectionButton.addEventListener('click', () => {
+    store.getCoins().forEach(coin => store.remove(coin.id));
+    saveSelectedCoins();
+    renderComparison();
+    status.textContent = 'Comparison cleared.';
+    input.focus();
+});
 input.addEventListener('input', () => searchCoins(input.value));
 input.addEventListener('keydown', event => {
     if (event.key === 'ArrowDown' && matchList.querySelector('.suggestion:not(:disabled)')) {
@@ -554,4 +641,6 @@ input.addEventListener('keydown', event => {
     }
 });
 renderComparison();
+if (savedCoins.length) refreshSavedCoins();
+
 
