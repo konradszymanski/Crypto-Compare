@@ -1,10 +1,11 @@
-const { fields, createStore, formatValue, marketDataUrl } = window.CryptoCompareCore;
+const { fields, createStore, createMarketRefresher, formatValue, marketDataUrl } = window.CryptoCompareCore;
 const store = createStore();
 const input = document.getElementById('input');
 const matchList = document.getElementById('match-list');
 const status = document.getElementById('status');
 const emptyState = document.getElementById('empty-state');
 const coinCount = document.getElementById('coin-count');
+const refreshButton = document.getElementById('refresh-data');
 const tableWrap = document.getElementById('table-wrap');
 const tableHead = document.getElementById('table-head');
 const tableBody = document.getElementById('table-body');
@@ -14,7 +15,7 @@ const tableCaption = document.getElementById('table-caption');
 const supportedCurrencies = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD']);
 const currencyStorageKey = 'crypto-compare-display-currency-v1';
 let displayCurrency = 'USD';
-let currencyRefreshInProgress = false;
+let marketRequestInProgress = false;
 
 const coinListUrl = page => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`;
 const iconBaseUrl = 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/';
@@ -81,6 +82,29 @@ function showRateLimitStatus(prefix, retryAfterMs) {
     };
     update();
     cooldownTimer = setInterval(update, 1000);
+}
+
+const marketRefresher = createMarketRefresher(store, async (currency, ids) => {
+    const response = await fetch(marketDataUrl(currency, ids));
+    if (!response.ok) throw apiError(response, 'Market data refresh');
+    return response.json();
+});
+
+function setMarketRequestInProgress(inProgress) {
+    marketRequestInProgress = inProgress;
+    currencySelect.disabled = inProgress;
+    refreshButton.disabled = inProgress || store.getCoins().length === 0;
+    refreshButton.textContent = inProgress ? 'Refreshing…' : 'Refresh data';
+}
+
+function reportMarketDataError(error, action, context = 'Your current comparison is unchanged.') {
+    if (error.status === 429) {
+        showRateLimitStatus(`${action} was rate limited (HTTP 429). ${context}`, error.retryAfterMs);
+    } else if (error.status) {
+        status.textContent = `${action} failed (HTTP ${error.status}). ${context}`;
+    } else {
+        status.textContent = `${error.message || `${action} failed.`} ${context}`;
+    }
 }
 
 function resetActiveSuggestion() {
@@ -174,6 +198,7 @@ function renderComparison() {
     tableWrap.hidden = !hasCoins;
     coinCards.hidden = !hasCoins;
     coinCount.textContent = `${coins.length} ${coins.length === 1 ? 'coin' : 'coins'}`;
+    refreshButton.disabled = marketRequestInProgress || !hasCoins;
 
     tableHead.replaceChildren();
     tableBody.replaceChildren();
@@ -251,31 +276,23 @@ function renderComparison() {
 
 async function changeDisplayCurrency(nextCurrency) {
     const currency = String(nextCurrency || '').toUpperCase();
-    if (!supportedCurrencies.has(currency) || currency === displayCurrency || currencyRefreshInProgress) return;
+    if (!supportedCurrencies.has(currency) || currency === displayCurrency) return;
+    if (marketRequestInProgress) {
+        currencySelect.value = displayCurrency;
+        return;
+    }
 
     const previousCurrency = displayCurrency;
     const selectedCoins = store.getCoins();
-    currencyRefreshInProgress = true;
-    currencySelect.disabled = true;
+    setMarketRequestInProgress(true);
     status.textContent = selectedCoins.length
         ? `Refreshing selected coins in ${currency}…`
         : `Display currency set to ${currency}. Add coins to compare.`;
 
     try {
         if (selectedCoins.length) {
-            const response = await fetch(marketDataUrl(currency, selectedCoins.map(coin => coin.id)));
-            if (!response.ok) throw apiError(response, 'Currency refresh');
-            const updates = await response.json();
-            const requestedIds = selectedCoins.map(coin => coin.id).sort();
-            const returnedIds = Array.isArray(updates) ? updates.map(coin => coin.id).sort() : [];
-            if (requestedIds.length !== returnedIds.length || requestedIds.some((id, index) => id !== returnedIds[index])) {
-                throw new Error('CoinGecko did not return complete data for the selected coins.');
-            }
-            const currentIds = store.getCoins().map(coin => coin.id).sort();
-            if (requestedIds.length !== currentIds.length || requestedIds.some((id, index) => id !== currentIds[index])) {
-                throw new Error('The comparison changed while currency data was loading. Please try again.');
-            }
-            store.updateMany(updates);
+            const result = await marketRefresher.refresh(currency);
+            if (result.status !== 'updated') throw new Error('Could not update the comparison. Please try again.');
         }
 
         displayCurrency = currency;
@@ -290,17 +307,33 @@ async function changeDisplayCurrency(nextCurrency) {
             : `Display currency set to ${currency}. Add coins to compare.`;
     } catch (error) {
         currencySelect.value = previousCurrency;
-        if (error.status === 429) {
-            showRateLimitStatus('Currency refresh was rate limited (HTTP 429).', error.retryAfterMs);
-        } else if (error.status) {
-            status.textContent = `Currency refresh failed (HTTP ${error.status}). Your comparison is still in ${previousCurrency}.`;
-        } else {
-            status.textContent = `${error.message || 'Currency refresh failed.'} Your comparison is still in ${previousCurrency}.`;
-        }
+        reportMarketDataError(error, 'Currency refresh', `Your comparison remains in ${previousCurrency}.`);
         console.error(error);
     } finally {
-        currencyRefreshInProgress = false;
-        currencySelect.disabled = false;
+        setMarketRequestInProgress(false);
+    }
+}
+
+async function refreshComparison() {
+    if (marketRequestInProgress || !store.getCoins().length) return;
+    clearInterval(cooldownTimer);
+    setMarketRequestInProgress(true);
+    status.textContent = 'Refreshing market data for all selected coins…';
+
+    try {
+        const result = await marketRefresher.refresh(displayCurrency);
+        if (result.status === 'busy') return;
+        if (result.status === 'empty') {
+            status.textContent = 'Add a coin before refreshing market data.';
+            return;
+        }
+        renderComparison();
+        status.textContent = 'Market data refreshed. CoinGecko update times are shown for each coin.';
+    } catch (error) {
+        reportMarketDataError(error, 'Market data refresh');
+        console.error(error);
+    } finally {
+        setMarketRequestInProgress(false);
     }
 }
 
@@ -446,7 +479,10 @@ async function searchCoins(searchText) {
 }
 
 async function loadCoin(id) {
-    if (currencyRefreshInProgress) return;
+    if (marketRequestInProgress) {
+        status.textContent = 'Wait for the market data update to finish before adding a coin.';
+        return;
+    }
     if (store.has(id) || pendingIds.has(id)) return;
     clearInterval(cooldownTimer);
     pendingIds.add(id);
@@ -497,6 +533,7 @@ try {
 }
 currencySelect.value = displayCurrency;
 currencySelect.addEventListener('change', () => changeDisplayCurrency(currencySelect.value));
+refreshButton.addEventListener('click', refreshComparison);
 input.addEventListener('input', () => searchCoins(input.value));
 input.addEventListener('keydown', event => {
     if (event.key === 'ArrowDown' && matchList.querySelector('.suggestion:not(:disabled)')) {

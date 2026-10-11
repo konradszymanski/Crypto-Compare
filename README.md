@@ -15,7 +15,7 @@ The event list is a curated set of linked historical milestones. Event windows s
 
 Coin search uses the top 500 assets by market capitalization, puts exact ticker matches first, and falls back to a cached list or a short list of popular coins when CoinGecko is unavailable.
 
-Search for coins and add them as columns to compare price, market data, supply, and all-time high and low values.
+Search for coins and add them as columns to compare price, market data, supply, and all-time high and low values. Each asset includes CoinGecko's reported data update time, and the comparison can be refreshed on demand.
 
 **Live demo:** [konradszymanski.github.io/Crypto-Compare](https://konradszymanski.github.io/Crypto-Compare/)
 
