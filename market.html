@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="research.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Market Overview · Crypto-Compare</title>
+    <script src="market.js" defer></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
+        <a href="market.html" aria-current="page">Market overview</a><a href="events.html">Events &amp; BTC</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">Market context</p>
+        <h1>Market overview</h1>
+        <p class="intro">A quick read on total crypto market size, Bitcoin’s share, activity, and leading assets.</p>
+    </header>
+    <div class="research-toolbar"><button id="refresh-market" type="button">Refresh data</button><p id="market-status" class="status" role="status" aria-live="polite">Loading market snapshot…</p></div>
+    <p id="market-freshness" class="data-info" role="note">Market figures are supplied by CoinGecko and can be delayed.</p>
+    <section class="metric-grid" aria-label="Global cryptocurrency market metrics">
+        <article class="metric-card"><p>Total market capitalization</p><strong id="metric-market-cap">Loading…</strong><span id="metric-cap-change">24-hour change: —</span></article>
+        <article class="metric-card"><p>24-hour trading volume</p><strong id="metric-volume">Loading…</strong><span>Reported across tracked markets</span></article>
+        <article class="metric-card"><p>Bitcoin market share</p><strong id="metric-btc-share">Loading…</strong><span>Bitcoin share of global crypto market cap</span></article>
+        <article class="metric-card"><p>Ethereum market share</p><strong id="metric-eth-share">Loading…</strong><span>Ethereum share of global crypto market cap</span></article>
+    </section>
+    <section class="research-panel" aria-labelledby="leaders-heading">
+        <div class="section-heading"><div><p class="eyebrow">Market capitalization</p><h2 id="leaders-heading">Top assets</h2></div></div>
+        <div class="table-wrap"><table class="comparison-table"><caption class="visually-hidden">Leading crypto assets by market capitalization</caption><thead><tr><th scope="col">Rank</th><th scope="col">Asset</th><th scope="col">Price (USD)</th><th scope="col">Market cap (USD)</th><th scope="col">24h change</th><th scope="col">Distance from ATH</th></tr></thead><tbody id="leaders-rows"><tr><td colspan="6">Loading top assets…</td></tr></tbody></table></div>
+        <div id="leaders-cards" class="coin-cards"></div>
+    </section>
+    <section class="research-panel context-panel"><p class="eyebrow">How to read this</p><h2>Market context, not a signal</h2><p>Total market capitalization and BTC dominance help describe the market’s current structure. They do not predict what happens next. Compare this snapshot with <a href="cycles.html">historical halving cycles</a> and the <a href="events.html">event timeline</a> to inspect context from multiple angles.</p></section>
+    <footer class="page-footer"><p>Market data: <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. USD values are snapshots and may be delayed. Research and comparison only.</p></footer>
+</main>
+</body>
+</html>
