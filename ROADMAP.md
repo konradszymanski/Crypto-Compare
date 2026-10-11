@@ -44,9 +44,9 @@ The detailed endpoint inventory, data constraints, and implementation rules are 
 
 ### Phase 2 — Asset research pages
 
-- [ ] Add a reusable asset-detail view for market rank, supply, volume, ATH/ATL, and available historical performance.
-- [ ] Show the source and available date range for every historical series; avoid silently joining prices from different exchanges or providers.
-- [ ] Preserve exchange-level long-history fallbacks for BTC where CoinGecko Demo history does not cover full cycles.
+- [x] Add a reusable asset-detail view for market rank, supply, volume, ATH/ATL, and available historical performance.
+- [x] Show the source and available date range for every historical series; avoid silently joining prices from different exchanges or providers.
+- [x] Preserve exchange-level long-history fallbacks for BTC where CoinGecko Demo history does not cover full cycles.
 
 ### Phase 3 — Holdings and macro context
 

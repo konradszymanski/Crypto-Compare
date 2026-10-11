@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="research.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Asset research · Crypto-Compare</title>
+    <script type="module" src="./asset.js"></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
+        <a href="market.html">Market Pulse</a><a href="asset.html" aria-current="page">Asset research</a><a href="events.html">Events &amp; BTC</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">Asset fundamentals</p>
+        <h1 id="asset-title">Asset research</h1>
+        <p id="asset-intro" class="intro">Select an asset from Market Pulse to inspect its current market profile and available price history.</p>
+    </header>
+    <div class="research-toolbar"><button id="refresh-asset" type="button" disabled>Refresh data</button><p id="asset-status" class="status" role="status" aria-live="polite">Choose an asset from Market Pulse.</p></div>
+    <p id="asset-freshness" class="data-info" role="note">Historical coverage and timestamps depend on CoinGecko data availability.</p>
+    <section id="asset-metrics" class="metric-grid" aria-label="Asset market fundamentals">
+        <article class="metric-card"><p>Current price (USD)</p><strong id="asset-price">—</strong><span>Most recent reported market price</span></article>
+        <article class="metric-card"><p>Market capitalization</p><strong id="asset-market-cap">—</strong><span id="asset-rank">Rank unavailable</span></article>
+        <article class="metric-card"><p>24-hour volume</p><strong id="asset-volume">—</strong><span>Reported trading activity</span></article>
+        <article class="metric-card"><p>Circulating supply</p><strong id="asset-supply">—</strong><span id="asset-max-supply">Maximum supply: unavailable</span></article>
+        <article class="metric-card"><p>All-time high</p><strong id="asset-ath">—</strong><span id="asset-ath-distance">Distance from ATH: unavailable</span></article>
+        <article class="metric-card"><p>All-time low</p><strong id="asset-atl">—</strong><span id="asset-atl-date">Date unavailable</span></article>
+    </section>
+    <section class="research-panel asset-chart-panel" aria-labelledby="asset-chart-title">
+        <div class="section-heading"><div><p class="eyebrow">Historical performance</p><h2 id="asset-chart-title">Daily price · USD</h2></div></div>
+        <p class="chart-help">Daily observations over the available one-year window. This chart describes past prices; it is not a forecast or investment recommendation.</p>
+        <div id="asset-chart" class="asset-chart" role="img" aria-label="Daily USD price history chart for the selected cryptocurrency"></div>
+        <p id="asset-chart-summary" class="data-info-inline">Price history loads only after you choose an asset.</p>
+    </section>
+    <section class="research-panel context-panel">
+        <p class="eyebrow">How to read this</p>
+        <h2>Provider coverage matters</h2>
+        <p>CoinGecko supplies the market profile and daily price history. The chart shows only the dates returned by the provider; missing dates are not filled or joined from another exchange. For long Bitcoin history, use <a href="cycles.html">halving-cycle comparisons</a>, which disclose their separate source and coverage.</p>
+    </section>
+    <footer class="page-footer"><p>Market and price data: <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. Figures can be delayed or incomplete. Research and comparison only.</p></footer>
+</main>
+</body>
+</html>
