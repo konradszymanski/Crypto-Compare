@@ -12,10 +12,10 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 ## Current state — 2026-10-11
 
 - **Production:** GitHub Pages deploys from `master` after the verification job succeeds.
-- **Latest production commit:** [`c7b865b`](https://github.com/konradszymanski/Crypto-Compare/commit/c7b865bf8d61b70f2c7093f4b1ddfd079b6c4373) — selectable comparison currency and project progress log, merged via [PR #9](https://github.com/konradszymanski/Crypto-Compare/pull/9).
-- **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38130592208) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38130636952) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38130636735) succeeded.
+- **Latest product release:** [`e1d7ec8`](https://github.com/konradszymanski/Crypto-Compare/commit/e1d7ec86ff43b511f4978d4ec583ff9330401c0a) — per-coin data freshness and safe refresh, merged via [PR #11](https://github.com/konradszymanski/Crypto-Compare/pull/11).
+- **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132186081) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132228218) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38132227677) succeeded.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, market overview, and Events & Bitcoin.
-- **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2), [#3 data freshness and refresh](https://github.com/konradszymanski/Crypto-Compare/issues/3), [#4 browser accessibility and responsive checks](https://github.com/konradszymanski/Crypto-Compare/issues/4). Issue #1 was closed after its implementation and production deployment were verified.
+- **Open GitHub work:** [#2 persist selected coins](https://github.com/konradszymanski/Crypto-Compare/issues/2), [#4 browser accessibility and responsive checks](https://github.com/konradszymanski/Crypto-Compare/issues/4). Issues #1 and #3 were closed after their implementations and production deployments were verified.
 
 ## Verified milestones
 
@@ -25,6 +25,7 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 | `738308e` | Ranked coin search results by exact ticker and market capitalization |
 | `5fe0736` | Market overview and sourced event research pages |
 | `c7b865b` | Selectable comparison currency, currency tests, and project progress log |
+| `e1d7ec8` | Per-coin data freshness, safe refresh action, and refresh tests |
 
 ## CI and release flow
 
@@ -44,4 +45,5 @@ The workflow does not yet run real-browser accessibility or responsive tests. Th
 - Update `ROADMAP.md` when a planned capability ships; update this log with the release commit and CI/deployment result.
 - Keep secrets out of the static client application. Treat provider limits and outages as normal failure cases.
 - Use the built-in test runner unless a documented need justifies adding dependencies.
+
 
