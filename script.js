@@ -10,10 +10,10 @@ const tableHead = document.getElementById('table-head');
 const tableBody = document.getElementById('table-body');
 const coinCards = document.getElementById('coin-cards');
 
-const coinListUrl = 'https://api.coingecko.com/api/v3/coins/list?include_platform=false';
+const coinListUrl = page => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`;
 const marketUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=';
 const iconBaseUrl = 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/';
-const coinListCacheKey = 'crypto-compare-coin-list-v1';
+const coinListCacheKey = 'crypto-compare-top-coins-v1';
 const coinListCacheTtl = 6 * 60 * 60 * 1000;
 const fallbackCoins = [
     ['bitcoin', 'Bitcoin', 'btc'], ['ethereum', 'Ethereum', 'eth'], ['tether', 'Tether', 'usdt'],
@@ -262,7 +262,9 @@ function renderSuggestions(coins) {
         main.append(createSuggestionIcon(coin), name);
         const id = document.createElement('span');
         id.className = 'suggestion-id';
-        id.textContent = store.has(coin.id) ? `${coin.id} · Added` : pendingIds.has(coin.id) ? `${coin.id} · Adding…` : coin.id;
+        const rank = Number(coin.market_cap_rank);
+        const rankedId = Number.isFinite(rank) && rank > 0 ? `#${rank} · ${coin.id}` : coin.id;
+        id.textContent = store.has(coin.id) ? `${rankedId} · Added` : pendingIds.has(coin.id) ? `${rankedId} · Adding…` : rankedId;
         button.append(main, id);
 
         const alreadyAdded = store.has(coin.id);
@@ -282,19 +284,58 @@ async function loadCoinList() {
         throw error;
     }
     if (!coinListPromise) {
-        coinListPromise = fetch(coinListUrl).then(async response => {
-            if (!response.ok) throw apiError(response, 'Coin list');
-            const coins = await response.json();
-            if (!Array.isArray(coins)) throw new Error('Coin list response was not an array.');
+        coinListPromise = (async () => {
+            const coins = [];
+            // CoinGecko caps this endpoint at 250 rows per page; two serial requests
+            // load only the top 500 assets and avoid an unnecessary request burst.
+            for (const page of [1, 2]) {
+                const response = await fetch(coinListUrl(page));
+                if (!response.ok) throw apiError(response, 'Ranked coin list');
+                const pageCoins = await response.json();
+                if (!Array.isArray(pageCoins)) throw new Error('Ranked coin list response was not an array.');
+                coins.push(...pageCoins.map(coin => ({
+                    id: coin.id,
+                    name: coin.name,
+                    symbol: coin.symbol,
+                    image: coin.image,
+                    market_cap_rank: coin.market_cap_rank
+                })));
+            }
             saveCoinListCache(coins);
             return coins;
-        }).catch(error => {
+        })().catch(error => {
             if (error.status === 429) coinListCooldownUntil = Date.now() + error.retryAfterMs;
             coinListPromise = undefined;
             throw error;
         });
     }
     return coinListPromise;
+}
+
+function rankCoinMatches(coins, query) {
+    const text = value => String(value || '').toLocaleLowerCase();
+    const score = coin => {
+        const name = text(coin.name);
+        const id = text(coin.id);
+        const symbol = text(coin.symbol);
+        if (symbol === query) return 0;
+        if (name === query || id === query) return 1;
+        if (symbol.startsWith(query)) return 2;
+        if (name.startsWith(query) || id.startsWith(query)) return 3;
+        return 4;
+    };
+    return coins.filter(coin => {
+        const name = text(coin.name);
+        const id = text(coin.id);
+        const symbol = text(coin.symbol);
+        return name.includes(query) || id.includes(query) || symbol.includes(query);
+    }).sort((a, b) => {
+        const relevance = score(a) - score(b);
+        if (relevance) return relevance;
+        const rankA = Number(a.market_cap_rank) || Number.MAX_SAFE_INTEGER;
+        const rankB = Number(b.market_cap_rank) || Number.MAX_SAFE_INTEGER;
+        return rankA - rankB || text(a.name).localeCompare(text(b.name));
+    }).slice(0, 10);
 }
 
 async function searchCoins(searchText) {
@@ -310,32 +351,21 @@ async function searchCoins(searchText) {
     matchList.textContent = 'Searching…';
     try {
         let availableCoins;
-        let showingFallback = false;
         try {
             availableCoins = await loadCoinList();
         } catch (error) {
-            if (error.status === 429) {
+            if (error.status || cachedCoinList) {
                 availableCoins = cachedCoinList || fallbackCoins;
-                showingFallback = !cachedCoinList;
-                const description = showingFallback
-                    ? 'CoinGecko search is rate limited. Showing common coins only.'
-                    : 'CoinGecko search is rate limited. Showing your cached coin list.';
-                showRateLimitStatus(description, error.retryAfterMs);
+                const source = cachedCoinList ? 'your cached top-500 list' : 'popular coins only';
+                const reason = error.status === 429 ? 'rate limited' : error.status ? `unavailable (HTTP ${error.status})` : 'unavailable';
+                status.textContent = `CoinGecko search is ${reason}; showing ${source}.`;
             } else {
                 throw error;
             }
         }
         if (revision !== searchRevision) return;
-        const matches = availableCoins.filter(coin => {
-            const name = String(coin.name || '').toLocaleLowerCase();
-            const id = String(coin.id || '').toLocaleLowerCase();
-            const symbol = String(coin.symbol || '').toLocaleLowerCase();
-            return name.startsWith(query) || id.startsWith(query) || symbol.startsWith(query);
-        }).slice(0, 10);
+        const matches = rankCoinMatches(availableCoins, query);
         renderSuggestions(matches);
-        if (showingFallback && matches.length === 0) {
-            status.textContent = 'CoinGecko search is rate limited. This coin is not in the limited offline list.';
-        }
     } catch (error) {
         if (revision !== searchRevision) return;
         matchList.replaceChildren();
