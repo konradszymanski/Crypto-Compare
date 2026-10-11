@@ -94,7 +94,7 @@
 .event-chart-panel { margin: 0; position: sticky; top: 16px; }
 .event-chart-panel h2 { line-height: 1.25; }
 .chart-help { color: var(--muted); }
-#event-chart { display: block; min-width: 320px; width: 100%; }
+.chart-surface { height: 300px; min-width: 320px; width: 100%; }
 .event-caveat { color: var(--muted); font-size: .84rem; line-height: 1.5; margin: 8px 0 0; }
 
 @media (max-width: 850px) {

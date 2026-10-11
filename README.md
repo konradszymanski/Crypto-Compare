@@ -21,15 +21,23 @@ Search for coins and add them as columns to compare price, market data, supply, 
 
 ## Run locally
 
-This is a static HTML, CSS, and JavaScript project with no application build step. Open `index.html` in a browser, or serve the repository with any static file server. Searching and loading market data require an internet connection and availability of the data providers.
+This is a static, multi-page Vite app hosted on GitHub Pages. Vite bundles page-specific JavaScript and CSS into optimized static files; the site still has no application server or backend. Use Node.js 20.19+ or 22.12+.
+
+```sh
+npm ci
+npm run dev
+```
+
+Vite prints the local URL. Production output goes to `dist/` and can be previewed with `npm run build` followed by `npm run preview`.
 
 ## Run checks
 
-Use Node.js 20 or newer. Install the development dependencies once, then run the unit and browser checks:
+Install the dependencies, then run the unit and browser checks:
 
 ```sh
 npm ci
 npm test
+npm run build
 npx playwright install chromium
 npm run test:e2e
 ```
@@ -45,6 +53,9 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - `events.html` / `events.js` — sourced event timeline and BTC window comparison
 - `event-core.js` — event-window date and return calculations
 - `styles.css` — page and table presentation
+- `vite.config.js` — four-page build and relative asset paths for GitHub Pages
+- `cycles.js` / `events.js` — research page logic and interactive ECharts visualizations
+- `chart-kit.js` — shared, deferred ECharts setup used by research pages
 - `docs/ARCHITECTURE.md` — current design and boundaries
 - `docs/PROJECT_LOG.md` — shipped milestones, active work, and CI/CD release flow
 - `CONTRIBUTING.md` — workflow for changes

@@ -11,6 +11,13 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 
 ## Current state — 2026-10-11
 
+### In progress — build and chart modernization
+
+- Vite is being introduced as a build tool while preserving the existing four-page site and GitHub Pages hosting.
+- Research charts are moving from hand-drawn Canvas to ECharts for hover details, legend controls, and zooming. Chart code is split into deferred chunks; the Events page loads the library only after an event is selected.
+- GitHub Actions will build and test the generated `dist/` site, then publish that directory after verification.
+- This work is local and has not yet been committed, reviewed, merged, or deployed. The release state below remains the last verified production state.
+
 - **Production:** GitHub Pages deploys from `master` after the verification job succeeds.
 - **Latest product release:** [`455118f`](https://github.com/konradszymanski/Crypto-Compare/commit/455118f23b0a9bc50ddb388ef9211399d8cd9a0c) — deterministic Playwright browser checks and CI integration, merged via [PR #12](https://github.com/konradszymanski/Crypto-Compare/pull/12).
 - **Latest CI:** [PR verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136023098) and [production verification](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104989) succeeded; [GitHub Pages deployment](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38136104796) succeeded.
@@ -39,8 +46,8 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 Workflow: [`.github/workflows/pages.yml`](../.github/workflows/pages.yml), **Verify and deploy GitHub Pages**.
 
 1. A pull request targeting `master`, a push to `master`, or a manual workflow dispatch starts verification.
-2. Verification runs on Ubuntu with Node.js 20, installs locked development dependencies, checks JavaScript syntax for the application modules, runs the unit tests, installs Chromium, and runs deterministic Playwright browser tests.
-3. The deploy job runs only after verification on a push to `master`. It configures GitHub Pages, uploads the static site, and deploys it with the `github-pages` environment.
+2. Verification runs on Ubuntu with Node.js 22, installs locked dependencies, builds the four-page site, checks core and test JavaScript syntax, runs the unit tests, installs Chromium, and runs deterministic Playwright browser tests against `dist/`.
+3. The deploy job runs only after verification on a push to `master`. It rebuilds `dist/`, configures GitHub Pages, uploads that output, and deploys it with the `github-pages` environment.
 4. Workflow permissions are read-only for verification; deployment receives only `pages: write` and `id-token: write` in addition to content read access.
 5. After merging, confirm both the verification and Pages deployment runs succeed before treating the change as live.
 

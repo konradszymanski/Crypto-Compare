@@ -1,3 +1,5 @@
+import './comparison-core.js';
+
 (() => {
     const API = 'https://api.coingecko.com/api/v3';
     const CACHE_KEY = 'crypto-compare-market-snapshot-v1';

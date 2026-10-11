@@ -2,7 +2,7 @@
 
 ## Current shape
 
-Crypto-Compare is a free, static, research-focused multi-page app. Its core workflow is to compare current market data with Bitcoin halving cycles and a curated, source-linked historical event timeline. `index.html` owns the comparison page; `cycles.html`, `market.html`, and `events.html` provide historical cycle, current market, and event-context views. Shared colors and base layout live in `styles.css`, while each research page has a small script and styles. Pure calculations live in `comparison-core.js`, `cycle-core.js`, and `event-core.js` so they can be checked without a browser. There is no package manager, bundler, or backend. A personal portfolio tracker is outside the current product scope.
+Crypto-Compare is a free, static, research-focused multi-page app. Its core workflow is to compare current market data with Bitcoin halving cycles and a curated, source-linked historical event timeline. `index.html` owns the comparison page; `cycles.html`, `market.html`, and `events.html` provide historical cycle, current market, and event-context views. Shared colors and base layout live in `styles.css`, while each research page has a small script and styles. Pure calculations live in `comparison-core.js`, `cycle-core.js`, and `event-core.js` so they can be checked without a browser. Vite builds each HTML page into optimized static assets in `dist/`; there is still no backend. ECharts renders the interactive research charts and is loaded only when a chart needs to render. A personal portfolio tracker is outside the current product scope.
 
 ## Data flow
 
@@ -21,7 +21,7 @@ CoinGecko and Binance are external dependencies. Network errors, API limits, mis
 - Keep API requests, comparison state, formatting, and DOM rendering in distinct small responsibilities as the app grows.
 - Render API-provided text as text; do not treat remote values as trusted HTML.
 - Keep user-facing currency and units explicit.
-- Avoid adding a build system or runtime dependency without a concrete need and documented setup.
+- Keep shared dependencies page-scoped through Vite's module graph and document any new runtime library.
 
 ## Extension points
 

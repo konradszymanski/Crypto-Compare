@@ -1,11 +1,14 @@
+import './cycle-core.js';
+
 const core = window.BitcoinCycleCore;
 const dateInput = document.getElementById('compare-date');
 const statusNode = document.getElementById('cycle-status');
 const dataInfo = document.getElementById('cycle-data-info');
-const canvas = document.getElementById('cycle-chart');
+const chartElement = document.getElementById('cycle-chart');
+let chart;
+let echartsPromise;
 const tableBody = document.getElementById('cycle-rows');
 const cards = document.getElementById('cycle-cards');
-const legend = document.getElementById('cycle-legend');
 const coinGeckoCache = new Map();
 const binanceCache = new Map();
 const cycleColors = ['#70d6c5', '#ffbd69', '#a9a0ff', '#ff8f9c'];
@@ -17,6 +20,11 @@ const BINANCE_START = core.HALVINGS[2].date;
 const DATA_CACHE_TTL = 6 * 60 * 60 * 1000;
 const COINGECKO_COOLDOWN_KEY = 'crypto-cycle-coingecko-cooldown-v1';
 let requestRevision = 0;
+
+function loadEcharts() {
+    if (!echartsPromise) echartsPromise = import('./chart-kit.js').then(module => module.echarts);
+    return echartsPromise;
+}
 
 function selectedAssets() {
     return [...document.querySelectorAll('input[name="asset"]:checked')].map(input => input.value);
@@ -35,13 +43,30 @@ function errorSummary(error) {
     return 'network or browser access error';
 }
 
+function readCoinGeckoCache(asset) {
+    try {
+        const stored = JSON.parse(sessionStorage.getItem(`crypto-cycle-coingecko-${asset}-v1`) || 'null');
+        if (Array.isArray(stored?.prices) && stored.prices.length && Date.now() - stored.savedAt < DATA_CACHE_TTL) return stored.prices;
+    } catch {
+        // The page continues without browser storage.
+    }
+    return null;
+}
+
 async function fetchCoinGeckoAsset(asset) {
     if (coinGeckoCache.has(asset)) return coinGeckoCache.get(asset);
+    const cached = readCoinGeckoCache(asset);
+    if (cached) {
+        const promise = Promise.resolve(cached);
+        coinGeckoCache.set(asset, promise);
+        return promise;
+    }
     const promise = fetch(`https://api.coingecko.com/api/v3/coins/${asset}/market_chart?vs_currency=usd&days=max`)
         .then(async response => {
             if (!response.ok) throw makeHttpError(response, 'CoinGecko');
             const payload = await response.json();
-            if (!Array.isArray(payload.prices)) throw new Error(`Price history is unavailable for ${asset}.`);
+            if (!Array.isArray(payload.prices) || !payload.prices.length) throw new Error(`Price history is unavailable for ${asset}.`);
+            try { sessionStorage.setItem(`crypto-cycle-coingecko-${asset}-v1`, JSON.stringify({ savedAt: Date.now(), prices: payload.prices })); } catch { /* Keep the response in memory. */ }
             return payload.prices;
         }).catch(error => {
             coinGeckoCache.delete(asset);
@@ -92,6 +117,10 @@ async function fetchBinanceAsset(asset) {
 }
 
 async function loadPriceSets(assets) {
+    const sessionPrices = Object.fromEntries(assets.map(asset => [asset, readCoinGeckoCache(asset)]));
+    if (assets.every(asset => sessionPrices[asset])) {
+        return { priceSets: sessionPrices, provider: 'CoinGecko · USD (saved in this tab)', fallbackReason: 'Reused saved history for up to six hours.' };
+    }
     let coinGeckoError;
     let cooldownUntil = 0;
     try { cooldownUntil = Number(sessionStorage.getItem(COINGECKO_COOLDOWN_KEY)) || 0; } catch { /* optional browser storage */ }
@@ -137,93 +166,42 @@ function nearestReturn(values, day) {
     return found ? found.returnPct : null;
 }
 
-function drawChart(cycles, assets) {
-    const rect = canvas.getBoundingClientRect();
-    const scale = window.devicePixelRatio || 1;
-    const width = Math.max(320, rect.width);
-    const height = 390;
-    canvas.width = Math.round(width * scale);
-    canvas.height = Math.round(height * scale);
-    canvas.style.height = `${height}px`;
-    const context = canvas.getContext('2d');
-    context.setTransform(scale, 0, 0, scale, 0, 0);
-    context.clearRect(0, 0, width, height);
-
+async function drawChart(cycles, assets) {
+    const echarts = await loadEcharts();
+    if (!chart) {
+        chartElement.replaceChildren();
+        chart = echarts.init(chartElement);
+    }
     const series = [];
     cycles.forEach((cycle, index) => assets.forEach(asset => {
         const values = cycle.assets[asset]?.values || [];
-        if (values.length) series.push({ cycle, index, asset, values });
+        if (values.length) series.push({
+            name: `${cycle.label} ${assetLabels[asset]}`,
+            type: 'line',
+            showSymbol: false,
+            animation: false,
+            data: values.map(point => [point.day, point.returnPct]),
+            lineStyle: { color: cycleColors[index], width: asset === 'bitcoin' ? 2.6 : 2, type: asset === 'ethereum' ? 'dashed' : 'solid' },
+            emphasis: { focus: 'series', lineStyle: { width: 4 } }
+        });
     }));
     if (!series.length) {
-        context.fillStyle = '#afc2bf';
-        context.font = '15px Urbanist, sans-serif';
-        context.fillText('No history available for the selected date.', 24, 42);
+        chart.clear();
+        chart.setOption({ title: { text: 'No history available for the selected date.', left: 'center', top: 'middle', textStyle: { color: '#afc2bf', fontFamily: 'Urbanist, sans-serif', fontSize: 15, fontWeight: 'normal' } } });
         return;
     }
-
-    const maxDay = Math.max(1, ...series.map(line => line.values[line.values.length - 1].day));
-    const allReturns = series.flatMap(line => line.values.map(point => point.returnPct));
-    let minValue = Math.min(0, ...allReturns);
-    let maxValue = Math.max(0, ...allReturns);
-    if (minValue === maxValue) { minValue -= 10; maxValue += 10; }
-    const padding = { left: 62, right: 18, top: 20, bottom: 48 };
-    const plotWidth = width - padding.left - padding.right;
-    const plotHeight = height - padding.top - padding.bottom;
-    const yMin = minValue - (maxValue - minValue) * 0.08;
-    const yMax = maxValue + (maxValue - minValue) * 0.08;
-    const x = day => padding.left + (day / maxDay) * plotWidth;
-    const y = value => padding.top + ((yMax - value) / (yMax - yMin)) * plotHeight;
-
-    context.font = '12px Urbanist, sans-serif';
-    context.lineWidth = 1;
-    for (let tick = 0; tick <= 4; tick += 1) {
-        const value = yMin + (yMax - yMin) * tick / 4;
-        const ypos = y(value);
-        context.strokeStyle = 'rgba(175,194,191,0.18)';
-        context.beginPath(); context.moveTo(padding.left, ypos); context.lineTo(width - padding.right, ypos); context.stroke();
-        context.fillStyle = '#afc2bf';
-        context.textAlign = 'right';
-        context.fillText(`${formatter.format(value)}%`, padding.left - 9, ypos + 4);
-    }
-    for (let tick = 0; tick <= 4; tick += 1) {
-        const day = Math.round(maxDay * tick / 4);
-        const xpos = x(day);
-        context.strokeStyle = 'rgba(175,194,191,0.1)';
-        context.beginPath(); context.moveTo(xpos, padding.top); context.lineTo(xpos, height - padding.bottom); context.stroke();
-        context.fillStyle = '#afc2bf';
-        context.textAlign = 'center';
-        context.fillText(`${day}`, xpos, height - 23);
-    }
-    context.fillStyle = '#afc2bf';
-    context.textAlign = 'center';
-    context.fillText('Days since halving', padding.left + plotWidth / 2, height - 4);
-
-    series.forEach(line => {
-        context.beginPath();
-        context.strokeStyle = cycleColors[line.index];
-        context.lineWidth = line.asset === 'bitcoin' ? 2.6 : 2;
-        context.setLineDash(line.asset === 'ethereum' ? [7, 5] : []);
-        line.values.forEach((point, index) => {
-            if (index === 0) context.moveTo(x(point.day), y(point.returnPct));
-            else context.lineTo(x(point.day), y(point.returnPct));
-        });
-        context.stroke();
-    });
-    context.setLineDash([]);
-}
-
-function renderLegend(cycles, assets) {
-    legend.replaceChildren();
-    cycles.forEach((cycle, index) => assets.forEach(asset => {
-        if (!(cycle.assets[asset]?.values || []).length) return;
-        const item = document.createElement('span');
-        item.className = 'legend-item';
-        const swatch = document.createElement('i');
-        swatch.style.setProperty('--series-color', cycleColors[index]);
-        if (asset === 'ethereum') swatch.classList.add('dashed');
-        item.append(swatch, document.createTextNode(`${cycle.label} ${assetLabels[asset]}`));
-        legend.appendChild(item);
-    }));
+    const maxDay = Math.max(1, ...series.flatMap(line => line.data.map(point => point[0])));
+    chart.setOption({
+        animation: false,
+        textStyle: { color: '#afc2bf', fontFamily: 'Urbanist, sans-serif' },
+        grid: { left: 64, right: 22, top: 58, bottom: 92, containLabel: true },
+        legend: { type: 'scroll', top: 8, textStyle: { color: '#afc2bf' }, pageTextStyle: { color: '#afc2bf' } },
+        tooltip: { trigger: 'axis', confine: true, backgroundColor: '#183033', borderColor: 'rgba(175,194,191,.35)', textStyle: { color: '#f2f7f5', fontFamily: 'Urbanist, sans-serif' }, valueFormatter: value => `${formatter.format(value)}%` },
+        xAxis: { type: 'value', name: 'Days since halving', nameLocation: 'middle', nameGap: 32, min: 0, max: maxDay, axisLabel: { color: '#afc2bf' }, axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } }, splitLine: { lineStyle: { color: 'rgba(175,194,191,.1)' } } },
+        yAxis: { type: 'value', name: 'Return', axisLabel: { color: '#afc2bf', formatter: value => `${formatter.format(value)}%` }, axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } }, splitLine: { lineStyle: { color: 'rgba(175,194,191,.18)' } } },
+        dataZoom: [{ type: 'inside', xAxisIndex: 0 }, { type: 'slider', xAxisIndex: 0, bottom: 12, height: 20, borderColor: 'rgba(175,194,191,.2)', fillerColor: 'rgba(112,214,197,.18)', textStyle: { color: '#afc2bf' } }],
+        series
+    }, true);
 }
 
 function renderRows(cycles, assets) {
@@ -278,12 +256,11 @@ async function updateChart() {
     dataInfo.textContent = 'Checking data sources and historical coverage…';
     document.getElementById('load-cycles').disabled = true;
     try {
-        const result = await loadPriceSets(assets);
+        const [result] = await Promise.all([loadPriceSets(assets), loadEcharts()]);
         if (revision !== requestRevision) return;
         const allCycles = core.buildCycleSeries(core.HALVINGS, result.priceSets, selectedDate, assets);
         const cycles = allCycles.filter(cycle => assets.some(asset => (cycle.assets[asset]?.values || []).length));
-        drawChart(cycles, assets);
-        renderLegend(cycles, assets);
+        await drawChart(cycles, assets);
         renderRows(cycles, assets);
         renderDataInfo(result, cycles, assets);
         const elapsed = core.daysBetween(core.HALVINGS[core.HALVINGS.length - 1].date, selectedDate);
@@ -292,8 +269,6 @@ async function updateChart() {
         if (revision === requestRevision) {
             statusNode.textContent = `No chart data is available. ${error.message}`;
             dataInfo.textContent = 'The page tried CoinGecko USD history and Binance public USDT spot candles. Both sources failed, so there is no data to plot yet. Wait for the rate limit to clear, then select Update chart.';
-            drawChart([], assets);
-            renderLegend([], assets);
             renderRows([], assets);
         }
         console.error(error);
@@ -302,12 +277,19 @@ async function updateChart() {
     }
 }
 
+let hasRequestedHistory = false;
 const today = new Date().toISOString().slice(0, 10);
 dateInput.min = core.HALVINGS[core.HALVINGS.length - 1].date;
 dateInput.max = today;
 dateInput.value = today;
-document.getElementById('load-cycles').addEventListener('click', updateChart);
-dateInput.addEventListener('change', updateChart);
-document.querySelectorAll('input[name="asset"]').forEach(input => input.addEventListener('change', updateChart));
-window.addEventListener('resize', () => { if (tableBody.children.length) updateChart(); });
-updateChart();
+document.getElementById('load-cycles').addEventListener('click', () => {
+    hasRequestedHistory = true;
+    updateChart();
+});
+function settingsChanged() {
+    if (hasRequestedHistory) updateChart();
+    else statusNode.textContent = 'Settings updated. Select Update chart when you are ready to load historical prices.';
+}
+dateInput.addEventListener('change', settingsChanged);
+document.querySelectorAll('input[name="asset"]').forEach(input => input.addEventListener('change', settingsChanged));
+window.addEventListener('resize', () => chart?.resize());
