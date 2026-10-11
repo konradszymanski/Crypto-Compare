@@ -3,110 +3,67 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600&display=swap" rel="stylesheet">
-    <link rel='shortcut icon' type='image/x-icon' href='favicon.svg'>
-    <title>CryptoCompare</title>
-    <script src="script.js" type="text/javascript" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Crypto-Compare</title>
+    <script src="comparison-core.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 
 <body>
-    <h1 class='center'>Crypto-Compare</h1>
-    <p class='center'>Start typing the name of the coin.</p>
-    <div class='center inputs'>
-         <input id="input" type="text" class="search-bar__input" placeholder="Enter coin name"> 
-        <!-- <button id='submit' type='button' aria-label="search">submit</button> -->
-    </div>
-    <div id="match-list"></div>
-    <div class="results center">
-        <div id="error"></div>
-        <div id="results"></div>
-        <table id="table" class="cryptoTable">
-            <tbody class="cryptoContainer">
-                <tr class="cryptoHeader cryptoColumn">
-                    <td class="cryptoRow crudHeader">Name</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Current Price</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Symbol</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Image</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Market Cap Rank</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Market Cap</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Fully Diluted Valuation</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Total Volume</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">High 24h</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Low 24</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Price Change 24h</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Price Change Percentage 24h</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Market Cap Change 24h</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Market Cap Change Percentage 24h</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Circulating Supply</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Total Supply</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Max Supply</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Ath</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Ath Change Percentage</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Ath Date</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Atl</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Atl Change Percentage</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Atl Date</td>
-                </tr>
-                <tr class="cryptoColumn">
-                    <td class="cryptoRow">Last Updated</td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- <button type="button" class='btn'>add column</button> -->
-        <!-- <button id="change">Change</button> -->
+    <main class="app-shell">
+        <header class="page-header">
+            <p class="eyebrow">Market overview</p>
+            <h1>Crypto-Compare</h1>
+            <p class="intro">Choose the coins you follow and compare their market data side by side.</p>
+        </header>
 
-        <!-- <div id="data"></div> -->
-    </div>
+        <section class="search-section" aria-labelledby="search-title">
+            <label id="search-title" for="input">Add a cryptocurrency</label>
+            <div class="search-field">
+                <span aria-hidden="true" class="search-icon">⌕</span>
+                <input id="input" type="search" placeholder="Search by coin name" autocomplete="off" aria-label="Search for a cryptocurrency" aria-controls="match-list">
+            </div>
+            <div id="match-list" class="suggestions" aria-live="polite"></div>
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+        </section>
 
+        <section class="comparison-section" aria-labelledby="comparison-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Your watchlist</p>
+                    <h2 id="comparison-title">Compare coins</h2>
+                </div>
+                <span id="coin-count" class="coin-count">0 coins</span>
+            </div>
+
+            <div id="empty-state" class="empty-state">
+                <span class="empty-icon" aria-hidden="true">＋</span>
+                <h3>Your comparison starts here</h3>
+                <p>Search for a coin above to add its live market data.</p>
+            </div>
+
+            <div id="table-wrap" class="table-wrap" hidden>
+                <table id="comparison-table" class="comparison-table">
+                    <caption class="visually-hidden">Cryptocurrency market data comparison</caption>
+                    <thead id="table-head"></thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+
+            <div id="coin-cards" class="coin-cards" hidden></div>
+        </section>
+
+        <footer class="page-footer">
+            <p>Market data provided by <a href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a>. Values are shown in USD.</p>
+        </footer>
+    </main>
 </body>
 
 </html>
+

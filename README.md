@@ -1,8 +1,38 @@
-# Crypto-Compare CoinGecko Cryptocurrency API
-### Details
-The project is made from scratch in HTML, CSS and Vanilla JavaScript.  Crypto-Compare is fetching data from CoinGeko Cryptocurrency API, where the results are depends on you (user).
-### Idea
- The most of the other Cryptocurrency websites are having a horizotal tables, with listed e.g. 50 coins in bulk.  I was thinking that would be a nice idea to pick only the coins you want to check, and list them in a vertical table. Vertical structure would be easier to read on mobile devices as well. 
-### Check the project
-[Go to Crypto-Compare](https://konradszymanski.github.io/Crypto-Compare/)
+# Crypto-Compare
+
+Crypto-Compare is a small, browser-based cryptocurrency comparison tool. Search for coins and add them as columns to compare price, market data, supply, and all-time high and low values. Market data comes from the [CoinGecko API](https://www.coingecko.com/en/api).
+
+**Live demo:** [konradszymanski.github.io/Crypto-Compare](https://konradszymanski.github.io/Crypto-Compare/)
+
+## Run locally
+
+This is a static HTML, CSS, and JavaScript project with no build step or package installation. Open `index.html` in a browser, or serve the repository with any static file server. Searching and loading market data require an internet connection and availability of the CoinGecko API.
+
+## Run checks
+
+Use Node.js 18 or newer to run the built-in unit tests. No packages need to be installed:
+
+```sh
+node --test tests/comparison-core.test.js
+```
+
+## Project map
+
+- `index.html` — page structure and comparison table
+- `script.js` — CoinGecko requests, search, and responsive rendering
+- `comparison-core.js` — selected coin state and market value formatting
+- `styles.css` — page and table presentation
+- `docs/ARCHITECTURE.md` — current design and boundaries
+- `CONTRIBUTING.md` — workflow for changes
+- `ROADMAP.md` — staged improvement ideas
+- `SECURITY.md` — security reporting and data handling notes
+- `tests/` — focused state and formatting tests using Node's built-in test runner
+
+## Current limitations
+
+- Market values are denominated in USD.
+- Data freshness and availability depend on CoinGecko.
+- The app is a static client-side page with no backend or persistence.
+
+See [ROADMAP.md](ROADMAP.md) for possible next steps.
 
