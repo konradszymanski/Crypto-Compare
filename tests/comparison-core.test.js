@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createStore, fields, formatValue, marketDataUrl } = require('../comparison-core.js');
+const { createMarketRefresher, createStore, fields, formatValue, marketDataUrl } = require('../comparison-core.js');
 const { eventWindow } = require('../event-core.js');
 
 test('store adds unique coin ids and returns current selections', () => {
@@ -36,6 +36,73 @@ test('store refreshes all selected market data without changing selection order'
         { id: 'bitcoin', current_price: 10 },
         { id: 'ethereum', current_price: 20 }
     ]);
+});
+
+test('market refresher updates every selected coin when the request succeeds', async () => {
+    const store = createStore();
+    store.add({ id: 'bitcoin', current_price: 10 });
+    store.add({ id: 'ethereum', current_price: 20 });
+    const refresher = createMarketRefresher(store, async (currency, ids) => {
+        assert.equal(currency, 'EUR');
+        assert.deepEqual(ids, ['bitcoin', 'ethereum']);
+        return [
+            { id: 'ethereum', current_price: 22, last_updated: '2026-10-11T12:00:00Z' },
+            { id: 'bitcoin', current_price: 11, last_updated: '2026-10-11T12:00:00Z' }
+        ];
+    });
+
+    const result = await refresher.refresh('EUR');
+
+    assert.equal(result.status, 'updated');
+    assert.deepEqual(store.getCoins().map(coin => coin.current_price), [11, 22]);
+});
+
+test('market refresher preserves selected data if the request fails', async () => {
+    const store = createStore();
+    const bitcoin = { id: 'bitcoin', current_price: 10 };
+    store.add(bitcoin);
+    const refresher = createMarketRefresher(store, async () => {
+        throw new Error('Network unavailable');
+    });
+
+    await assert.rejects(refresher.refresh('USD'), /Network unavailable/);
+    assert.deepEqual(store.getCoins(), [bitcoin]);
+});
+
+test('market refresher preserves every coin if the provider returns a partial response', async () => {
+    const store = createStore();
+    const bitcoin = { id: 'bitcoin', current_price: 10 };
+    const ethereum = { id: 'ethereum', current_price: 20 };
+    store.add(bitcoin);
+    store.add(ethereum);
+    const refresher = createMarketRefresher(store, async () => [
+        { id: 'bitcoin', current_price: 11 }
+    ]);
+
+    await assert.rejects(refresher.refresh('USD'), /complete data/);
+    assert.deepEqual(store.getCoins(), [bitcoin, ethereum]);
+});
+
+test('market refresher prevents overlapping duplicate requests', async () => {
+    const store = createStore();
+    store.add({ id: 'bitcoin', current_price: 10 });
+    let requestCount = 0;
+    let releaseRequest;
+    const refresher = createMarketRefresher(store, () => {
+        requestCount += 1;
+        return new Promise(resolve => {
+            releaseRequest = resolve;
+        });
+    });
+
+    const firstRequest = refresher.refresh('USD');
+    const duplicateResult = await refresher.refresh('USD');
+    assert.deepEqual(duplicateResult, { status: 'busy' });
+    assert.equal(requestCount, 1);
+
+    releaseRequest([{ id: 'bitcoin', current_price: 12 }]);
+    assert.equal((await firstRequest).status, 'updated');
+    assert.equal(store.getCoins()[0].current_price, 12);
 });
 
 test('store rejects coins without an id', () => {

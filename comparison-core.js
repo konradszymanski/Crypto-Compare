@@ -26,7 +26,7 @@
         { key: 'atl', label: 'All-time low', type: 'currency' },
         { key: 'atl_change_percentage', label: 'Change from all-time low (%)', type: 'percent' },
         { key: 'atl_date', label: 'All-time low date', type: 'date' },
-        { key: 'last_updated', label: 'Last updated', type: 'datetime' }
+        { key: 'last_updated', label: 'CoinGecko data updated', type: 'datetime' }
     ]);
 
     function marketDataUrl(currencyCode, ids) {
@@ -75,6 +75,38 @@
         };
     }
 
+    function createMarketRefresher(store, requestMarketData) {
+        let inFlight = false;
+
+        return {
+            async refresh(currencyCode) {
+                if (inFlight) return { status: 'busy' };
+                const selectedCoins = store.getCoins();
+                if (!selectedCoins.length) return { status: 'empty', coins: [] };
+
+                inFlight = true;
+                try {
+                    const requestedIds = selectedCoins.map(coin => coin.id).sort();
+                    const updates = await requestMarketData(currencyCode, selectedCoins.map(coin => coin.id));
+                    const returnedIds = Array.isArray(updates) ? updates.map(coin => coin?.id).sort() : [];
+                    if (requestedIds.length !== returnedIds.length || requestedIds.some((id, index) => id !== returnedIds[index])) {
+                        throw new Error('Market refresh did not return complete data for every selected coin.');
+                    }
+
+                    const currentIds = store.getCoins().map(coin => coin.id).sort();
+                    if (requestedIds.length !== currentIds.length || requestedIds.some((id, index) => id !== currentIds[index])) {
+                        throw new Error('The comparison changed while market data was loading. Please refresh again.');
+                    }
+
+                    store.updateMany(updates);
+                    return { status: 'updated', coins: store.getCoins() };
+                } finally {
+                    inFlight = false;
+                }
+            }
+        };
+    }
+
     function formatValue(field, coin, currencyCode = 'USD') {
         const value = coin[field.key];
         if (value === null || value === undefined || value === '') return '—';
@@ -99,6 +131,6 @@
         return String(value);
     }
 
-    return Object.freeze({ fields, createStore, formatValue, marketDataUrl });
+    return Object.freeze({ fields, createStore, createMarketRefresher, formatValue, marketDataUrl });
 });
 
