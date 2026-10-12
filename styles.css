@@ -648,3 +648,42 @@ h1 {
 }
 
 
+
+.sort-control {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin: 0 0 22px;
+}
+
+.sort-control label {
+    font-weight: 600;
+}
+
+.sort-control select,
+.sort-direction {
+    background: #f4f8f7;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: #173033;
+    font: inherit;
+    min-height: 42px;
+    padding: 7px 12px;
+}
+
+.sort-direction {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.sort-control select:disabled,
+.sort-direction:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+.sort-direction:hover:not(:disabled),
+.sort-direction:focus-visible {
+    background: #d9f1ec;
+}
