@@ -28,3 +28,8 @@ CoinGecko and Binance are external dependencies. Network errors, API limits, mis
 
 As features are added, consider extracting small modules for API access, formatting, and comparison state. A feature should have a clear source of truth for selected coins and define how loading, errors, empty values, and duplicate selections behave. These are future directions, not requirements to add abstractions before they are needed.
 
+
+
+## Shared provider requests
+
+The comparison page uses data-client.js for CoinGecko JSON requests. It de-duplicates identical in-flight requests, applies a 15-second timeout, and normalizes HTTP, JSON, network, and timeout failures. HTTP 429 responses honor Retry-After and start an origin-level cooldown. Page-level cached-list fallback and freshness behavior remain owned by the comparison page. Market Pulse, asset, cycle, and event pages retain their current request and data-source handling pending separate validation.
