@@ -1,4 +1,7 @@
 import './comparison-core.js';
+import './data-client.js';
+
+const { requestJson } = window.CryptoCompareData;
 
 const { fields, createStore, createMarketRefresher, formatValue, marketDataUrl } = window.CryptoCompareCore;
 const store = createStore();
@@ -70,13 +73,6 @@ function saveCoinListCache(coins) {
     }
 }
 
-function apiError(response, requestName) {
-    const error = new Error(`${requestName} request failed (${response.status}).`);
-    error.status = response.status;
-    const retryAfter = Number(response.headers.get('Retry-After'));
-    error.retryAfterMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 60_000;
-    return error;
-}
 
 function showRateLimitStatus(prefix, retryAfterMs) {
     const until = Date.now() + Math.max(1000, retryAfterMs || 60_000);
@@ -94,9 +90,7 @@ function showRateLimitStatus(prefix, retryAfterMs) {
 }
 
 const marketRefresher = createMarketRefresher(store, async (currency, ids) => {
-    const response = await fetch(marketDataUrl(currency, ids));
-    if (!response.ok) throw apiError(response, 'Market data refresh');
-    return response.json();
+    return requestJson(marketDataUrl(currency, ids), { provider: 'CoinGecko market data' });
 });
 
 function setMarketRequestInProgress(inProgress) {
@@ -430,9 +424,7 @@ async function refreshSavedCoins() {
     status.textContent = `Restoring ${savedCoins.length} saved ${savedCoins.length === 1 ? 'coin' : 'coins'}…`;
     setMarketRequestInProgress(true);
     try {
-        const response = await fetch(marketDataUrl(displayCurrency, savedCoins.map(coin => coin.id)));
-        if (!response.ok) throw apiError(response, 'Saved comparison refresh');
-        const data = await response.json();
+        const data = await requestJson(marketDataUrl(displayCurrency, savedCoins.map(coin => coin.id)), { provider: 'CoinGecko saved comparison' });
         if (!Array.isArray(data)) throw new Error('Saved comparison response was invalid.');
         if (data.length) {
             const requestedIds = new Set(savedCoins.map(coin => coin.id));
@@ -510,9 +502,7 @@ async function loadCoinList() {
             // CoinGecko caps this endpoint at 250 rows per page; two serial requests
             // load only the top 500 assets and avoid an unnecessary request burst.
             for (const page of [1, 2]) {
-                const response = await fetch(coinListUrl(page));
-                if (!response.ok) throw apiError(response, 'Ranked coin list');
-                const pageCoins = await response.json();
+                const pageCoins = await requestJson(coinListUrl(page), { provider: 'CoinGecko ranked coin list' });
                 if (!Array.isArray(pageCoins)) throw new Error('Ranked coin list response was not an array.');
                 coins.push(...pageCoins.map(coin => ({
                     id: coin.id,
@@ -619,9 +609,7 @@ async function loadCoin(id) {
     status.textContent = 'Loading market data…';
 
     try {
-        const response = await fetch(marketDataUrl(displayCurrency, [id]));
-        if (!response.ok) throw apiError(response, 'Market data');
-        const data = await response.json();
+        const data = await requestJson(marketDataUrl(displayCurrency, [id]), { provider: 'CoinGecko market data' });
         const coin = Array.isArray(data) ? data.find(item => item.id === id) : null;
         if (!coin) throw new Error('No market data was returned for this coin.');
 
