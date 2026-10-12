@@ -65,10 +65,10 @@ The detailed endpoint inventory, data constraints, and implementation rules are 
 ### Shared data foundations
 
 - [x] Extract a shared provider client for comparison-page request de-duplication, timeouts, common HTTP/JSON errors, and Retry-After rate-limit backoff.
-- [ ] Extend the shared provider client to Market Pulse and asset research after validating each page's existing cache and stale-data behavior.
+- [x] Extend the shared provider client to Market Pulse and asset research with page-specific session-cache lifetimes and freshness metadata.
 - [ ] Load data only when a page or user action needs it; use stale cached data with a visible timestamp when refresh fails.
 - [ ] Never ship provider secrets in browser JavaScript. For authenticated data, choose a server-side proxy or a scheduled GitHub Actions data snapshot before adding the endpoint.
-- [ ] Add deterministic fixtures for every new provider-backed feature; CI must not make live market-data calls.
+- [x] Add deterministic request-client fixtures; CI must not make live market-data calls.
 
 ## Product questions for later
 
