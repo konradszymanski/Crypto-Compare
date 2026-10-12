@@ -687,3 +687,13 @@ h1 {
 .sort-direction:focus-visible {
     background: #d9f1ec;
 }
+
+.metric-positive {
+    color: #8be2d6;
+    font-weight: 700;
+}
+
+.metric-negative {
+    color: #f1a1a1;
+    font-weight: 700;
+}
