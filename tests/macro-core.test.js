@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const macro = require('../macro-core.js');
 
-const snapshot = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'macro-monthly.json'), 'utf8'));
+const snapshot = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public', 'data', 'macro-monthly.json'), 'utf8'));
 
 test('macro snapshot has sourced monthly observations and keeps missing CPI values explicit', () => {
     assert.equal(snapshot.schemaVersion, 1);
