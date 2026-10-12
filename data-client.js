@@ -3,6 +3,8 @@
     const cooldowns = new Map();
     const DEFAULT_TIMEOUT_MS = 15000;
     const DEFAULT_RETRY_MS = 60000;
+    const CACHE_PREFIX = 'crypto-compare-provider-cache-v1:';
+    const memoryCache = new Map();
     class ProviderError extends Error {
         constructor(message, { provider, status, retryAfterMs, cause } = {}) {
             super(message, cause ? { cause } : undefined);
@@ -48,5 +50,40 @@
         try { return await pending; }
         finally { if (inFlight.get(key) === pending) inFlight.delete(key); }
     }
-    window.CryptoCompareData = Object.freeze({ requestJson, ProviderError });
+    function readCache(key) {
+        try {
+            const raw = window.sessionStorage?.getItem(key);
+            if (raw) {
+                const entry = JSON.parse(raw);
+                if (entry && Number.isFinite(entry.savedAt) && Object.hasOwn(entry, 'data')) return entry;
+            }
+        } catch { /* Storage may be disabled. */ }
+        return memoryCache.get(key) || null;
+    }
+
+    async function requestJsonWithMetadata(url, {
+        provider = 'Data provider', timeoutMs = DEFAULT_TIMEOUT_MS,
+        cacheTtlMs = 0, cacheKey = String(url), forceRefresh = false, allowStaleOnError = false
+    } = {}) {
+        const storageKey = CACHE_PREFIX + cacheKey;
+        const cached = cacheTtlMs > 0 ? readCache(storageKey) : null;
+        if (!forceRefresh && cached && Date.now() - cached.savedAt < cacheTtlMs) {
+            return { data: cached.data, source: 'session-cache', cachedAt: cached.savedAt };
+        }
+        try {
+            const data = await requestJson(url, { provider, timeoutMs });
+            const cachedAt = Date.now();
+            if (cacheTtlMs > 0) {
+                const entry = { data, savedAt: cachedAt };
+                memoryCache.set(storageKey, entry);
+                try { window.sessionStorage?.setItem(storageKey, JSON.stringify(entry)); } catch { /* Keep the in-memory copy. */ }
+            }
+            return { data, source: 'network', cachedAt };
+        } catch (error) {
+            if (allowStaleOnError && cached) return { data: cached.data, source: 'session-cache-stale', cachedAt: cached.savedAt, error };
+            throw error;
+        }
+    }
+
+    window.CryptoCompareData = Object.freeze({ requestJson, requestJsonWithMetadata, ProviderError });
 })();
