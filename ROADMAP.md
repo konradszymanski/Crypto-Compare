@@ -51,7 +51,8 @@ The detailed endpoint inventory, data constraints, and implementation rules are 
 ### Phase 3 — Holdings and macro context
 
 - [ ] Evaluate public company/government treasury endpoints and add a sourced holdings view if Demo access and data coverage are adequate.
-- [ ] Expand sourced macro context with reviewed public datasets and explicit release dates; prefer static, versioned data files for the GitHub Pages app.
+- [x] Add versioned FRED monthly CPI inflation and effective federal funds rate data to the Bitcoin cycle explorer, with observation dates and distinct chart scales.
+- [x] Refresh the public macro snapshot monthly through GitHub Actions pull requests; keep data reviewable and credentials out of the site.
 - [ ] Keep events and macro observations descriptive and avoid causal or predictive claims.
 
 ### Phase 4 — Market structure (optional, after validation)
