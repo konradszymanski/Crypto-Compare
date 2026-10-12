@@ -116,3 +116,11 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - Added visible keyboard instructions; kept the result list itself out of live announcements to reduce duplicate announcements.
 - Updated the existing browser scenario to check result-count and active-option announcements.
 - Tracked by [issue #33](https://github.com/konradszymanski/Crypto-Compare/issues/33); pull request closes the issue.
+
+
+## Shared provider request handling — 2026-10-13
+
+- Added shared browser-side CoinGecko JSON request handling for comparison search and market data.
+- The client de-duplicates identical in-flight requests, applies a 15-second timeout, normalizes HTTP/JSON/network errors, and honors Retry-After (including HTTP-date values) with an origin-level cooldown after HTTP 429.
+- Existing cached coin-list fallback and page freshness behaviors remain in place; other research pages are deferred until their separate cache behavior is validated.
+- Tracked by [issue #34](https://github.com/konradszymanski/Crypto-Compare/issues/34); pull request closes the issue.
