@@ -101,3 +101,10 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - Kept missing values at the bottom in both directions and ties in their original selection order.
 - Applied the same sort to the desktop table and mobile cards without issuing another market-data request.
 - Tracked by [issue #29](https://github.com/konradszymanski/Crypto-Compare/issues/29); pull request closes the issue.
+
+
+## Clearer comparison values — 2026-10-12
+
+- Positive percentage changes include an explicit plus sign; negative changes retain their minus sign and use restrained red styling. Sign text keeps direction understandable without color.
+- Missing circulating, total, and maximum supply values display “Not reported”; other unavailable values retain the dash.
+- Tracked by [issue #31](https://github.com/konradszymanski/Crypto-Compare/issues/31); pull request closes the issue.
