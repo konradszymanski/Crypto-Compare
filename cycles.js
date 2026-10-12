@@ -7,6 +7,8 @@ const statusNode = document.getElementById('cycle-status');
 const dataInfo = document.getElementById('cycle-data-info');
 const chartElement = document.getElementById('cycle-chart');
 let chart;
+let macroChart;
+let macroDataPromise;
 let echartsPromise;
 const tableBody = document.getElementById('cycle-rows');
 const cards = document.getElementById('cycle-cards');
