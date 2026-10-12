@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/comparison-core.test.js tests/macro-core.test.js",
+    "test": "node --test tests/comparison-core.test.js tests/macro-core.test.js tests/data-client.test.js",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
