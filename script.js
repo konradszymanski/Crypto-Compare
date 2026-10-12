@@ -14,12 +14,16 @@ const tableHead = document.getElementById('table-head');
 const tableBody = document.getElementById('table-body');
 const coinCards = document.getElementById('coin-cards');
 const currencySelect = document.getElementById('display-currency');
+const sortFieldSelect = document.getElementById('sort-field');
+const sortDirectionButton = document.getElementById('sort-direction');
 const tableCaption = document.getElementById('table-caption');
 const supportedCurrencies = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD']);
 const currencyStorageKey = 'crypto-compare-display-currency-v1';
 const selectionStorageKey = 'crypto-compare-selected-coins-v1';
 let displayCurrency = 'USD';
 let marketRequestInProgress = false;
+let sortFieldKey = 'market_cap_rank';
+let sortDirection = 1;
 
 const coinListUrl = page => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`;
 const iconBaseUrl = 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/';
@@ -235,8 +239,34 @@ function fieldLabel(field) {
     return field.type === 'currency' ? `${field.label} (${displayCurrency})` : field.label;
 }
 
+function sortCoins(coins) {
+    const field = fields.find(candidate => candidate.key === sortFieldKey);
+    if (!field) return coins;
+    return coins.map((coin, index) => {
+        const rawValue = coin[field.key];
+        const value = rawValue === null || rawValue === undefined || rawValue === '' ? NaN : Number(rawValue);
+        return { coin, index, value };
+    }).sort((left, right) => {
+        const leftMissing = !Number.isFinite(left.value);
+        const rightMissing = !Number.isFinite(right.value);
+        if (leftMissing !== rightMissing) return leftMissing ? 1 : -1;
+        if (leftMissing || left.value === right.value) return left.index - right.index;
+        return (left.value - right.value) * sortDirection;
+    }).map(entry => entry.coin);
+}
+
+function updateSortDirectionButton() {
+    const ascending = sortDirection === 1;
+    sortDirectionButton.textContent = ascending ? 'Ascending ↑' : 'Descending ↓';
+    sortDirectionButton.setAttribute('aria-label', ascending ? 'Sort descending' : 'Sort ascending');
+}
+
 function renderComparison() {
-    const coins = store.getCoins();
+    sortFieldSelect.querySelectorAll('option').forEach(option => {
+        const field = fields.find(candidate => candidate.key === option.value);
+        if (field) option.textContent = fieldLabel(field);
+    });
+    const coins = sortCoins(store.getCoins());
     const hasCoins = coins.length > 0;
     emptyState.hidden = hasCoins;
     tableWrap.hidden = !hasCoins;
@@ -244,6 +274,8 @@ function renderComparison() {
     coinCount.textContent = `${coins.length} ${coins.length === 1 ? 'coin' : 'coins'}`;
     refreshButton.disabled = marketRequestInProgress || !hasCoins;
     clearSelectionButton.disabled = marketRequestInProgress || !hasCoins;
+    sortFieldSelect.disabled = !hasCoins;
+    sortDirectionButton.disabled = !hasCoins;
 
     tableHead.replaceChildren();
     tableBody.replaceChildren();
@@ -615,6 +647,30 @@ currencySelect.value = displayCurrency;
 const savedCoins = readSavedCoins();
 savedCoins.forEach(coin => store.add(coin));
 currencySelect.addEventListener('change', () => changeDisplayCurrency(currencySelect.value));
+const sortableFields = fields.filter(field => ['currency', 'number', 'percent'].includes(field.type));
+sortableFields.forEach(field => {
+    const option = document.createElement('option');
+    option.value = field.key;
+    option.textContent = fieldLabel(field);
+    sortFieldSelect.appendChild(option);
+});
+sortFieldSelect.value = sortFieldKey;
+updateSortDirectionButton();
+sortFieldSelect.addEventListener('change', () => {
+    sortFieldKey = sortFieldSelect.value;
+    sortDirection = sortFieldKey === 'market_cap_rank' ? 1 : -1;
+    updateSortDirectionButton();
+    renderComparison();
+    const field = sortableFields.find(candidate => candidate.key === sortFieldKey);
+    status.textContent = `Comparison sorted by ${fieldLabel(field)}, ${sortDirection === 1 ? 'ascending' : 'descending'}.`;
+});
+sortDirectionButton.addEventListener('click', () => {
+    sortDirection *= -1;
+    updateSortDirectionButton();
+    renderComparison();
+    const field = sortableFields.find(candidate => candidate.key === sortFieldKey);
+    status.textContent = `Comparison sorted by ${fieldLabel(field)}, ${sortDirection === 1 ? 'ascending' : 'descending'}.`;
+});
 refreshButton.addEventListener('click', refreshComparison);
 clearSelectionButton.addEventListener('click', () => {
     store.getCoins().forEach(coin => store.remove(coin.id));
