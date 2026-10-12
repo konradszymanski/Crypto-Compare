@@ -1,4 +1,5 @@
 import './cycle-core.js';
+import './macro-core.js';
 
 const core = window.BitcoinCycleCore;
 const dateInput = document.getElementById('compare-date');
@@ -24,6 +25,25 @@ let requestRevision = 0;
 function loadEcharts() {
     if (!echartsPromise) echartsPromise = import('./chart-kit.js').then(module => module.echarts);
     return echartsPromise;
+}
+
+
+function loadMacroData() {
+    if (!macroDataPromise) {
+        macroDataPromise = fetch('./data/macro-monthly.json')
+            .then(response => {
+                if (!response.ok) throw new Error(`Macro snapshot returned HTTP ${response.status}.`);
+                return response.json();
+            })
+            .then(payload => {
+                if (payload?.schemaVersion !== 1 || !Array.isArray(payload.observations) || !payload.observations.length) {
+                    throw new Error('The macro snapshot is missing valid monthly observations.');
+                }
+                return payload;
+            })
+            .catch(error => { macroDataPromise = null; throw error; });
+    }
+    return macroDataPromise;
 }
 
 function selectedAssets() {
@@ -204,6 +224,74 @@ async function drawChart(cycles, assets) {
     }, true);
 }
 
+
+async function drawMacroChart(points, selectedDate, snapshot, priceProvider) {
+    const macroCore = window.CryptoMacroCore;
+    const echarts = await loadEcharts();
+    if (!macroChart) {
+        const element = document.getElementById('macro-chart');
+        element.replaceChildren();
+        macroChart = echarts.init(element);
+    }
+    const rows = macroCore.alignMonthlyData(snapshot.observations, points, selectedDate);
+    if (!rows.length) {
+        macroChart.clear();
+        document.getElementById('macro-summary').textContent = 'No macro observations are available through the selected date.';
+        return;
+    }
+    const months = rows.map(row => row.date);
+    const latestFed = macroCore.latestValue(rows, 'fedFundsPct');
+    const latestCpi = macroCore.latestValue(rows, 'cpiYoYPct');
+    const btcMonths = rows.filter(row => row.btcPrice != null);
+    const pct = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+    const summaryParts = [
+        `FRED snapshot generated ${snapshot.snapshotDate}`,
+        latestFed ? `effective Fed funds: ${pct.format(latestFed.fedFundsPct)}% (${latestFed.date})` : '',
+        latestCpi ? `CPI inflation: ${pct.format(latestCpi.cpiYoYPct)}% (${latestCpi.date})` : '',
+        btcMonths.length ? `BTC closes: ${btcMonths[0].date}–${btcMonths.at(-1).date} (${priceProvider})` : 'BTC monthly prices are unavailable in the loaded source'
+    ].filter(Boolean);
+    document.getElementById('macro-summary').textContent = summaryParts.join(' · ');
+    macroChart.setOption({
+        animation: false,
+        textStyle: { color: '#afc2bf', fontFamily: 'Urbanist, sans-serif' },
+        grid: [
+            { left: 68, right: 24, top: 54, height: '43%', containLabel: true },
+            { left: 68, right: 24, top: '64%', height: '25%', containLabel: true }
+        ],
+        legend: { top: 8, textStyle: { color: '#afc2bf' } },
+        tooltip: {
+            trigger: 'axis', confine: true, backgroundColor: '#183033',
+            borderColor: 'rgba(175,194,191,.35)',
+            textStyle: { color: '#f2f7f5', fontFamily: 'Urbanist, sans-serif' },
+            formatter(items) {
+                const heading = items[0]?.axisValue || '';
+                return [heading, ...items.map(item => {
+                    const value = item.value == null ? 'No observation' :
+                        item.seriesName === 'BTC monthly close' ? `${Number(item.value).toLocaleString(undefined, { maximumFractionDigits: 0 })}` : `${pct.format(item.value)}%`;
+                    return `${item.marker} ${item.seriesName}: ${value}`;
+                })].join('<br>');
+            }
+        },
+        xAxis: [
+            { type: 'category', data: months, boundaryGap: false, axisLabel: { show: false }, axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } }, splitLine: { show: false } },
+            { type: 'category', gridIndex: 1, data: months, boundaryGap: false, axisLabel: { color: '#afc2bf', rotate: 35, hideOverlap: true }, axisLine: { lineStyle: { color: 'rgba(175,194,191,.35)' } }, splitLine: { show: false } }
+        ],
+        yAxis: [
+            { type: 'value', name: 'BTC · USD', axisLabel: { color: '#afc2bf', formatter: value => `${Number(value).toLocaleString()}` }, splitLine: { lineStyle: { color: 'rgba(175,194,191,.13)' } } },
+            { type: 'value', gridIndex: 1, name: 'Percent', axisLabel: { color: '#afc2bf', formatter: value => `${pct.format(value)}%` }, splitLine: { lineStyle: { color: 'rgba(175,194,191,.13)' } } }
+        ],
+        dataZoom: [
+            { type: 'inside', xAxisIndex: [0, 1] },
+            { type: 'slider', xAxisIndex: [0, 1], bottom: 2, height: 18, borderColor: 'rgba(175,194,191,.2)', fillerColor: 'rgba(112,214,197,.18)', textStyle: { color: '#afc2bf' } }
+        ],
+        series: [
+            { name: 'BTC monthly close', type: 'line', xAxisIndex: 0, yAxisIndex: 0, showSymbol: false, connectNulls: false, animation: false, lineStyle: { color: '#70d6c5', width: 2.5 }, data: rows.map(row => row.btcPrice) },
+            { name: 'CPI inflation YoY', type: 'line', xAxisIndex: 1, yAxisIndex: 1, showSymbol: false, connectNulls: false, animation: false, lineStyle: { color: '#ffbd69', width: 2 }, data: rows.map(row => row.cpiYoYPct) },
+            { name: 'Effective Fed funds rate', type: 'line', xAxisIndex: 1, yAxisIndex: 1, showSymbol: false, connectNulls: false, animation: false, lineStyle: { color: '#a9a0ff', width: 2 }, data: rows.map(row => row.fedFundsPct) }
+        ]
+    }, true);
+}
+
 function renderRows(cycles, assets) {
     tableBody.replaceChildren();
     cards.replaceChildren();
@@ -256,7 +344,8 @@ async function updateChart() {
     dataInfo.textContent = 'Checking data sources and historical coverage…';
     document.getElementById('load-cycles').disabled = true;
     try {
-        const [result] = await Promise.all([loadPriceSets(assets), loadEcharts()]);
+        const priceAssets = [...new Set([...assets, 'bitcoin'])];
+        const [result, , macroData] = await Promise.all([loadPriceSets(priceAssets), loadEcharts(), loadMacroData()]);
         if (revision !== requestRevision) return;
         const allCycles = core.buildCycleSeries(core.HALVINGS, result.priceSets, selectedDate, assets);
         const cycles = allCycles.filter(cycle => assets.some(asset => (cycle.assets[asset]?.values || []).length));

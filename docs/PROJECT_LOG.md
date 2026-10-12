@@ -16,7 +16,7 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - **Latest CI and deployment:** [verification run #33](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38170000429) and [Pages deployment #17](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169998940) both succeeded.
 - **Project docs:** README, architecture, roadmap, data plan, and this progress log document the current product and static-site constraints.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, and Events & Bitcoin.
-- **Open GitHub work:** none. Issues #2, #17, #19, #1, #3, and #4 are closed after their implementations and deployments were verified.
+- **Open GitHub work:** [#22 macro context in Bitcoin cycles](https://github.com/konradszymanski/Crypto-Compare/issues/22), in review. Issues #2, #17, #19, #1, #3, and #4 are closed after their implementations and deployments were verified.
 
 ### Shipped — Market Pulse
 
@@ -46,6 +46,14 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Added implementation constraints to [`ROADMAP.md`](../ROADMAP.md): no client-side secrets, disclose data source and coverage, cache and load on demand, and mock providers in CI.
 - CoinGecko Demo historical chart coverage is documented as limited to the past 365 days in the current endpoint reference. Full BTC cycle research therefore continues to require an explicitly labeled long-history source such as the existing Binance daily-candle fallback.
 - Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. The curated Fed event timeline shipped in PR #20; next roadmap work is a reviewed static macro dataset or treasury research.
+
+
+### In review — historical macro context
+
+- Add a monthly Bitcoin price and U.S. macro chart to the Bitcoin cycle explorer, with separate price and percentage panels.
+- Version FRED effective federal funds and CPI year-over-year data in the repository. Show independent observation months and describe the time relationship without implying causation.
+- Refresh public FRED CSV snapshots through a monthly GitHub Actions pull request. No API key is shipped to the static site.
+- Tracked by [issue #22](https://github.com/konradszymanski/Crypto-Compare/issues/22).
 
 ## Verified milestone — browser regression checks
 

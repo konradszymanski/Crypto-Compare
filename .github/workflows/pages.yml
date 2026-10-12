@@ -36,6 +36,9 @@ jobs:
         run: |
           node --check comparison-core.js
           node --check cycle-core.js
+          node --check macro-core.js
+          node --check scripts/update-macro-data.mjs
+          node --check macro-core.js
           node --check event-core.js
           node --check playwright.config.js
           node --check tests/global-setup.js

@@ -7,6 +7,7 @@ This plan expands Crypto-Compare as a free, research-focused tool. It describes 
 - **CoinGecko public API:** coin search, comparison market data, global market metrics, market overview assets, and attempted historical chart data.
 - **Binance public market-data API:** daily candle fallback used for long BTC price history when CoinGecko does not provide the required range.
 - **Curated project data:** source-linked historical events and explanatory copy maintained with the site.
+- **FRED static macro snapshot:** monthly effective federal funds rate and CPI inflation year over year, refreshed by a scheduled GitHub Actions pull request; no API key or browser request is required.
 - **Browser storage:** best-effort short-lived caches; data may be unavailable across browsers or devices.
 
 The app is a static Vite site deployed to GitHub Pages. There is no server to protect an API key. CoinGecko's Demo documentation currently describes authenticated requests and restricts historical chart data to the past 365 days. Consequently, Demo history alone cannot power full Bitcoin-cycle comparisons. Keep the Binance series labeled with its source and date range, and do not silently splice it with another provider's prices.
@@ -49,7 +50,7 @@ Show source, currency, observation time, and earliest/latest date with every cha
 
 Potential CoinGecko inputs include the entities list, public treasury by entity or coin, holding charts, and transaction history. Verify which endpoints the Demo plan actually permits and how complete the historical coverage is before building the page.
 
-The Events & Bitcoin page uses a small, manually curated, source-linked timeline, now including Federal Reserve decisions from March 2020, June 2022, and March 2023. For macro indicators, prefer reviewed and source-linked data that can be stored as static, version-controlled files. If data collection requires a credential, use a scheduled server-side workflow to fetch and publish a public snapshot; do not place the credential in browser code. Record observation dates, release dates, units, and source URLs. Keep event and macro/price comparisons descriptive and explicitly non-causal.
+The Events & Bitcoin page uses a small, manually curated, source-linked timeline, now including Federal Reserve decisions from March 2020, June 2022, and March 2023. Bitcoin Cycles adds a versioned FRED snapshot of the effective federal funds rate and CPI inflation year over year. A monthly GitHub Actions workflow refreshes the public CSV inputs and opens a reviewable pull request. The site serves the checked-in snapshot without an API key or runtime macro request. If data collection requires a credential, use a scheduled server-side workflow to fetch and publish a public snapshot; do not place the credential in browser code. Record observation dates, release dates, units, and source URLs. Keep event and macro/price comparisons descriptive and explicitly non-causal.
 
 ### 4. Market structure exploration (optional)
 
