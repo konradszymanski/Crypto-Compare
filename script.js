@@ -4,6 +4,7 @@ const { fields, createStore, createMarketRefresher, formatValue, marketDataUrl }
 const store = createStore();
 const input = document.getElementById('input');
 const matchList = document.getElementById('match-list');
+const searchFeedback = document.getElementById('search-feedback');
 const status = document.getElementById('status');
 const emptyState = document.getElementById('empty-state');
 const coinCount = document.getElementById('coin-count');
@@ -128,8 +129,11 @@ function setActiveSuggestion(index) {
     if (!options.length) return;
     activeSuggestion = (index + options.length) % options.length;
     options.forEach((option, optionIndex) => option.setAttribute('aria-selected', String(optionIndex === activeSuggestion)));
-    input.setAttribute('aria-activedescendant', options[activeSuggestion].id);
-    options[activeSuggestion].scrollIntoView({ block: 'nearest' });
+    const activeOption = options[activeSuggestion];
+    input.setAttribute('aria-activedescendant', activeOption.id);
+    activeOption.scrollIntoView({ block: 'nearest' });
+    const label = activeOption.getAttribute('aria-label') || activeOption.querySelector('.suggestion-name')?.textContent || 'Search result';
+    searchFeedback.textContent = `${label}, ${activeSuggestion + 1} of ${options.length}.`;
 }
 
 function createRemoveButton(coin) {
@@ -454,13 +458,15 @@ async function refreshSavedCoins() {
     }
 }
 
-function renderSuggestions(coins) {
+function renderSuggestions(coins, query) {
     matchList.replaceChildren();
     resetActiveSuggestion();
     if (coins.length === 0) {
         matchList.textContent = 'No coins found.';
+        searchFeedback.textContent = `No coins found for ${query}.`;
         return;
     }
+    searchFeedback.textContent = `${coins.length} ${coins.length === 1 ? 'coin' : 'coins'} found for ${query}. Use the arrow keys to browse.`;
 
     coins.forEach(coin => {
         const button = document.createElement('button');
@@ -558,11 +564,13 @@ async function searchCoins(searchText) {
     const query = searchText.trim().toLocaleLowerCase();
     clearInterval(cooldownTimer);
     status.textContent = '';
+    searchFeedback.textContent = '';
     matchList.replaceChildren();
     resetActiveSuggestion();
     input.setAttribute('aria-expanded', String(Boolean(query)));
     if (!query) return;
 
+    searchFeedback.textContent = `Searching for ${query}…`;
     matchList.textContent = 'Searching…';
     try {
         let availableCoins;
@@ -580,7 +588,7 @@ async function searchCoins(searchText) {
         }
         if (revision !== searchRevision) return;
         const matches = rankCoinMatches(availableCoins, query);
-        renderSuggestions(matches);
+        renderSuggestions(matches, searchText.trim());
     } catch (error) {
         if (revision !== searchRevision) return;
         matchList.replaceChildren();
@@ -591,6 +599,7 @@ async function searchCoins(searchText) {
         } else {
             status.textContent = 'Coin search could not reach CoinGecko. Check your connection and try again.';
         }
+        searchFeedback.textContent = 'Coin search failed. See the status message for details.';
         console.error(error);
     }
 }
@@ -700,6 +709,7 @@ input.addEventListener('keydown', event => {
         matchList.replaceChildren();
         input.setAttribute('aria-expanded', 'false');
         resetActiveSuggestion();
+        searchFeedback.textContent = 'Suggestions closed.';
     }
 });
 renderComparison();
