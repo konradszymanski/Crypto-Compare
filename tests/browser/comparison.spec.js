@@ -56,9 +56,10 @@ test('search is labelled, keyboard-selectable, and prevents duplicates', async (
     await search.fill('btc');
     const bitcoinOption = page.getByRole('option', { name: 'Bitcoin #1 · bitcoin' });
     await expect(bitcoinOption).toBeVisible();
-    await expect(results).toHaveAttribute('aria-live', 'polite');
+    await expect(page.locator('#search-feedback')).toHaveText(/results found for btc/);
     await search.press('ArrowDown');
     await expect(search).toHaveAttribute('aria-activedescendant', 'coin-option-bitcoin');
+    await expect(page.locator('#search-feedback')).toHaveText(/Bitcoin, 1 of/);
     await search.press('Enter');
 
     await expect(page.getByRole('status')).toHaveText('Bitcoin added to comparison.');
@@ -81,6 +82,7 @@ test('uses the popular fallback when ranked search is rate limited', async ({ pa
     await page.getByRole('combobox', { name: 'Search for a cryptocurrency' }).fill('ada');
 
     await expect(page.getByRole('option', { name: /Cardano/ })).toBeVisible();
+    await expect(page.locator('#search-feedback')).toHaveText(/results found for ada/);
     await expect(page.getByRole('status')).toContainText('rate limited');
     await expect(page.getByRole('status')).toContainText('popular coins only');
 });
