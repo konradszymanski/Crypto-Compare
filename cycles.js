@@ -240,15 +240,21 @@ async function drawMacroChart(points, selectedDate, snapshot, priceProvider) {
         return;
     }
     const months = rows.map(row => row.date);
+    const fedRows = rows.filter(row => row.fedFundsPct != null);
+    const cpiRows = rows.filter(row => row.cpiYoYPct != null);
     const latestFed = macroCore.latestValue(rows, 'fedFundsPct');
     const latestCpi = macroCore.latestValue(rows, 'cpiYoYPct');
     const btcMonths = rows.filter(row => row.btcPrice != null);
     const pct = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+    const dateRange = values => values.length ? `${values[0].date}–${values.at(-1).date}` : 'no observations';
+    const btcCoverage = btcMonths.length
+        ? `BTC closes: ${btcMonths[0].date}–${btcMonths.at(-1).date} (${priceProvider})`
+        : priceProvider === 'pending' ? 'BTC price history loads when you select Update chart' : `BTC monthly prices unavailable (${priceProvider})`;
     const summaryParts = [
         `FRED snapshot generated ${snapshot.snapshotDate}`,
-        latestFed ? `effective Fed funds: ${pct.format(latestFed.fedFundsPct)}% (${latestFed.date})` : '',
-        latestCpi ? `CPI inflation: ${pct.format(latestCpi.cpiYoYPct)}% (${latestCpi.date})` : '',
-        btcMonths.length ? `BTC closes: ${btcMonths[0].date}–${btcMonths.at(-1).date} (${priceProvider})` : 'BTC monthly prices are unavailable in the loaded source'
+        latestFed ? `effective Fed funds: ${pct.format(latestFed.fedFundsPct)}% (${latestFed.date}; monthly; ${dateRange(fedRows)})` : '',
+        latestCpi ? `CPI inflation: ${pct.format(latestCpi.cpiYoYPct)}% (${latestCpi.date}; year over year; ${dateRange(cpiRows)})` : '',
+        btcCoverage
     ].filter(Boolean);
     document.getElementById('macro-summary').textContent = summaryParts.join(' · ');
     macroChart.setOption({
@@ -381,4 +387,10 @@ function settingsChanged() {
 }
 dateInput.addEventListener('change', settingsChanged);
 document.querySelectorAll('input[name="asset"]').forEach(input => input.addEventListener('change', settingsChanged));
-window.addEventListener('resize', () => chart?.resize());
+window.addEventListener('resize', () => { chart?.resize(); macroChart?.resize(); });
+
+loadMacroData()
+    .then(snapshot => drawMacroChart([], dateInput.value, snapshot, 'pending'))
+    .catch(error => {
+        document.getElementById('macro-summary').textContent = `The static FRED snapshot could not be loaded. ${error.message}`;
+    });
