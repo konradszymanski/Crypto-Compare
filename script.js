@@ -232,6 +232,12 @@ function appendValue(parent, field, coin) {
         return;
     }
 
+    if (field.type === 'percent') {
+        const value = Number(coin[field.key]);
+        if (Number.isFinite(value) && value !== 0) {
+            parent.classList.add(value > 0 ? 'metric-positive' : 'metric-negative');
+        }
+    }
     parent.textContent = formatValue(field, coin, displayCurrency);
 }
 
