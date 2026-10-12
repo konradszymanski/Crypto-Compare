@@ -25,7 +25,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [x] Add a sourced historical event timeline with BTC price-window comparisons and clear non-causal framing.
 - [x] Select a display currency and make the selected currency visible in the table.
 - [x] Add sortable comparison metrics with stable ordering and missing values kept last.
-- [ ] Improve formatting for percentages and missing supply values.
+- [x] Show explicit signs and subtle direction styling for percentage values; label unreported supply separately from other missing data.
 - [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
 - [x] Persist a user's selected coins locally, with a clear way to reset them.
 - [x] Add data freshness indicators and a deliberate refresh action.

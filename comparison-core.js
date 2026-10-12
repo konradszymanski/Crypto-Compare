@@ -109,7 +109,9 @@
 
     function formatValue(field, coin, currencyCode = 'USD') {
         const value = coin[field.key];
-        if (value === null || value === undefined || value === '') return '—';
+        if (value === null || value === undefined || value === '') {
+            return ['circulating_supply', 'total_supply', 'max_supply'].includes(field.key) ? 'Not reported' : '—';
+        }
         if (field.type === 'image') return value;
         if (field.type === 'symbol') return String(value).toUpperCase();
         if (field.type === 'currency') {
@@ -121,7 +123,10 @@
             return new Intl.NumberFormat('en-US', { maximumSignificantDigits: 9 }).format(value);
         }
         if (field.type === 'percent') {
-            return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value)}%`;
+            const numericValue = Number(value);
+            if (!Number.isFinite(numericValue)) return '—';
+            const sign = numericValue > 0 ? '+' : '';
+            return `${sign}${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(numericValue)}%`;
         }
         if (field.type === 'date' || field.type === 'datetime') {
             const date = new Date(value);

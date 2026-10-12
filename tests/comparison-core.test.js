@@ -132,11 +132,11 @@ test('marketDataUrl requests all selected ids in the chosen currency', () => {
     );
 });
 
-test('formatValue shows missing or invalid values as an em dash', () => {
+test('formatValue distinguishes unreported supply from other missing values', () => {
     const supply = fields.find(field => field.key === 'max_supply');
     const athDate = fields.find(field => field.key === 'ath_date');
 
-    assert.equal(formatValue(supply, { max_supply: null }), '—');
+    assert.equal(formatValue(supply, { max_supply: null }), 'Not reported');
     assert.equal(formatValue(athDate, { ath_date: 'not-a-date' }), '—');
 });
 
