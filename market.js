@@ -1,7 +1,9 @@
 import './comparison-core.js';
+import './data-client.js';
 
 (() => {
     const API = 'https://api.coingecko.com/api/v3';
+    const { requestJsonWithMetadata } = window.CryptoCompareData;
     const CACHE_KEY = 'crypto-compare-market-snapshot-v2';
     const CACHE_MS = 5 * 60 * 1000;
     const status = document.getElementById('market-status');
@@ -22,14 +24,13 @@ import './comparison-core.js';
         try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ...snapshot, savedAt: Date.now() })); } catch { /* The page still works without storage. */ }
     }
 
-    async function request(path) {
-        const response = await fetch(`${API}${path}`);
-        if (!response.ok) {
-            const error = new Error(`CoinGecko returned HTTP ${response.status}.`);
-            error.status = response.status;
-            throw error;
-        }
-        return response.json();
+    function request(path, forceRefresh = false) {
+        return requestJsonWithMetadata(`${API}${path}`, {
+            provider: 'CoinGecko Market Pulse',
+            cacheKey: `market-pulse:${path}`,
+            cacheTtlMs: CACHE_MS,
+            forceRefresh
+        });
     }
 
     function currency(value, short = false) {
@@ -111,8 +112,9 @@ import './comparison-core.js';
         renderMovers('gainers-list', sample, 1);
         renderMovers('decliners-list', sample, -1);
         const updatedAt = Number(snapshot.savedAt) || Date.now();
+        const sourceSummary = snapshot.sources ? ` API cache: global ${snapshot.sources.global.source}, assets ${snapshot.sources.coins.source}.` : '';
         const providerTime = Number(data.updated_at) ? new Date(Number(data.updated_at) * 1000).toLocaleString() : new Date(updatedAt).toLocaleString();
-        document.getElementById('market-freshness').textContent = `${stale ? 'Showing saved data. ' : ''}CoinGecko market metrics updated ${providerTime}; this snapshot was fetched ${new Date(updatedAt).toLocaleString()}. Market coverage and timestamps vary by asset.`;
+        document.getElementById('market-freshness').textContent = `${stale ? 'Showing saved data. ' : ''}CoinGecko market metrics updated ${providerTime}; this snapshot was fetched ${new Date(updatedAt).toLocaleString()}. Market coverage and timestamps vary by asset.${sourceSummary}`;
     }
 
     async function load(force = false) {
@@ -129,11 +131,11 @@ import './comparison-core.js';
         document.getElementById('refresh-market').disabled = true;
         try {
             const [global, coins] = await Promise.all([
-                request('/global'),
-                request('/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d,30d')
+                request('/global', force),
+                request('/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d,30d', force)
             ]);
-            if (!Array.isArray(coins) || !coins.length) throw new Error('CoinGecko returned an invalid asset list.');
-            const snapshot = { global, coins, savedAt: Date.now() };
+            if (!Array.isArray(coins.data) || !coins.data.length) throw new Error('CoinGecko returned an invalid asset list.');
+            const snapshot = { global: global.data, coins: coins.data, sources: { global, coins }, savedAt: Date.now() };
             saveCache(snapshot); render(snapshot);
             status.textContent = 'Market snapshot updated.';
         } catch (error) {
