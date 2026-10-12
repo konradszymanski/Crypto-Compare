@@ -35,6 +35,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check data-client.js
+          node --check tests/data-client.test.js
           node --check comparison-core.js
           node --check cycle-core.js
           node --check macro-core.js
