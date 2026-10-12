@@ -124,3 +124,11 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - The client de-duplicates identical in-flight requests, applies a 15-second timeout, normalizes HTTP/JSON/network errors, and honors Retry-After (including HTTP-date values) with an origin-level cooldown after HTTP 429.
 - Existing cached coin-list fallback and page freshness behaviors remain in place; other research pages are deferred until their separate cache behavior is validated.
 - Tracked by [issue #34](https://github.com/konradszymanski/Crypto-Compare/issues/34); pull request closes the issue.
+
+
+## Shared provider cache rollout — 2026-10-13
+
+- Added opt-in per-request session caching with explicit cache keys and TTLs, source labels, and cache timestamps; forced refresh bypasses fresh entries.
+- Migrated Market Pulse (five minutes) and asset profile/history (30 minutes), retaining their page-level snapshots and stale-on-refresh-failure behavior.
+- Added deterministic tests for cache freshness, forced refresh, in-flight de-duplication, and HTTP 429 Retry-After cooldown.
+- Tracked by [issue #34](https://github.com/konradszymanski/Crypto-Compare/issues/34); this PR completes the remaining rollout.
