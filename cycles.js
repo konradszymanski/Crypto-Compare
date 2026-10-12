@@ -56,7 +56,7 @@ function makeHttpError(response, provider) {
     const error = new Error(`${provider} returned HTTP ${response.status}.`);
     error.status = response.status;
     const retryAfter = Number(response.headers.get('Retry-After'));
-    error.retryAfterMs = retryAfter > 0 ? retryAfter * 1000 : 60_000;
+    if (response.status === 429) error.retryAfterMs = retryAfter > 0 ? retryAfter * 1000 : 60_000;
     return error;
 }
 
@@ -164,11 +164,13 @@ async function loadPriceSets(assets) {
 
     try {
         const entries = await Promise.all(assets.map(async asset => [asset, await fetchBinanceAsset(asset)]));
-        const waitSeconds = Math.max(1, Math.ceil((coinGeckoError.retryAfterMs || 60_000) / 1000));
+        const fallbackReason = coinGeckoError.status === 429
+            ? `CoinGecko HTTP 429; using Binance while the rate limit cools down (~${Math.max(1, Math.ceil((coinGeckoError.retryAfterMs || 60_000) / 1000))}s).`
+            : `CoinGecko ${errorSummary(coinGeckoError)}; using Binance as a fallback.`;
         return {
             priceSets: Object.fromEntries(entries),
             provider: 'Binance Spot · USDT pairs',
-            fallbackReason: `CoinGecko ${errorSummary(coinGeckoError)}; using Binance while it cools down (~${waitSeconds}s).`
+            fallbackReason
         };
     } catch (binanceError) {
         const error = new Error(`CoinGecko ${errorSummary(coinGeckoError)} and Binance ${errorSummary(binanceError)}. Check provider access and retry later.`);
