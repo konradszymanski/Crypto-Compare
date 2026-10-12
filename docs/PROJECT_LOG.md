@@ -93,3 +93,11 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 
 
 
+
+
+## Comparison sorting — 2026-10-12
+
+- Added local sorting of compared assets by numeric market metrics, with rank ascending by default and descending defaults for other metrics.
+- Kept missing values at the bottom in both directions and ties in their original selection order.
+- Applied the same sort to the desktop table and mobile cards without issuing another market-data request.
+- Tracked by [issue #29](https://github.com/konradszymanski/Crypto-Compare/issues/29); pull request closes the issue.
