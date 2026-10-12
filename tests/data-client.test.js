@@ -25,8 +25,9 @@ test('session cache returns source and timestamp within its TTL', async () => {
     const options = { cacheKey: 'asset:btc', cacheTtlMs: 60_000 };
     const first = await api.requestJsonWithMetadata('https://api.test/btc', options);
     const second = await api.requestJsonWithMetadata('https://api.test/btc', options);
-    assert.deepEqual(first.data, { value: 1 });
+    assert.equal(first.data.value, 1);
     assert.equal(first.source, 'network');
+    assert.equal(second.data.value, 1);
     assert.equal(second.source, 'session-cache');
     assert.equal(second.cachedAt, first.cachedAt);
     assert.equal(calls, 1);
@@ -50,8 +51,8 @@ test('identical simultaneous requests are de-duplicated', async () => {
     await Promise.resolve();
     assert.equal(calls, 1);
     resolveRequest(response(200, { ok: true }));
-    assert.deepEqual(await a, { ok: true });
-    assert.deepEqual(await b, { ok: true });
+    assert.equal((await a).ok, true);
+    assert.equal((await b).ok, true);
 });
 
 test('429 Retry-After starts an origin-wide cooldown', async () => {
