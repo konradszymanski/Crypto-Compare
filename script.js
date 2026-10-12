@@ -262,6 +262,10 @@ function updateSortDirectionButton() {
 }
 
 function renderComparison() {
+    sortFieldSelect.querySelectorAll('option').forEach(option => {
+        const field = fields.find(candidate => candidate.key === option.value);
+        if (field) option.textContent = fieldLabel(field);
+    });
     const coins = sortCoins(store.getCoins());
     const hasCoins = coins.length > 0;
     emptyState.hidden = hasCoins;
