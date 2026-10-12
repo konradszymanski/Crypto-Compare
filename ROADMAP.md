@@ -26,7 +26,7 @@ This roadmap records useful directions for future work. It is not a promise or a
 - [x] Select a display currency and make the selected currency visible in the table.
 - [x] Add sortable comparison metrics with stable ordering and missing values kept last.
 - [x] Show explicit signs and subtle direction styling for percentage values; label unreported supply separately from other missing data.
-- [ ] Add keyboard navigation and richer screen-reader feedback for search suggestions.
+- [x] Add keyboard navigation, result counts, status announcements, and active-option positions for coin search.
 - [x] Persist a user's selected coins locally, with a clear way to reset them.
 - [x] Add data freshness indicators and a deliberate refresh action.
 - [x] Expand the source-linked event timeline with reviewed Federal Reserve policy milestones; keep it static, sourced, and non-causal.

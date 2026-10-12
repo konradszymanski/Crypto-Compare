@@ -108,3 +108,11 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - Positive percentage changes include an explicit plus sign; negative changes retain their minus sign and use restrained red styling. Sign text keeps direction understandable without color.
 - Missing circulating, total, and maximum supply values display “Not reported”; other unavailable values retain the dash.
 - Tracked by [issue #31](https://github.com/konradszymanski/Crypto-Compare/issues/31); pull request closes the issue.
+
+
+## Search accessibility — 2026-10-13
+
+- Added a dedicated polite live region for search progress, result counts, empty results, and active keyboard option positions.
+- Added visible keyboard instructions; kept the result list itself out of live announcements to reduce duplicate announcements.
+- Updated the existing browser scenario to check result-count and active-option announcements.
+- Tracked by [issue #33](https://github.com/konradszymanski/Crypto-Compare/issues/33); pull request closes the issue.

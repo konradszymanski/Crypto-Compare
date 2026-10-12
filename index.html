@@ -33,9 +33,11 @@
             <div class="search-results">
             <div class="search-field">
                 <span aria-hidden="true" class="search-icon">⌕</span>
-                <input id="input" type="search" placeholder="Search by coin name" autocomplete="off" aria-label="Search for a cryptocurrency" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="match-list" aria-haspopup="listbox">
+                <input id="input" type="search" placeholder="Search by coin name" autocomplete="off" aria-label="Search for a cryptocurrency" aria-describedby="search-help" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="match-list" aria-haspopup="listbox">
             </div>
-            <div id="match-list" class="suggestions" role="listbox" aria-label="Cryptocurrency search results" aria-live="polite"></div>
+            <p id="search-help" class="search-help">Use the up and down arrow keys to browse results, Enter to add a coin, and Escape to close the list.</p>
+            <div id="match-list" class="suggestions" role="listbox" aria-label="Cryptocurrency search results"></div>
+            <p id="search-feedback" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
             </div>
             <p id="status" class="status" role="status" aria-live="polite"></p>
         </section>

@@ -50,18 +50,19 @@ test('search is labelled, keyboard-selectable, and prevents duplicates', async (
     await page.goto('/');
     const search = page.getByRole('combobox', { name: 'Search for a cryptocurrency' });
     const results = page.getByRole('listbox', { name: 'Cryptocurrency search results' });
-    await expect(page.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+    await expect(page.locator('#status')).toHaveAttribute('aria-live', 'polite');
     await expect(search).toBeVisible();
 
     await search.fill('btc');
     const bitcoinOption = page.getByRole('option', { name: 'Bitcoin #1 · bitcoin' });
     await expect(bitcoinOption).toBeVisible();
-    await expect(results).toHaveAttribute('aria-live', 'polite');
+    await expect(page.locator('#search-feedback')).toHaveText(/\d+ coins? found for btc/);
     await search.press('ArrowDown');
     await expect(search).toHaveAttribute('aria-activedescendant', 'coin-option-bitcoin');
+    await expect(page.locator('#search-feedback')).toHaveText(/Bitcoin, 1 of/);
     await search.press('Enter');
 
-    await expect(page.getByRole('status')).toHaveText('Bitcoin added to comparison.');
+    await expect(page.locator('#status')).toHaveText('Bitcoin added to comparison.');
     await expect(page.getByText('1 coin', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Refresh all selected coins' })).toBeEnabled();
 
@@ -72,7 +73,7 @@ test('search is labelled, keyboard-selectable, and prevents duplicates', async (
 
     await page.getByRole('button', { name: 'Remove Bitcoin from comparison' }).click();
     await expect(page.locator('#coin-count')).toHaveText('0 coins');
-    await expect(page.getByRole('status')).toHaveText('Bitcoin removed from comparison.');
+    await expect(page.locator('#status')).toHaveText('Bitcoin removed from comparison.');
 });
 
 test('uses the popular fallback when ranked search is rate limited', async ({ page }) => {
@@ -81,8 +82,9 @@ test('uses the popular fallback when ranked search is rate limited', async ({ pa
     await page.getByRole('combobox', { name: 'Search for a cryptocurrency' }).fill('ada');
 
     await expect(page.getByRole('option', { name: /Cardano/ })).toBeVisible();
-    await expect(page.getByRole('status')).toContainText('rate limited');
-    await expect(page.getByRole('status')).toContainText('popular coins only');
+    await expect(page.locator('#search-feedback')).toHaveText(/\d+ coins? found for ada/);
+    await expect(page.locator('#status')).toContainText('rate limited');
+    await expect(page.locator('#status')).toContainText('popular coins only');
 });
 
 test('reports market-data rate limits and offers a retry action', async ({ page }) => {
@@ -91,8 +93,8 @@ test('reports market-data rate limits and offers a retry action', async ({ page 
     await page.getByRole('combobox', { name: 'Search for a cryptocurrency' }).fill('btc');
     await page.getByRole('option', { name: 'Bitcoin #1 · bitcoin' }).click();
 
-    await expect(page.getByRole('status')).toContainText('HTTP 429');
-    await expect(page.getByRole('status')).toContainText('Try again in about');
+    await expect(page.locator('#status')).toContainText('HTTP 429');
+    await expect(page.locator('#status')).toContainText('Try again in about');
     await expect(page.getByRole('button', { name: 'Retry loading coin' })).toBeVisible();
     await expect(page.locator('#coin-count')).toHaveText('0 coins');
 });
