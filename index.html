@@ -65,6 +65,12 @@
                 </select>
                 <span id="currency-help" class="currency-help">Changing currency refreshes selected coin prices from CoinGecko.</span>
             </div>
+            <div class="sort-control">
+                <label for="sort-field">Sort coins by</label>
+                <select id="sort-field" aria-label="Sort coins by"></select>
+                <button id="sort-direction" class="sort-direction" type="button" aria-label="Sort descending" disabled>Ascending ↑</button>
+                <span class="currency-help">Missing values stay at the end.</span>
+            </div>
 
             <div id="empty-state" class="empty-state">
                 <span class="empty-icon" aria-hidden="true">＋</span>
