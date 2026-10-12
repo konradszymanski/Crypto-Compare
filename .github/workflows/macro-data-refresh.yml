@@ -1,0 +1,31 @@
+name: Refresh public macro snapshot
+
+on:
+  schedule:
+    - cron: '0 8 15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch public FRED series and rebuild snapshot
+        run: node scripts/update-macro-data.mjs
+      - name: Open snapshot update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/macro-data-refresh
+          delete-branch: true
+          commit-message: 'chore: refresh public macro snapshot'
+          title: 'chore: refresh monthly macro data'
+          body: 'Automated update of the versioned FRED CPI and federal funds series. Review the changed observation months before merging.'
