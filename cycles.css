@@ -105,3 +105,5 @@
 }
 .macro-disclosure { color: var(--muted); font-size: .88rem; line-height: 1.6; margin: 8px 0 0; }
 @media (max-width: 720px) { .macro-chart-surface { height: 420px; } }
+.macro-sources { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
+.macro-sources a { color: var(--accent); }
