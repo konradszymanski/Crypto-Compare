@@ -1,4 +1,7 @@
+import './data-client.js';
+
 const API = 'https://api.coingecko.com/api/v3';
+const { requestJsonWithMetadata } = window.CryptoCompareData;
 const id = new URLSearchParams(window.location.search).get('id') || '';
 const safeId = /^[a-z0-9-]+$/i.test(id) ? id : '';
 const cacheKey = `crypto-compare-asset-${safeId}-v1`;
@@ -124,21 +127,19 @@ async function load(force = false) {
     const coinUrl = `${API}/coins/${encodeURIComponent(safeId)}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
     const historyUrl = `${API}/coins/${encodeURIComponent(safeId)}/market_chart?vs_currency=usd&days=365`;
     try {
-        const responses = await Promise.all([fetch(coinUrl), fetch(historyUrl)]);
-        const failed = responses.find(response => !response.ok);
-        if (failed) {
-            const error = new Error(`CoinGecko request failed (HTTP ${failed.status}).`);
-            error.status = failed.status;
-            throw error;
-        }
-        const [details, history] = await Promise.all(responses.map(response => response.json()));
+        const [profileResult, historyResult] = await Promise.all([
+            requestJsonWithMetadata(coinUrl, { provider: 'CoinGecko asset profile', cacheKey: `asset-profile:${safeId}`, cacheTtlMs: cacheTtl, forceRefresh: force }),
+            requestJsonWithMetadata(historyUrl, { provider: 'CoinGecko asset history', cacheKey: `asset-history:${safeId}`, cacheTtlMs: cacheTtl, forceRefresh: force })
+        ]);
+        const details = profileResult.data;
+        const history = historyResult.data;
         if (!details || typeof details !== 'object' || !Array.isArray(history?.prices)) throw new Error('CoinGecko returned incomplete asset data.');
-        const snapshot = { details, history, savedAt: Date.now() };
+        const snapshot = { details, history, sources: { profile: profileResult, history: historyResult }, savedAt: Date.now() };
         saveCache(snapshot);
         renderDetails(details);
         await renderChart(history.prices);
         const providerUpdated = details.last_updated ? new Date(details.last_updated).toLocaleString() : 'not reported';
-        document.getElementById('asset-freshness').textContent = `CoinGecko asset data updated ${providerUpdated}. The daily history covers only the dates shown below; observations can lag.`;
+        document.getElementById('asset-freshness').textContent = `CoinGecko asset data updated ${providerUpdated}. Profile: ${profileResult.source}; history: ${historyResult.source}. The daily history covers only the dates shown below; observations can lag.`;
         status.textContent = 'Asset research data loaded.';
     } catch (error) {
         if (cached) {
