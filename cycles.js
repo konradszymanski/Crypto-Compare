@@ -357,7 +357,10 @@ async function updateChart() {
         if (revision !== requestRevision) return;
         const allCycles = core.buildCycleSeries(core.HALVINGS, result.priceSets, selectedDate, assets);
         const cycles = allCycles.filter(cycle => assets.some(asset => (cycle.assets[asset]?.values || []).length));
-        await drawChart(cycles, assets);
+        await Promise.all([
+            drawChart(cycles, assets),
+            drawMacroChart(result.priceSets.bitcoin || [], selectedDate, macroData, result.provider)
+        ]);
         renderRows(cycles, assets);
         renderDataInfo(result, cycles, assets);
         const elapsed = core.daysBetween(core.HALVINGS[core.HALVINGS.length - 1].date, selectedDate);
@@ -384,8 +387,16 @@ document.getElementById('load-cycles').addEventListener('click', () => {
     updateChart();
 });
 function settingsChanged() {
-    if (hasRequestedHistory) updateChart();
-    else statusNode.textContent = 'Settings updated. Select Update chart when you are ready to load historical prices.';
+    if (hasRequestedHistory) {
+        updateChart();
+    } else {
+        statusNode.textContent = 'Settings updated. Select Update chart when you are ready to load historical prices.';
+        loadMacroData()
+            .then(snapshot => drawMacroChart([], dateInput.value, snapshot, 'pending'))
+            .catch(error => {
+                document.getElementById('macro-summary').textContent = `The static FRED snapshot could not be loaded. ${error.message}`;
+            });
+    }
 }
 dateInput.addEventListener('change', settingsChanged);
 document.querySelectorAll('input[name="asset"]').forEach(input => input.addEventListener('change', settingsChanged));
