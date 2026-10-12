@@ -43,6 +43,13 @@
         <p class="chart-help">Each line starts at 0% on that cycle’s halving. Solid lines show BTC; dashed lines show ETH. Returns are compared at the same number of days after halving.</p>
         <div class="chart-wrap"><div id="cycle-chart" class="chart-surface" role="img" aria-label="Historical Bitcoin and Ethereum returns aligned by days since Bitcoin halving"><p class="chart-placeholder">Select Update chart to load the historical comparison.</p></div></div>
     </section>
+    <section class="cycle-panel macro-panel" aria-labelledby="macro-heading">
+        <div class="section-heading"><div><p class="eyebrow">Historical backdrop</p><h2 id="macro-heading">Bitcoin and macro conditions</h2></div></div>
+        <p class="chart-help">BTC monthly close above; U.S. CPI inflation and the effective federal funds rate below. The two panels use separate scales. Macro observations are monthly and can be published weeks after their observation month.</p>
+        <p id="macro-summary" class="macro-summary" role="note">Loading the versioned FRED macro snapshot…</p>
+        <div class="chart-wrap"><div id="macro-chart" class="macro-chart-surface" role="img" aria-label="Monthly Bitcoin spot price compared with United States CPI inflation and the effective federal funds rate"></div></div>
+        <p class="macro-disclosure">BTC prices follow the selected source above and use the last daily BTC price available in each month up to the selected date. CPI inflation is calculated year over year from the seasonally adjusted CPI index. Fed funds is the monthly average effective rate. CPI and rate observations may have different latest months. Historical data can be revised. Side-by-side timing is descriptive and does not establish causation or predict returns.</p>
+    </section>
     <section class="cycle-panel" aria-labelledby="cycle-table-heading">
         <div class="section-heading"><div><p class="eyebrow">Matched time point</p><h2 id="cycle-table-heading">Returns at the selected cycle day</h2></div></div>
         <div class="table-wrap"><table class="comparison-table cycle-table"><caption class="visually-hidden">Asset returns at the selected number of days since each Bitcoin halving</caption><thead><tr><th scope="col">Cycle</th><th scope="col">Halving</th><th scope="col">Day in cycle</th><th scope="col">BTC return</th><th scope="col">ETH return</th></tr></thead><tbody id="cycle-rows"></tbody></table></div>
