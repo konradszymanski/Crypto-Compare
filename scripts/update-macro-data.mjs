@@ -44,5 +44,5 @@ const snapshot = {
     },
     observations
 };
-await writeFile(new URL('../data/macro-monthly.json', import.meta.url), `${JSON.stringify(snapshot, null, 2)}\n`);
+await writeFile(new URL('../public/data/macro-monthly.json', import.meta.url), `${JSON.stringify(snapshot, null, 2)}\n`);
 console.log(`Updated ${observations.length} macro observations through ${observations.at(-1).date}.`);
