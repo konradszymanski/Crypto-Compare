@@ -30,8 +30,10 @@ const observations = months.map(date => {
     return { date, fedFundsPct: fed.get(date), cpiYoYPct };
 }).filter(row => row.fedFundsPct != null);
 
-if (!observations.length || observations.at(-1).date < new Date().toISOString().slice(0, 7).replace(/-\d{2}$/, '')) {
-    console.warn('FRED has not published the current month; keeping the latest available observations.');
+const now = new Date();
+const staleThreshold = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 2, 1)).toISOString().slice(0, 7);
+if (!observations.length || observations.at(-1).date < staleThreshold) {
+    console.warn('FRED observations look unusually stale; review the generated snapshot before merging.');
 }
 const snapshot = {
     schemaVersion: 1,
