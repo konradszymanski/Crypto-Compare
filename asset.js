@@ -57,15 +57,71 @@ function renderDetails(coin) {
     document.getElementById('asset-volume').textContent = compactCurrency(market.total_volume?.usd);
     document.getElementById('asset-supply').textContent = number(market.circulating_supply);
     document.getElementById('asset-max-supply').textContent = `Maximum supply: ${number(market.max_supply)}`;
+    const circulatingShare = Number.isFinite(market.circulating_supply) && Number.isFinite(market.max_supply) && market.max_supply > 0
+        ? (market.circulating_supply / market.max_supply) * 100
+        : NaN;
+    document.getElementById('asset-supply-share').textContent = `Circulating share of maximum: ${Number.isFinite(circulatingShare) ? percentage(circulatingShare) : 'Unavailable'}`;
+    renderCategories(coin.categories);
     document.getElementById('asset-ath').textContent = priceCurrency(market.ath?.usd);
     document.getElementById('asset-ath-distance').textContent = `Distance from ATH: ${percentage(market.ath_change_percentage?.usd)}`;
     document.getElementById('asset-atl').textContent = priceCurrency(market.atl?.usd);
     document.getElementById('asset-atl-date').textContent = market.atl_date?.usd ? `Recorded ${new Date(market.atl_date.usd).toLocaleDateString()}` : 'Date unavailable';
 }
 
-async function renderChart(prices, stale = false) {
-    const valid = prices.filter(point => Array.isArray(point) && Number.isFinite(point[0]) && Number.isFinite(point[1]));
-    if (!valid.length) throw new Error('No usable daily price observations were returned.');
+function renderCategories(categories) {
+    const container = document.getElementById('asset-categories');
+    container.replaceChildren();
+    const values = Array.isArray(categories) ? categories.filter(value => typeof value === 'string' && value.trim()) : [];
+    if (!values.length) {
+        container.textContent = 'CoinGecko has not reported categories for this asset.';
+        return;
+    }
+    values.forEach(category => {
+        const tag = document.createElement('span');
+        tag.className = 'category-tag';
+        tag.textContent = category;
+        container.append(tag);
+    });
+}
+
+function renderCycleContext(prices) {
+    const summary = document.getElementById('asset-cycle-summary');
+    const halving = Date.UTC(2024, 3, 20);
+    const valid = prices.filter(point => Array.isArray(point) && Number.isFinite(point[0]) && Number.isFinite(point[1]) && point[1] > 0).sort((a, b) => a[0] - b[0]);
+    const baseline = valid.find(point => point[0] >= halving && point[0] <= halving + 7 * 86400000);
+    if (!valid.length) {
+        summary.textContent = 'No usable daily prices are available for cycle context.';
+        return;
+    }
+    if (!baseline) {
+        const first = new Date(valid[0][0]);
+        if (first > new Date(halving)) {
+            const daysAfterHalving = Math.floor((first.getTime() - halving) / 86400000);
+            summary.textContent = 'Available history starts about ' + number(daysAfterHalving) + ' days after the 20 April 2024 halving, so the cycle baseline is missing and a since-halving return cannot be calculated for this asset.';
+        } else {
+            summary.textContent = 'The returned history does not contain a usable price within seven days after the 20 April 2024 halving, so a since-halving return is unavailable.';
+        }
+        return;
+    }
+    const latest = valid[valid.length - 1];
+    const returnPct = ((latest[1] / baseline[1]) - 1) * 100;
+    const elapsedDays = Math.floor((latest[0] - baseline[0]) / 86400000);
+    summary.textContent = percentage(returnPct) + ' since the first available post-halving observation (' + new Date(baseline[0]).toLocaleDateString() + '); ' + number(elapsedDays) + ' days elapsed. This is asset performance from the observed baseline, not a forecast.';
+}
+
+const SERIES_INFO = {
+    prices: { label: 'Daily price', unit: priceCurrency, color: '#68d1c2' },
+    market_caps: { label: 'Market capitalization', unit: compactCurrency, color: '#83a9f3' },
+    total_volumes: { label: 'Trading volume', unit: compactCurrency, color: '#e6b86b' }
+};
+
+async function renderChart(history, stale = false) {
+    const selector = document.getElementById('asset-series');
+    const key = selector.value in SERIES_INFO ? selector.value : 'prices';
+    const info = SERIES_INFO[key];
+    const points = history[key];
+    const valid = Array.isArray(points) ? points.filter(point => Array.isArray(point) && Number.isFinite(point[0]) && Number.isFinite(point[1])) : [];
+    if (!valid.length) throw new Error('No usable daily ' + info.label.toLowerCase() + ' observations were returned.');
     const { echarts } = await import('./chart-kit.js');
     const element = document.getElementById('asset-chart');
     chart?.dispose();
@@ -75,7 +131,7 @@ async function renderChart(prices, stale = false) {
         grid: { left: 72, right: 28, top: 24, bottom: 58 },
         tooltip: {
             trigger: 'axis',
-            valueFormatter: value => priceCurrency(value),
+            valueFormatter: value => info.unit(value),
             axisPointer: { type: 'line' }
         },
         xAxis: {
@@ -87,22 +143,22 @@ async function renderChart(prices, stale = false) {
         yAxis: {
             type: 'value',
             scale: true,
-            axisLabel: { color: '#b7c9c6', formatter: value => priceCurrency(value) },
+            axisLabel: { color: '#b7c9c6', formatter: value => info.unit(value) },
             splitLine: { lineStyle: { color: 'rgba(175,194,191,0.12)' } }
         },
         series: [{
-            name: 'Daily price',
+            name: info.label,
             type: 'line',
             showSymbol: false,
             smooth: false,
             data: valid,
-            lineStyle: { color: '#68d1c2', width: 2 },
-            areaStyle: { color: 'rgba(104,209,194,0.12)' }
+            lineStyle: { color: info.color, width: 2 },
+            areaStyle: { color: info.color + '1f' }
         }]
     });
     const start = new Date(valid[0][0]).toLocaleDateString();
     const end = new Date(valid[valid.length - 1][0]).toLocaleDateString();
-    document.getElementById('asset-chart-summary').textContent = `${stale ? 'Showing cached data. ' : ''}${valid.length} daily price observations from ${start} to ${end}. Source: CoinGecko. No other provider is mixed into this series.`;
+    document.getElementById('asset-chart-summary').textContent = `${stale ? 'Showing cached data. ' : ''}${valid.length} daily ${info.label.toLowerCase()} observations from ${start} to ${end}. Source: CoinGecko. No other provider is mixed into this series.`;
 }
 
 function setBusy(busy) {
@@ -116,7 +172,8 @@ async function load(force = false) {
     const cached = readCache();
     if (!force && cached && Date.now() - cached.savedAt < cacheTtl) {
         renderDetails(cached.details);
-        await renderChart(cached.history.prices);
+        await renderChart(cached.history);
+        renderCycleContext(cached.history.prices);
         document.getElementById('asset-freshness').textContent = `Cached from ${new Date(cached.savedAt).toLocaleString()}. Current prices and historical observations may be delayed.`;
         status.textContent = 'Showing a recent cached asset snapshot.';
         refreshButton.disabled = false;
@@ -124,7 +181,7 @@ async function load(force = false) {
     }
     setBusy(true);
     status.textContent = `Loading ${safeId} market profile and daily history…`;
-    const coinUrl = `${API}/coins/${encodeURIComponent(safeId)}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
+    const coinUrl = `${API}/coins/${encodeURIComponent(safeId)}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&include_categories_details=true`;
     const historyUrl = `${API}/coins/${encodeURIComponent(safeId)}/market_chart?vs_currency=usd&days=365`;
     try {
         const [profileResult, historyResult] = await Promise.all([
@@ -137,7 +194,8 @@ async function load(force = false) {
         const snapshot = { details, history, sources: { profile: profileResult, history: historyResult }, savedAt: Date.now() };
         saveCache(snapshot);
         renderDetails(details);
-        await renderChart(history.prices);
+        await renderChart(history);
+        renderCycleContext(history.prices);
         const providerUpdated = details.last_updated ? new Date(details.last_updated).toLocaleString() : 'not reported';
         document.getElementById('asset-freshness').textContent = `CoinGecko asset data updated ${providerUpdated}. Profile: ${profileResult.source}; history: ${historyResult.source}. The daily history covers only the dates shown below; observations can lag.`;
         status.textContent = 'Asset research data loaded.';
@@ -145,7 +203,8 @@ async function load(force = false) {
         if (cached) {
             renderDetails(cached.details);
             try {
-                await renderChart(cached.history.prices, true);
+                await renderChart(cached.history, true);
+                renderCycleContext(cached.history.prices);
             } catch (chartError) {
                 document.getElementById('asset-chart-summary').textContent = chartError.message;
             }
@@ -169,6 +228,10 @@ if (!safeId) {
 } else {
     refreshButton.disabled = false;
     refreshButton.addEventListener('click', () => load(true));
+    document.getElementById('asset-series').addEventListener('change', () => {
+        const cached = readCache();
+        if (cached) renderChart(cached.history);
+    });
     load();
 }
 
