@@ -26,19 +26,35 @@
     </header>
     <div class="research-toolbar"><button id="refresh-asset" type="button" disabled>Refresh data</button><p id="asset-status" class="status" role="status" aria-live="polite">Choose an asset from Market Pulse.</p></div>
     <p id="asset-freshness" class="data-info" role="note">Historical coverage and timestamps depend on CoinGecko data availability.</p>
+    <section class="research-panel asset-categories" aria-labelledby="asset-categories-title">
+        <div class="section-heading"><div><p class="eyebrow">Market context</p><h2 id="asset-categories-title">Categories</h2></div></div>
+        <div id="asset-categories" class="category-list"><span class="data-info-inline">Categories load with the asset profile.</span></div>
+    </section>
     <section id="asset-metrics" class="metric-grid" aria-label="Asset market fundamentals">
         <article class="metric-card"><p>Current price (USD)</p><strong id="asset-price">—</strong><span>Most recent reported market price</span></article>
         <article class="metric-card"><p>Market capitalization</p><strong id="asset-market-cap">—</strong><span id="asset-rank">Rank unavailable</span></article>
         <article class="metric-card"><p>24-hour volume</p><strong id="asset-volume">—</strong><span>Reported trading activity</span></article>
-        <article class="metric-card"><p>Circulating supply</p><strong id="asset-supply">—</strong><span id="asset-max-supply">Maximum supply: unavailable</span></article>
+        <article class="metric-card"><p>Circulating supply</p><strong id="asset-supply">—</strong><span id="asset-max-supply">Maximum supply: unavailable</span><span id="asset-supply-share">Circulating share of maximum: unavailable</span></article>
         <article class="metric-card"><p>All-time high</p><strong id="asset-ath">—</strong><span id="asset-ath-distance">Distance from ATH: unavailable</span></article>
         <article class="metric-card"><p>All-time low</p><strong id="asset-atl">—</strong><span id="asset-atl-date">Date unavailable</span></article>
     </section>
     <section class="research-panel asset-chart-panel" aria-labelledby="asset-chart-title">
         <div class="section-heading"><div><p class="eyebrow">Historical performance</p><h2 id="asset-chart-title">Daily price · USD</h2></div></div>
-        <p class="chart-help">Daily observations over the available one-year window. This chart describes past prices; it is not a forecast or investment recommendation.</p>
+        <label class="chart-control" for="asset-series">Historical measure</label>
+        <select id="asset-series" aria-label="Historical measure">
+            <option value="prices">Price · USD</option>
+            <option value="market_caps">Market capitalization · USD</option>
+            <option value="total_volumes">Trading volume · USD</option>
+        </select>
+        <p class="chart-help">Daily observations over the available one-year window. Price, market capitalization, and volume use the same CoinGecko response and date range. This chart describes past data; it is not a forecast or investment recommendation.</p>
         <div id="asset-chart" class="asset-chart" role="img" aria-label="Daily USD price history chart for the selected cryptocurrency"></div>
         <p id="asset-chart-summary" class="data-info-inline">Price history loads only after you choose an asset.</p>
+    </section>
+    <section class="research-panel context-panel" aria-labelledby="asset-cycle-title">
+        <p class="eyebrow">Cycle context</p>
+        <h2 id="asset-cycle-title">Performance since the latest Bitcoin halving</h2>
+        <p id="asset-cycle-summary">Cycle comparison loads with the historical price series.</p>
+        <p class="data-info-inline">A return is shown only if this asset’s history includes a price observation on or after the halving date. CoinGecko’s free history may not reach the cycle baseline. <a href="cycles.html">Open the BTC and ETH full-cycle explorer</a> for its separately sourced longer history.</p>
     </section>
     <section class="research-panel context-panel">
         <p class="eyebrow">How to read this</p>
