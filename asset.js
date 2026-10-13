@@ -97,7 +97,7 @@ function renderCycleContext(prices) {
         const first = new Date(valid[0][0]);
         if (first > new Date(halving)) {
             const daysAfterHalving = Math.floor((first.getTime() - halving) / 86400000);
-            summary.textContent = 'Available history starts about ' + number(daysAfterHalving) + ' days after the 20 April 2024 halving, so the cycle baseline is missing and a since-halving return cannot be calculated for this asset.';
+            summary.textContent = 'Available history begins on ' + first.toLocaleDateString() + ', about ' + number(daysAfterHalving) + ' days after the 20 April 2024 halving. The baseline is missing, so a since-halving return cannot be calculated for this asset.';
         } else {
             summary.textContent = 'The returned history does not contain a usable price within seven days after the 20 April 2024 halving, so a since-halving return is unavailable.';
         }
