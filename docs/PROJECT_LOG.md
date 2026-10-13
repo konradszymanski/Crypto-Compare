@@ -132,3 +132,12 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - Migrated Market Pulse (five minutes) and asset profile/history (30 minutes), retaining their page-level snapshots and stale-on-refresh-failure behavior.
 - Added deterministic tests for cache freshness, forced refresh, in-flight de-duplication, and HTTP 429 Retry-After cooldown.
 - Tracked by [issue #34](https://github.com/konradszymanski/Crypto-Compare/issues/34); this PR completes the remaining rollout.
+
+
+## In review — asset research context — 2026-10-13
+
+- Add CoinGecko category tags and a current circulating-to-maximum supply ratio to asset research.
+- Allow one-year price, market-cap, and volume history to be explored from the existing history response.
+- Report the latest Bitcoin-halving comparison only when a valid post-halving baseline exists in the asset history. If it does not, show the date-coverage gap and link to the established BTC/ETH cycle page.
+- Historical circulating-supply charts are deferred: the provider documents those endpoints as plan-restricted. Do not treat market-cap divided by price as official supply history.
+- Tracked by [issue #38](https://github.com/konradszymanski/Crypto-Compare/issues/38).
