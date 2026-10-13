@@ -7,7 +7,7 @@ Crypto-Compare is a static cryptocurrency research dashboard. Compare live marke
 - **Compare coins** (`index.html`): search for assets and compare live CoinGecko market data.
 - **Bitcoin cycles** (`cycles.html`): compare BTC and ETH returns at the same number of days since each Bitcoin halving. Historical lines begin at the first available daily price on or after a halving. ETH history is naturally absent from the 2012 cycle.
 - **Market Pulse** (`market.html`): view global capitalization, trading volume, BTC/ETH market share, top-100 participation, 7-day leaders/laggards, and leading assets across 24-hour, 7-day, and 30-day periods.
-- **Asset research** (`asset.html?id=bitcoin`): inspect an asset's market rank, supply, volume, ATH/ATL, and daily USD history over the provider's available one-year window.
+- **Asset research** (`asset.html?id=bitcoin`): inspect an asset's categories, current supply context, market rank, ATH/ATL, and daily USD price, market-cap, or volume history. The page reports whether its available history includes the latest halving baseline.
 - **Events & Bitcoin** (`events.html`): review a sourced timeline and compare BTC returns in a 30-day-before/30-day-after window.
 
 The comparison page and research charts use CoinGecko's public API. Historical charts fall back to Binance public daily spot candles when CoinGecko is unavailable or rate limited. Provider availability and request limits can affect data loading; prices are daily values and may lag. The market and event pages cache responses in the browser when storage is available.
@@ -51,7 +51,7 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - `script.js` — CoinGecko requests, search, and responsive rendering
 - `comparison-core.js` — selected coin state and market value formatting
 - `market.html` / `market.js` — cached global snapshot, market breadth, top asset and mover views
-- `asset.html` / `asset.js` — on-demand asset fundamentals and source-labeled daily price history
+- `asset.html` / `asset.js` — on-demand asset fundamentals, category context, selectable price/market-cap/volume history, and halving-baseline coverage
 - `events.html` / `events.js` — sourced event timeline and BTC window comparison
 - `event-core.js` — event-window date and return calculations
 - `styles.css` — page and table presentation
@@ -73,7 +73,7 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - Selected coin IDs and display metadata are saved locally in this browser. Current prices are fetched again on return; stored prices are never reused. Use **Clear comparison** to remove the saved selection. If browser storage is unavailable, the current session still works without persistence.
 - Data freshness and availability depend on third-party providers.
 - The app is static and has no backend; browser caches are optional and local to the device.
-- Asset price history uses only CoinGecko's returned daily observations for up to the available one-year window; the page does not join series from different sources.
+- Asset history uses only CoinGecko's returned daily observations for up to the available one-year window; the page does not join series from different sources. Historical circulating supply is not currently available through the selected free plan, so only current supply fields and the reported circulating-to-maximum ratio are shown.
 - The macro timeline is curated and intentionally small, not a comprehensive news feed.
 
 See [ROADMAP.md](ROADMAP.md) for possible next steps.
