@@ -9,14 +9,14 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Keep the app free and static, relying on public data and browser-side caching without client-side API secrets.
 - Keep the product research-focused; a personal portfolio tracker is out of scope.
 
-## Current state — 2026-10-11
+## Current state — 2026-10-14
 
 - **Production:** GitHub Pages deploys from `master` after verification succeeds.
-- **Latest product release:** [`000b9db`](https://github.com/konradszymanski/Crypto-Compare/commit/000b9db85d2634d4c3bfb447dc973302b05647e5) — three source-linked Federal Reserve milestones in the BTC event timeline, merged via [PR #20](https://github.com/konradszymanski/Crypto-Compare/pull/20).
-- **Latest CI and deployment:** [verification run #33](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38170000429) and [Pages deployment #17](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38169998940) both succeeded.
+- **Latest product release:** [PR #39](https://github.com/konradszymanski/Crypto-Compare/pull/39) — asset category and supply context, selectable history measures, and halving coverage reporting; merged as [`53b5a7b`](https://github.com/konradszymanski/Crypto-Compare/commit/53b5a7b070098fd6321cf659b0dd45a051bad562).
+- **Latest CI and deployment:** PR #39 verification and the GitHub Pages deployment both succeeded.
 - **Project docs:** README, architecture, roadmap, data plan, and this progress log document the current product and static-site constraints.
-- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, and Events & Bitcoin.
-- **Open GitHub work:** [#22 macro context in Bitcoin cycles](https://github.com/konradszymanski/Crypto-Compare/issues/22), in review. Issues #2, #17, #19, #1, #3, and #4 are closed after their implementations and deployments were verified.
+- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, Events & Bitcoin, and Bitcoin treasuries.
+- **Open GitHub work:** [#40 Bitcoin treasury research](https://github.com/konradszymanski/Crypto-Compare/issues/40), implemented in the current pull request. Issues #22 and #38 are closed after implementation and deployment; issues #2, #17, #19, #1, #3, and #4 were closed in earlier releases.
 
 ### Shipped — Market Pulse
 
@@ -48,7 +48,7 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. The curated Fed event timeline shipped in PR #20; next roadmap work is a reviewed static macro dataset or treasury research.
 
 
-### In review — historical macro context
+### Shipped — historical macro context
 
 - Add a monthly Bitcoin price and U.S. macro chart to the Bitcoin cycle explorer, with separate price and percentage panels.
 - Version FRED effective federal funds and CPI year-over-year data in the repository. Show independent observation months and describe the time relationship without implying causation.
@@ -140,4 +140,12 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - Allow one-year price, market-cap, and volume history to be explored from the existing history response.
 - Report the latest Bitcoin-halving comparison only when a valid post-halving baseline exists in the asset history. If it does not, show the date-coverage gap and link to the established BTC/ETH cycle page.
 - Historical circulating-supply charts are deferred: the provider documents those endpoints as plan-restricted. Do not treat market-cap divided by price as official supply history.
-- Tracked by [issue #38](https://github.com/konradszymanski/Crypto-Compare/issues/38).
+- Tracked by [issue #38](https://github.com/konradszymanski/Crypto-Compare/issues/38), closed by PR #39.
+
+
+## Bitcoin treasury research — 2026-10-14
+
+- Added a Bitcoin treasury page with the source snapshot date, reported BTC holdings, estimated USD values, entity type/country filters, and a top-holdings visualization.
+- The initial checked-in snapshot shows the leading 20 entities from CoinGecko's public treasury page and identifies itself as partial. Weekly/manual refresh uses CoinGecko Demo API from a GitHub Actions secret and opens a reviewable pull request; a missing secret skips the refresh while preserving the existing public snapshot.
+- No key is included in the static site. The page explains that government holdings may include seized assets and that the figures do not establish intent or predict returns.
+- Tracked by [issue #40](https://github.com/konradszymanski/Crypto-Compare/issues/40).
