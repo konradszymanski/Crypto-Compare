@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "snapshotDate": "2026-10-14",
+  "source": {
+    "name": "CoinGecko Bitcoin Treasury Holdings",
+    "url": "https://www.coingecko.com/en/treasuries/bitcoin",
+    "method": "Published public treasury page; API refresh runs through GitHub Actions when a Demo key is configured."
+  },
+  "totals": {
+    "entities": 193,
+    "btc": 1921527,
+    "valueUsd": 160144519467
+  },
+  "coverage": {
+    "complete": false,
+    "reportedEntityCount": 193,
+    "displayedEntityCount": 20,
+    "note": "Starter snapshot contains the 20 leading entities shown on the source page. An authenticated scheduled refresh can publish the full returned directory."
+  },
+  "entities": [
+    {
+      "name": "Strategy",
+      "symbol": "MSTR.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 848250,
+      "valueUsd": 70695120018,
+      "supplySharePct": 4.039
+    },
+    {
+      "name": "United States",
+      "country": "United States",
+      "type": "government",
+      "btc": 329693,
+      "valueUsd": 27477378372,
+      "supplySharePct": 1.57
+    },
+    {
+      "name": "China",
+      "country": "China",
+      "type": "government",
+      "btc": 190000,
+      "valueUsd": 15835040145,
+      "supplySharePct": 0.905
+    },
+    {
+      "name": "United Kingdom",
+      "country": "United Kingdom",
+      "type": "government",
+      "btc": 61245,
+      "valueUsd": 5104300177,
+      "supplySharePct": 0.292
+    },
+    {
+      "name": "Metaplanet",
+      "symbol": "3350.T",
+      "country": "Japan",
+      "type": "company",
+      "btc": 44000,
+      "valueUsd": 3667061928,
+      "supplySharePct": 0.21
+    },
+    {
+      "name": "Twenty One Capital",
+      "symbol": "XXI.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 43514,
+      "valueUsd": 3626557563,
+      "supplySharePct": 0.207
+    },
+    {
+      "name": "MARA Holdings",
+      "symbol": "MARA.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 35577,
+      "valueUsd": 2965069596,
+      "supplySharePct": 0.169
+    },
+    {
+      "name": "Strive",
+      "symbol": "ASST.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 32773,
+      "valueUsd": 2731377740,
+      "supplySharePct": 0.156
+    },
+    {
+      "name": "Bitcoin Standard Treasury Company",
+      "symbol": "CEPO.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 30021,
+      "valueUsd": 2502019685,
+      "supplySharePct": 0.143
+    },
+    {
+      "name": "Bullish",
+      "symbol": "BLSH.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 23800,
+      "valueUsd": 1983547134,
+      "supplySharePct": 0.113
+    },
+    {
+      "name": "Galaxy Digital Holdings Ltd",
+      "symbol": "GLXY.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 21084,
+      "valueUsd": 1757189402,
+      "supplySharePct": 0.1
+    },
+    {
+      "name": "Space Exploration Technologies Corp.",
+      "symbol": "SPCX",
+      "country": "United States",
+      "type": "company",
+      "btc": 18712,
+      "valueUsd": 1559501427,
+      "supplySharePct": 0.089
+    },
+    {
+      "name": "Coinbase Global",
+      "symbol": "COIN.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 17311,
+      "valueUsd": 1442738842,
+      "supplySharePct": 0.082
+    },
+    {
+      "name": "Riot Platforms",
+      "symbol": "RIOT.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 15680,
+      "valueUsd": 1306807524,
+      "supplySharePct": 0.075
+    },
+    {
+      "name": "Hut 8 Mining Corp",
+      "symbol": "HUT.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 13696,
+      "valueUsd": 1141456368,
+      "supplySharePct": 0.065
+    },
+    {
+      "name": "North Korea",
+      "country": "North Korea",
+      "type": "government",
+      "btc": 13562,
+      "valueUsd": 1130288497,
+      "supplySharePct": 0.065
+    },
+    {
+      "name": "CleanSpark",
+      "symbol": "CLSK.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 13470,
+      "valueUsd": 1122621004,
+      "supplySharePct": 0.064
+    },
+    {
+      "name": "Tesla",
+      "symbol": "TSLA.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 11509,
+      "valueUsd": 959186721,
+      "supplySharePct": 0.055
+    },
+    {
+      "name": "Bhutan",
+      "country": "Bhutan",
+      "type": "government",
+      "btc": 10769,
+      "valueUsd": 897513407,
+      "supplySharePct": 0.051
+    },
+    {
+      "name": "Trump Media & Technology Group Corp.",
+      "symbol": "DJT.US",
+      "country": "United States",
+      "type": "company",
+      "btc": 9542,
+      "valueUsd": 795265719,
+      "supplySharePct": 0.045
+    }
+  ]
+}
