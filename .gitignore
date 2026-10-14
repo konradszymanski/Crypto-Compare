@@ -4,3 +4,8 @@ playwright-report/
 test-results/
 .playwright-browsers/
 
+
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="research.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Bitcoin Treasuries · Crypto-Compare</title>
+    <script type="module" src="./treasuries.js"></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
+        <a href="market.html">Market Pulse</a><a href="asset.html">Asset research</a><a href="events.html">Events &amp; BTC</a>
+        <a href="treasuries.html" aria-current="page">BTC treasuries</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">Holdings context</p>
+        <h1>Bitcoin treasuries</h1>
+        <p class="intro">Explore reported Bitcoin held by public companies and governments, with a dated source snapshot.</p>
+    </header>
+    <section class="research-panel treasury-intro" aria-labelledby="treasury-method">
+        <p class="eyebrow">How to read this</p>
+        <h2 id="treasury-method">Reported holdings, not a market signal</h2>
+        <p>CoinGecko aggregates reported Bitcoin holdings. Values in USD move with BTC’s market price; holdings may be estimated or reported on different dates. Government holdings may include seized assets and do not necessarily represent a policy reserve. This data does not show intent, future buying, or future returns.</p>
+    </section>
+    <div class="research-toolbar">
+        <button id="refresh-treasuries" type="button">Reload snapshot</button>
+        <p id="treasury-status" class="status" role="status" aria-live="polite">Loading the published snapshot…</p>
+    </div>
+    <p id="treasury-freshness" class="data-info" role="note">Snapshot date and source coverage will appear here.</p>
+    <section class="metric-grid treasury-metrics" aria-label="Bitcoin treasury summary">
+        <article class="metric-card"><p>Tracked entities</p><strong id="treasury-count">—</strong><span>Companies and governments in this snapshot</span></article>
+        <article class="metric-card"><p>Reported BTC</p><strong id="treasury-btc">—</strong><span>Sum of reported holdings</span></article>
+        <article class="metric-card"><p>Estimated USD value</p><strong id="treasury-value">—</strong><span>Snapshot value; changes with BTC price</span></article>
+        <article class="metric-card"><p>Share of 21M cap</p><strong id="treasury-share">—</strong><span>Calculated from reported BTC holdings</span></article>
+    </section>
+    <section class="research-panel" aria-labelledby="largest-heading">
+        <div class="section-heading"><div><p class="eyebrow">Largest reported positions</p><h2 id="largest-heading">Top 10 entities</h2></div></div>
+        <ol id="treasury-leaders" class="treasury-leaders"><li>Loading snapshot…</li></ol>
+    </section>
+    <section class="research-panel" aria-labelledby="holdings-heading">
+        <div class="section-heading"><div><p class="eyebrow">Entity directory</p><h2 id="holdings-heading">Reported holdings</h2></div></div>
+        <div class="treasury-controls">
+            <label for="treasury-search">Search entity</label><input id="treasury-search" type="search" placeholder="Company, government, country or ticker" autocomplete="off">
+            <label for="treasury-type">Entity type</label><select id="treasury-type"><option value="all">All entities</option><option value="company">Companies</option><option value="government">Governments</option></select>
+            <label for="treasury-sort">Sort by</label><select id="treasury-sort"><option value="value">Current USD value</option><option value="holdings">BTC holdings</option><option value="name">Name</option></select>
+        </div>
+        <p id="treasury-results" class="data-info-inline" aria-live="polite">Loading entity records…</p>
+        <div class="table-wrap treasury-table-wrap">
+            <table class="comparison-table treasury-table">
+                <caption class="visually-hidden">Reported Bitcoin holdings by company and government</caption>
+                <thead><tr><th scope="col">Entity</th><th scope="col">Type</th><th scope="col">Country</th><th scope="col">BTC reported</th><th scope="col">Estimated value (USD)</th><th scope="col">Share of 21M cap</th></tr></thead>
+                <tbody id="treasury-rows"><tr><td colspan="6">Loading snapshot…</td></tr></tbody>
+            </table>
+        </div>
+        <div id="treasury-cards" class="treasury-cards"></div>
+    </section>
+    <section class="research-panel context-panel">
+        <p class="eyebrow">Coverage and limitations</p>
+        <h2>A reported snapshot, not a complete ledger</h2>
+        <p>Public disclosures can lag, holdings can be attributed differently, and reported estimates may change. The listed entities reflect CoinGecko’s tracked coverage at the snapshot date, not every wallet or institution. USD values are calculated from the source’s snapshot and are not a live quote.</p>
+        <p>CoinGecko’s authenticated API refresh is run by GitHub Actions and proposed as a pull request for review. If that workflow has no configured API key, the checked-in snapshot remains available and the refresh is skipped.</p>
+    </section>
+    <footer class="page-footer"><p>Source: <a href="https://www.coingecko.com/en/treasuries/bitcoin" target="_blank" rel="noreferrer">CoinGecko Bitcoin treasury holdings</a>. Figures are reported estimates; research context only.</p></footer>
+</main>
+</body>
+</html>

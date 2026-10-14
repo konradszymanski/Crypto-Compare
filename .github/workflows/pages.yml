@@ -46,6 +46,8 @@ jobs:
           node --check tests/global-setup.js
           node --check tests/static-server.js
           node --check tests/browser/comparison.spec.js
+          node --check treasuries.js
+          node --check scripts/update-treasury-data.mjs
       - name: Run unit tests
         run: npm test
       - name: Run browser tests

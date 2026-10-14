@@ -1,0 +1,47 @@
+name: Refresh public Bitcoin treasury snapshot
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Check for CoinGecko Demo key
+        id: key
+        env:
+          CG_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: |
+          if [ -z "$CG_API_KEY" ]; then
+            echo "::warning::Treasury snapshot was not refreshed. Add COINGECKO_DEMO_API_KEY as a repository Actions secret to enable refreshes."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up Node.js
+        if: steps.key.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch and validate public treasury data
+        if: steps.key.outputs.skip != 'true'
+        env:
+          COINGECKO_DEMO_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: node scripts/update-treasury-data.mjs
+      - name: Open snapshot update pull request
+        if: steps.key.outputs.skip != 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/treasury-data-refresh
+          delete-branch: true
+          commit-message: 'chore: refresh Bitcoin treasury snapshot'
+          title: 'chore: refresh Bitcoin treasury data'
+          body: 'Automated public snapshot update from CoinGecko. Review the date, record count, and source changes before merging.'
