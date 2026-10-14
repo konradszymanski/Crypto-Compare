@@ -1,6 +1,7 @@
 const DATA_URL = './data/treasury-bitcoin.json';
 const state = { snapshot: null, query: '', type: 'all', sort: 'value' };
 const byId = (id) => document.getElementById(id);
+const isFiniteValue = (value) => value !== null && value !== '' && Number.isFinite(Number(value));
 const formatNumber = (value, digits = 0) => Number.isFinite(Number(value))
     ? new Intl.NumberFormat('en-US', { maximumFractionDigits: digits }).format(Number(value))
     : '—';
@@ -78,7 +79,7 @@ function renderRows() {
         const row = document.createElement('tr');
         [entity.name, entity.type === 'government' ? 'Government' : 'Company', entity.country || 'Not reported',
             formatNumber(entity.btc) + ' BTC', formatUsd(entity.valueUsd),
-            Number.isFinite(Number(entity.supplySharePct)) ? formatNumber(entity.supplySharePct, 3) + '%' : '—'
+            isFiniteValue(entity.supplySharePct) ? formatNumber(entity.supplySharePct, 3) + '%' : '—'
         ].forEach((value) => {
             const cell = document.createElement('td');
             cell.textContent = value;
