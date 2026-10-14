@@ -39,7 +39,7 @@ function normalize(record, type) {
         type,
         btc,
         valueUsd,
-        supplySharePct: Number.isFinite(Number(record.percentage_of_total_supply)) ? Number(record.percentage_of_total_supply) : null
+        supplySharePct: record.percentage_of_total_supply != null && record.percentage_of_total_supply !== '' && Number.isFinite(Number(record.percentage_of_total_supply)) ? Number(record.percentage_of_total_supply) : null
     };
 }
 
