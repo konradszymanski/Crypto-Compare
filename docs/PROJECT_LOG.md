@@ -12,11 +12,11 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 ## Current state — 2026-10-14
 
 - **Production:** GitHub Pages deploys from `master` after verification succeeds.
-- **Latest product release:** [PR #39](https://github.com/konradszymanski/Crypto-Compare/pull/39) — asset category and supply context, selectable history measures, and halving coverage reporting; merged as [`53b5a7b`](https://github.com/konradszymanski/Crypto-Compare/commit/53b5a7b070098fd6321cf659b0dd45a051bad562).
-- **Latest CI and deployment:** PR #39 verification and the GitHub Pages deployment both succeeded.
+- **Latest product release:** [PR #41](https://github.com/konradszymanski/Crypto-Compare/pull/41) — sourced Bitcoin treasury research; merged as [`cc15f81`](https://github.com/konradszymanski/Crypto-Compare/commit/cc15f81803908e4c50b63a90d0f4e4da6c960ece).
+- **Latest CI:** PR #41 verification run [#77](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38522115193) passed the production build, syntax checks, unit tests, and browser tests. GitHub Pages deploys from `master` after verification.
 - **Project docs:** README, architecture, roadmap, data plan, and this progress log document the current product and static-site constraints.
 - **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, Events & Bitcoin, and Bitcoin treasuries.
-- **Open GitHub work:** [#40 Bitcoin treasury research](https://github.com/konradszymanski/Crypto-Compare/issues/40), implemented in the current pull request. Issues #22 and #38 are closed after implementation and deployment; issues #2, #17, #19, #1, #3, and #4 were closed in earlier releases.
+- **Open GitHub work:** none. Issue [#40 Bitcoin treasury research](https://github.com/konradszymanski/Crypto-Compare/issues/40) closed via PR #41; issues #22 and #38 were closed after their implementations, while #2, #17, #19, #1, #3, and #4 were closed in earlier releases.
 
 ### Shipped — Market Pulse
 
@@ -45,7 +45,7 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Added a staged API/product plan in [`DATA_PLAN.md`](DATA_PLAN.md), covering Market Pulse, asset research, public treasuries and macro context, and optional market-structure views.
 - Added implementation constraints to [`ROADMAP.md`](../ROADMAP.md): no client-side secrets, disclose data source and coverage, cache and load on demand, and mock providers in CI.
 - CoinGecko Demo historical chart coverage is documented as limited to the past 365 days in the current endpoint reference. Full BTC cycle research therefore continues to require an explicitly labeled long-history source such as the existing Binance daily-candle fallback.
-- Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. The curated Fed event timeline shipped in PR #20; next roadmap work is a reviewed static macro dataset or treasury research.
+- Market Pulse shipped in PR #15. Saved comparison shipped in PR #16. Asset research shipped in PR #18. The curated Fed event timeline shipped in PR #20; subsequent roadmap work added the FRED macro snapshot and Bitcoin treasury research.
 
 
 ### Shipped — historical macro context
