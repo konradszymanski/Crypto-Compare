@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-10-12",
+  "snapshotDate": "2026-10-15",
   "sources": {
     "fedFunds": {
       "id": "FEDFUNDS",
@@ -17,7 +17,7 @@
       "source": "U.S. Bureau of Labor Statistics via FRED",
       "unit": "percent",
       "frequency": "monthly, seasonally adjusted",
-      "method": "(CPI index this month ÷ CPI index 12 months earlier − 1) × 100"
+      "method": "(CPI index this month / CPI index 12 months earlier - 1) * 100"
     }
   },
   "observations": [
@@ -1024,7 +1024,7 @@
     {
       "date": "2026-09",
       "fedFundsPct": 3.75,
-      "cpiYoYPct": null
+      "cpiYoYPct": 3.717
     }
   ]
 }
