@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22383A">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="research.css">
+    <link rel="stylesheet" href="structure.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>DEX Activity · Crypto-Compare</title>
+    <script type="module" src="./structure.js"></script>
+</head>
+<body>
+<main class="app-shell">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Compare coins</a><a href="cycles.html">Bitcoin cycles</a>
+        <a href="market.html">Market Pulse</a><a href="asset.html">Asset research</a>
+        <a href="events.html">Events &amp; BTC</a><a href="treasuries.html">BTC treasuries</a>
+        <a href="structure.html" aria-current="page">DEX activity</a>
+    </nav>
+    <header class="page-header">
+        <p class="eyebrow">Market structure</p>
+        <h1>DEX activity</h1>
+        <p class="intro">Explore pools currently receiving attention across decentralized exchanges, with liquidity, recent trading activity, and price movement where reported.</p>
+    </header>
+    <section class="research-panel structure-intro" aria-labelledby="structure-method">
+        <p class="eyebrow">A partial view of on-chain markets</p>
+        <h2 id="structure-method">What is moving through DEX pools?</h2>
+        <p>Trending pools are selected by GeckoTerminal using a mix of web visits and on-chain activity. This feed is a discovery sample, not all DEX volume and not a representative market index. Large volume or price changes do not imply future direction.</p>
+    </section>
+    <div class="research-toolbar structure-toolbar">
+        <label for="network-filter">Network</label>
+        <select id="network-filter" aria-label="Filter trending pools by network">
+            <option value="all">All networks</option>
+            <option value="eth">Ethereum</option>
+            <option value="solana">Solana</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="polygon_pos">Polygon</option>
+        </select>
+        <button id="refresh-pools" type="button">Refresh pools</button>
+        <p id="structure-status" class="status" role="status" aria-live="polite">Choose a network or load the trending pool snapshot.</p>
+    </div>
+    <p id="structure-freshness" class="data-info" role="note">The public API is cached briefly. Data will load only when requested.</p>
+    <section class="metric-grid structure-metrics" aria-label="Summary of visible trending pools">
+        <article class="metric-card"><p>Pools shown</p><strong id="pool-count">—</strong><span>Returned by the selected feed</span></article>
+        <article class="metric-card"><p>Combined reported liquidity</p><strong id="pool-liquidity">—</strong><span>Sum for displayed pools only</span></article>
+        <article class="metric-card"><p>Combined 24-hour volume</p><strong id="pool-volume">—</strong><span>Sum for displayed pools only</span></article>
+        <article class="metric-card"><p>Pool networks</p><strong id="network-count">—</strong><span>Networks represented in this response</span></article>
+    </section>
+    <section class="research-panel" aria-labelledby="pool-list-heading">
+        <div class="section-heading"><div><p class="eyebrow">Trending pool snapshot</p><h2 id="pool-list-heading">Recent DEX activity</h2></div></div>
+        <p class="chart-help">Liquidity and volume are reported in USD by GeckoTerminal. Buy and sell counts are pool transactions, not unique traders or net flows.</p>
+        <div id="pool-list" class="pool-grid" aria-live="polite"><p class="pool-empty">Select “Refresh pools” to request current public data.</p></div>
+    </section>
+    <section class="research-panel structure-caveats" aria-labelledby="structure-caveats-title">
+        <p class="eyebrow">Coverage and limits</p>
+        <h2 id="structure-caveats-title">Read venue data with context</h2>
+        <ul>
+            <li>Pool activity covers specific on-chain pools and networks; it does not include centralized exchanges or every decentralized venue.</li>
+            <li>Liquidity, volume, transaction counts, and token prices may be missing or delayed. Always follow the source link for pool details.</li>
+            <li>The public GeckoTerminal API is in beta. Its documentation describes cached responses and a low, variable request limit; this page caches results in your browser and does not poll.</li>
+            <li>CoinGecko's derivatives exchange endpoint can report venue open interest and contract details, but it requires a Pro API key. It is deferred until a protected, reviewable snapshot path is available.</li>
+        </ul>
+    </section>
+    <footer class="page-footer">
+        <p>On-chain pool data by <a href="https://www.geckoterminal.com/" target="_blank" rel="noreferrer">GeckoTerminal</a>. API documentation: <a href="https://api.geckoterminal.com/docs/index.html" target="_blank" rel="noreferrer">Public API</a>. Research and comparison only.</p>
+    </footer>
+</main>
+</body>
+</html>
