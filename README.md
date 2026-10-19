@@ -10,6 +10,7 @@ Crypto-Compare is a static cryptocurrency research dashboard. Compare live marke
 - **Asset research** (`asset.html?id=bitcoin`): inspect an asset's categories, current supply context, market rank, ATH/ATL, and daily USD price, market-cap, or volume history. The page reports whether its available history includes the latest halving baseline.
 - **Events & Bitcoin** (`events.html`): review a sourced timeline and compare BTC returns in a 30-day-before/30-day-after window.
 - **Bitcoin treasuries** (`treasuries.html`): explore CoinGecko’s dated reported holdings by public companies and governments, with searchable, sortable records and an estimate of each holding’s share of Bitcoin’s 21M maximum supply.
+- **DEX activity** (`structure.html`): inspect GeckoTerminal’s current trending pools by network, with reported liquidity, volume, price change, and transaction counts. This is a partial on-chain discovery feed, not a market-wide measure or signal.
 
 The comparison page and research charts use CoinGecko's public API. Historical charts fall back to Binance public daily spot candles when CoinGecko is unavailable or rate limited. Provider availability and request limits can affect data loading; prices are daily values and may lag. The market and event pages cache responses in the browser when storage is available.
 
@@ -57,6 +58,7 @@ Browser tests mock CoinGecko responses, so they do not depend on live API availa
 - `asset.html` / `asset.js` — on-demand asset fundamentals, category context, selectable price/market-cap/volume history, and halving-baseline coverage
 - `events.html` / `events.js` — sourced event timeline and BTC window comparison
 - `treasuries.html` / `treasuries.js` — dated Bitcoin treasury snapshot, entity filters, and holdings comparison
+- `structure.html` / `structure.js` — on-demand GeckoTerminal pool activity with network filtering, browser caching, and coverage caveats
 - `event-core.js` — event-window date and return calculations
 - `styles.css` — page and table presentation
 - `vite.config.js` — multi-page build and relative asset paths for GitHub Pages
