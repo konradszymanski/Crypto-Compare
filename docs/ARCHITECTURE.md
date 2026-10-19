@@ -2,7 +2,7 @@
 
 ## Current shape
 
-Crypto-Compare is a free, static, research-focused multi-page app. Its core workflow is to compare current market data with Bitcoin halving cycles and a curated, source-linked historical event timeline. `index.html` owns the comparison page; `cycles.html`, `market.html`, and `events.html` provide historical cycle, current market, and event-context views. Shared colors and base layout live in `styles.css`, while each research page has a small script and styles. Pure calculations live in `comparison-core.js`, `cycle-core.js`, and `event-core.js` so they can be checked without a browser. Vite builds each HTML page into optimized static assets in `dist/`; there is still no backend. ECharts renders the interactive research charts and is loaded only when a chart needs to render. A personal portfolio tracker is outside the current product scope.
+Crypto-Compare is a free, static, research-focused multi-page app. Its core workflow is to compare current market data with Bitcoin halving cycles and a curated, source-linked historical event timeline. `index.html` owns the comparison page; `cycles.html`, `market.html`, `events.html`, `treasuries.html`, and `structure.html` provide cycle, market, event, reported-holdings, and DEX-activity context. Shared colors and base layout live in `styles.css`, while each research page has a small script and styles. Pure calculations live in `comparison-core.js`, `cycle-core.js`, and `event-core.js` so they can be checked without a browser. Vite builds each HTML page into optimized static assets in `dist/`; there is still no backend. ECharts renders the interactive research charts and is loaded only when a chart needs to render. A personal portfolio tracker is outside the current product scope.
 
 ## Data flow
 
@@ -33,3 +33,8 @@ As features are added, consider extracting small modules for API access, formatt
 ## Shared provider requests
 
 The comparison, Market Pulse, and asset research pages use data-client.js for CoinGecko JSON requests. It de-duplicates in-flight requests, applies a 15-second timeout, normalizes HTTP, JSON, network, and timeout failures, and honors Retry-After with an origin cooldown. Opt-in session caches use explicit TTLs (coin search: six hours; Market Pulse: five minutes; asset profile/history: 30 minutes) and expose source plus cache timestamp metadata. Manual refresh bypasses fresh entries. Pages retain their composite snapshots and stale-data fallback; cycle/event historical source selection stays page-specific.
+
+
+## DEX activity page
+
+`structure.html` requests GeckoTerminal’s public trending-pools feed only after a user action. It filters by network, shows provider-reported pool liquidity/volume/price/transaction fields, caches each feed in session storage for one minute, and uses a six-second browser request gap to reduce accidental bursts. The page reports snapshot time and uses saved data after a failed refresh when possible. Pool discovery coverage is partial and venue-specific. CoinGecko derivatives remain deferred because their exchange detail endpoint requires a Pro key; credentials must remain outside this static client.
