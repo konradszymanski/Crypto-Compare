@@ -9,14 +9,14 @@ This log gives a concise record of shipped work, current in-flight changes, and 
 - Keep the app free and static, relying on public data and browser-side caching without client-side API secrets.
 - Keep the product research-focused; a personal portfolio tracker is out of scope.
 
-## Current state — 2026-10-14
+## Current state — 2026-10-19
 
 - **Production:** GitHub Pages deploys from `master` after verification succeeds.
-- **Latest product release:** [PR #41](https://github.com/konradszymanski/Crypto-Compare/pull/41) — sourced Bitcoin treasury research; merged as [`cc15f81`](https://github.com/konradszymanski/Crypto-Compare/commit/cc15f81803908e4c50b63a90d0f4e4da6c960ece).
-- **Latest CI:** PR #41 verification run [#77](https://github.com/konradszymanski/Crypto-Compare/actions/runs/38522115193) passed the production build, syntax checks, unit tests, and browser tests. GitHub Pages deploys from `master` after verification.
+- **Latest product release:** [PR #45](https://github.com/konradszymanski/Crypto-Compare/pull/45) — public DEX activity research; merged as [`b6bc2a4`](https://github.com/konradszymanski/Crypto-Compare/commit/b6bc2a4988a1bbf05e53b648a74892859e99d54e).
+- **Latest CI and deployment:** PR #45 verification [run #82](https://github.com/konradszymanski/Crypto-Compare/actions/runs/39312450653) passed build, syntax, unit, and browser checks. Master verification [run #83](https://github.com/konradszymanski/Crypto-Compare/actions/runs/39312592440) and Pages deployment [run #33](https://github.com/konradszymanski/Crypto-Compare/actions/runs/39312591753) succeeded.
 - **Project docs:** README, architecture, roadmap, data plan, and this progress log document the current product and static-site constraints.
-- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, Events & Bitcoin, and Bitcoin treasuries.
-- **Open GitHub work:** none. Issue [#40 Bitcoin treasury research](https://github.com/konradszymanski/Crypto-Compare/issues/40) closed via PR #41; issues #22 and #38 were closed after their implementations, while #2, #17, #19, #1, #3, and #4 were closed in earlier releases.
+- **Current user-facing pages:** compare coins, Bitcoin cycles, Market Pulse, Asset research, Events & Bitcoin, Bitcoin treasuries, and DEX activity.
+- **Open GitHub work:** none. Issue [#44 DEX activity research](https://github.com/konradszymanski/Crypto-Compare/issues/44) closed via PR #45. Issue #40 closed via PR #41; issues #22 and #38 were closed after their implementations, while #2, #17, #19, #1, #3, and #4 were closed in earlier releases.
 
 ### Shipped — Market Pulse
 
@@ -149,3 +149,10 @@ Browser checks validate key accessibility semantics and the desktop/mobile compa
 - The initial checked-in snapshot shows the leading 20 entities from CoinGecko's public treasury page and identifies itself as partial. Weekly/manual refresh uses CoinGecko Demo API from a GitHub Actions secret and opens a reviewable pull request; a missing secret skips the refresh while preserving the existing public snapshot.
 - No key is included in the static site. The page explains that government holdings may include seized assets and that the figures do not establish intent or predict returns.
 - Tracked by [issue #40](https://github.com/konradszymanski/Crypto-Compare/issues/40).
+
+
+### Shipped — DEX activity research
+
+- Added an on-demand GeckoTerminal trending-pools page with all-network and network-specific views. It reports pool-level liquidity, 24-hour volume, price movement, and buys/sells when available, with one-minute session caching and stale-data messaging.
+- Documented partial venue coverage and the low, variable public API limit. CoinGecko derivatives/open-interest data remains deferred because the exchange endpoint requires a Pro API key and the static browser must not contain credentials.
+- Issue #44 closed by [PR #45](https://github.com/konradszymanski/Crypto-Compare/pull/45), merged as [`b6bc2a4`](https://github.com/konradszymanski/Crypto-Compare/commit/b6bc2a4988a1bbf05e53b648a74892859e99d54e). PR verification #82, master verification #83, and Pages deployment #33 all succeeded.
