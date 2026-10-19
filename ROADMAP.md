@@ -57,11 +57,12 @@ The detailed endpoint inventory, data constraints, and implementation rules are 
 - [x] Refresh the public macro snapshot monthly through GitHub Actions pull requests; keep data reviewable and credentials out of the site.
 - [ ] Keep events and macro observations descriptive and avoid causal or predictive claims.
 
-### Phase 4 — Market structure (optional, after validation)
+### Phase 4 — Market structure
 
-- [ ] Evaluate derivatives exchange/open-interest data and GeckoTerminal pool activity for a separate market-structure view.
-- [ ] Confirm endpoint availability, plan requirements, freshness, and request costs before implementation.
-- [ ] Label on-chain and derivatives indicators as partial, venue-specific observations; do not present them as buy/sell signals.
+- [x] Validate GeckoTerminal public trending-pool data and add a separate DEX activity explorer with network filters, visible freshness, and browser-side request throttling.
+- [x] Confirm the public API is keyless and cached briefly; use a conservative local request gap because its public documentation describes a low, variable limit.
+- [x] Label pool activity as a partial, venue-specific observation and avoid buy/sell signals.
+- [ ] Add derivatives open-interest snapshots only after a protected scheduled workflow with a CoinGecko Pro key is available; the exchange endpoint requires authenticated Pro access.
 
 ### Shared data foundations
 
